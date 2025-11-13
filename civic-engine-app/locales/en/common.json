@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "logo": "Most of Us",
+    "tagline": "Policies We Agree On",
+    "top10": "Top 10",
+    "top20": "Top 20",
+    "compare": "Compare",
+    "login": "Login",
+    "loginToVote": "Login to Vote"
+  },
+  "hero": {
+    "badge": "Policies with 55%+ Bipartisan Support",
+    "title": "What {mostOfUs} Agree On",
+    "mostOfUs": "Most of Us",
+    "subtitle": "Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.",
+    "viewAll": "View All 20 Policies",
+    "comparePolicies": "Compare Policies"
+  },
+  "stats": {
+    "consensusPolicies": "Consensus Policies",
+    "averageSupport": "Average Support",
+    "latestData": "Latest Data"
+  },
+  "footer": {
+    "about": "About Most of Us",
+    "aboutText": "A platform highlighting policies that have broad bipartisan support across America. All policies shown have 55%+ agreement among Democrats, Republicans, and Independents.",
+    "demoVersion": "Demo Version - Not for actual voting",
+    "quickLinks": "Quick Links",
+    "dataTransparency": "Data & Transparency",
+    "dataSourcesText": "All policy data sourced from reputable polling organizations including:",
+    "copyright": "Most of Us. A civic engagement demo platform."
+  },
+  "policy": {
+    "averageSupport": "Average Support",
+    "learnMore": "Learn More",
+    "hideDetails": "Hide Details",
+    "vote": "Vote",
+    "loginRequired": "Login required to vote",
+    "keyDetails": "Key Details",
+    "dataSources": "Data Sources",
+    "lastUpdated": "Last updated",
+    "support": "support"
+  },
+  "compare": {
+    "title": "Compare Policies",
+    "subtitle": "Help us understand which policies matter most to you. Choose between two options to indicate your preference.",
+    "question": "Which policy would you prioritize?",
+    "chooseOne": "Choose the one you think should be implemented first",
+    "youChose": "You chose",
+    "demoNotice": "In the full version, your preference would be recorded to help rank policies based on collective priorities.",
+    "compareAgain": "Compare Again",
+    "randomize": "Randomize Policies",
+    "howItWorks": "How Policy Comparison Works"
+  },
+  "common": {
+    "backToHome": "Back to Home",
+    "bipartisanSupport": "bipartisan support"
+  }
+}

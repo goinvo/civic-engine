@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "logo": "La Mayoría de Nosotros",
+    "tagline": "Políticas en las que Estamos de Acuerdo",
+    "top10": "Las 10 Principales",
+    "top20": "Las 20 Principales",
+    "compare": "Comparar",
+    "login": "Iniciar Sesión",
+    "loginToVote": "Iniciar Sesión para Votar"
+  },
+  "hero": {
+    "badge": "Políticas con 55%+ de Apoyo Bipartidista",
+    "title": "En lo que {mostOfUs} Estamos de Acuerdo",
+    "mostOfUs": "La Mayoría de Nosotros",
+    "subtitle": "Descubre las políticas que unen a los estadounidenses más allá de las líneas partidistas. Cada política mostrada tiene apoyo mayoritario de demócratas, republicanos e independientes.",
+    "viewAll": "Ver las 20 Políticas",
+    "comparePolicies": "Comparar Políticas"
+  },
+  "stats": {
+    "consensusPolicies": "Políticas de Consenso",
+    "averageSupport": "Apoyo Promedio",
+    "latestData": "Datos Más Recientes"
+  },
+  "footer": {
+    "about": "Acerca de La Mayoría de Nosotros",
+    "aboutText": "Una plataforma que destaca políticas con amplio apoyo bipartidista en Estados Unidos. Todas las políticas mostradas tienen 55%+ de acuerdo entre demócratas, republicanos e independientes.",
+    "demoVersion": "Versión de Demostración - No para votación real",
+    "quickLinks": "Enlaces Rápidos",
+    "dataTransparency": "Datos y Transparencia",
+    "dataSourcesText": "Todos los datos de políticas provienen de organizaciones de encuestas reconocidas incluyendo:",
+    "copyright": "La Mayoría de Nosotros. Una plataforma de demostración de participación cívica."
+  },
+  "policy": {
+    "averageSupport": "Apoyo Promedio",
+    "learnMore": "Aprender Más",
+    "hideDetails": "Ocultar Detalles",
+    "vote": "Votar",
+    "loginRequired": "Se requiere iniciar sesión para votar",
+    "keyDetails": "Detalles Clave",
+    "dataSources": "Fuentes de Datos",
+    "lastUpdated": "Última actualización",
+    "support": "apoyo"
+  },
+  "compare": {
+    "title": "Comparar Políticas",
+    "subtitle": "Ayúdanos a entender qué políticas son más importantes para ti. Elige entre dos opciones para indicar tu preferencia.",
+    "question": "¿Qué política priorizarías?",
+    "chooseOne": "Elige la que crees que debería implementarse primero",
+    "youChose": "Elegiste",
+    "demoNotice": "En la versión completa, tu preferencia se registraría para ayudar a clasificar las políticas según las prioridades colectivas.",
+    "compareAgain": "Comparar de Nuevo",
+    "randomize": "Aleatorizar Políticas",
+    "howItWorks": "Cómo Funciona la Comparación de Políticas"
+  },
+  "common": {
+    "backToHome": "Volver al Inicio",
+    "bipartisanSupport": "apoyo bipartidista"
+  }
+}

@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1f2937;
+
+  /* Patriotic Theme - Muted Colors */
+  --primary-blue: #1e3a8a;
+  --primary-blue-light: #3b82f6;
+  --primary-blue-dark: #1e40af;
+  --accent-red: #dc2626;
+  --accent-red-light: #ef4444;
+  --neutral-gray: #6b7280;
+  --neutral-light: #f3f4f6;
+  --neutral-dark: #111827;
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary-blue);
+  --color-primary-light: var(--primary-blue-light);
+  --color-primary-dark: var(--primary-blue-dark);
+  --color-accent: var(--accent-red);
+  --color-accent-light: var(--accent-red-light);
+  --color-neutral: var(--neutral-gray);
+  --color-neutral-light: var(--neutral-light);
+  --color-neutral-dark: var(--neutral-dark);
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Spacing for mobile-first touch targets */
+  --min-touch-target: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --neutral-light: #1e293b;
+    --neutral-dark: #e2e8f0;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
