@@ -28,6 +28,15 @@ export interface PolicySource {
 }
 
 /**
+ * Party-specific support breakdown
+ */
+export interface PartySupport {
+  democrats: number;
+  republicans: number;
+  independents: number;
+}
+
+/**
  * Detailed breakdown of a policy
  */
 export interface PolicyDetail {
@@ -53,6 +62,7 @@ export interface Policy {
   // Sources and support data
   sources: PolicySource[];
   averageSupport: number; // Average percentage support across sources
+  partySupport?: PartySupport; // Support breakdown by party
 
   // For future features
   trending?: 'up' | 'down' | 'stable';

@@ -161,6 +161,59 @@ export default function PolicyCard({ policy, showVoteButton = true }: PolicyCard
             className="overflow-hidden"
           >
             <div className="px-5 sm:px-6 pb-5 sm:pb-6 bg-gradient-to-b from-neutral-light/50 to-white">
+              {/* Party Support Bars */}
+              {policy.partySupport && (
+                <div className="mb-6 pb-6 border-b border-gray-200">
+                  <h4 className="font-bold text-neutral-dark mb-3 flex items-center space-x-2">
+                    <span className="w-1 h-5 bg-primary rounded-full"></span>
+                    <span>Support by Party</span>
+                  </h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Democrats */}
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-medium text-blue-700">Dem</span>
+                        <span className="text-sm font-bold text-blue-700">{policy.partySupport.democrats}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="bg-gradient-to-r from-blue-600 to-blue-400 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${policy.partySupport.democrats}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Republicans */}
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-medium text-red-700">Rep</span>
+                        <span className="text-sm font-bold text-red-700">{policy.partySupport.republicans}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="bg-gradient-to-r from-red-600 to-red-400 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${policy.partySupport.republicans}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Independents */}
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-medium text-purple-700">Ind</span>
+                        <span className="text-sm font-bold text-purple-700">{policy.partySupport.independents}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="bg-gradient-to-r from-purple-600 to-purple-400 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${policy.partySupport.independents}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Policy Details */}
               <div className="mb-4">
                 <h4 className="font-bold text-neutral-dark mb-3 flex items-center space-x-2">

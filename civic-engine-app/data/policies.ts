@@ -16,6 +16,11 @@ export const policies: Policy[] = [
     scope: 'federal',
     icon: 'HeartPulse',
     averageSupport: 81,
+    partySupport: {
+      democrats: 93,
+      republicans: 72,
+      independents: 79,
+    },
     sources: [
       {
         organization: 'YouGov',
@@ -34,10 +39,6 @@ export const policies: Policy[] = [
         title: 'Protect Workers',
         description: 'Workers can recover from illness without financial penalty or fear of job loss.',
       },
-      {
-        title: 'Bipartisan Support',
-        description: 'Supported by 93% of Democrats, 72% of Republicans, and 79% of Independents.',
-      },
     ],
     trending: 'stable',
     lastUpdated: '2024-05-01',
@@ -51,6 +52,11 @@ export const policies: Policy[] = [
     scope: 'federal',
     icon: 'ShieldCheck',
     averageSupport: 83,
+    partySupport: {
+      democrats: 87,
+      republicans: 82,
+      independents: 80,
+    },
     sources: [
       {
         organization: 'The Economist/YouGov',
@@ -69,10 +75,6 @@ export const policies: Policy[] = [
         title: 'Mental Health Screening',
         description: 'Include mental health records in background check system to prevent access by those deemed dangerous.',
       },
-      {
-        title: 'Broad Agreement',
-        description: 'Supported by 87% of Democrats, 82% of Republicans, and 80% of Independents.',
-      },
     ],
     trending: 'stable',
     lastUpdated: '2025-08-01',
@@ -86,6 +88,11 @@ export const policies: Policy[] = [
     scope: 'federal',
     icon: 'Ban',
     averageSupport: 74,
+    partySupport: {
+      democrats: 73,
+      republicans: 77,
+      independents: 71,
+    },
     sources: [
       {
         organization: 'YouGov',
@@ -103,10 +110,6 @@ export const policies: Policy[] = [
       {
         title: 'Restore Trust',
         description: 'Increase public confidence in government by removing conflicts of interest.',
-      },
-      {
-        title: 'Strong Consensus',
-        description: 'Supported by 73% of Democrats, 77% of Republicans, and 71% of Independents.',
       },
     ],
     trending: 'up',
