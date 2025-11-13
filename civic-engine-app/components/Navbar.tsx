@@ -41,7 +41,7 @@ export default function Navbar() {
               href="/top20"
               className="text-neutral-dark hover:text-primary font-medium transition-colors"
             >
-              Top 20
+              All Policies
             </Link>
             <Link
               href="/compare"
@@ -117,7 +117,7 @@ export default function Navbar() {
                 className="px-4 py-2 text-neutral-dark hover:bg-neutral-light rounded-lg transition-colors font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Top 20
+                All Policies
               </Link>
               <Link
                 href="/compare"

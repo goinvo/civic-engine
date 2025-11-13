@@ -9,6 +9,7 @@ interface PolicyListProps {
   title?: string;
   subtitle?: string;
   showVoteButtons?: boolean;
+  onCategoryClick?: (category: string) => void;
 }
 
 export default function PolicyList({
@@ -16,6 +17,7 @@ export default function PolicyList({
   title,
   subtitle,
   showVoteButtons = true,
+  onCategoryClick,
 }: PolicyListProps) {
   // Animation variants for stagger effect
   const containerVariants = {
@@ -64,7 +66,11 @@ export default function PolicyList({
             variants={itemVariants}
             transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           >
-            <PolicyCard policy={policy} showVoteButton={showVoteButtons} />
+            <PolicyCard
+              policy={policy}
+              showVoteButton={showVoteButtons}
+              onCategoryClick={onCategoryClick}
+            />
           </motion.div>
         ))}
       </motion.div>

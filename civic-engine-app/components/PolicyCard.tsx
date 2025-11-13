@@ -16,9 +16,10 @@ import { Policy } from '@/types/policy';
 interface PolicyCardProps {
   policy: Policy;
   showVoteButton?: boolean;
+  onCategoryClick?: (category: string) => void;
 }
 
-export default function PolicyCard({ policy, showVoteButton = true }: PolicyCardProps) {
+export default function PolicyCard({ policy, showVoteButton = true, onCategoryClick }: PolicyCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Get the icon component dynamically
@@ -57,7 +58,19 @@ export default function PolicyCard({ policy, showVoteButton = true }: PolicyCard
             </div>
 
             {/* Icon */}
-            {IconComponent && (
+            {IconComponent && onCategoryClick && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCategoryClick(policy.category);
+                }}
+                className="hidden sm:flex items-center justify-center w-10 h-10 bg-neutral-light rounded-lg hover:bg-primary/10 hover:shadow-md transition-all cursor-pointer"
+                title={`Filter by ${policy.category.replace('-', ' ')}`}
+              >
+                <IconComponent className="w-5 h-5 text-primary" />
+              </button>
+            )}
+            {IconComponent && !onCategoryClick && (
               <div className="hidden sm:flex items-center justify-center w-10 h-10 bg-neutral-light rounded-lg">
                 <IconComponent className="w-5 h-5 text-primary" />
               </div>
@@ -65,11 +78,24 @@ export default function PolicyCard({ policy, showVoteButton = true }: PolicyCard
           </div>
 
           {/* Category Badge */}
-          <span
-            className={`px-3 py-1 text-xs font-medium rounded-full border ${categoryColor}`}
-          >
-            {policy.category.replace('-', ' ')}
-          </span>
+          {onCategoryClick ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCategoryClick(policy.category);
+              }}
+              className={`px-3 py-1 text-xs font-medium rounded-full border ${categoryColor} hover:shadow-md transition-shadow cursor-pointer`}
+              title={`Filter by ${policy.category.replace('-', ' ')}`}
+            >
+              {policy.category.replace('-', ' ')}
+            </button>
+          ) : (
+            <span
+              className={`px-3 py-1 text-xs font-medium rounded-full border ${categoryColor}`}
+            >
+              {policy.category.replace('-', ' ')}
+            </span>
+          )}
         </div>
 
         {/* Title */}

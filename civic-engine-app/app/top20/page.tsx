@@ -1,15 +1,32 @@
+'use client';
+
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import PolicyList from '@/components/PolicyList';
+import CategoryFilter, { CategoryType } from '@/components/CategoryFilter';
 import { getTopPolicies } from '@/data/policies';
-
-export const metadata = {
-  title: 'Top 20 Policies - Most of Us',
-  description: 'View all 20 policies with the highest bipartisan support across America.',
-};
 
 export default function Top20Page() {
   const allPolicies = getTopPolicies(20);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
+
+  // Filter policies by category
+  const filteredPolicies = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return allPolicies;
+    }
+    return allPolicies.filter(policy => policy.category === selectedCategory);
+  }, [allPolicies, selectedCategory]);
+
+  // Count policies per category
+  const policyCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: allPolicies.length };
+    allPolicies.forEach(policy => {
+      counts[policy.category] = (counts[policy.category] || 0) + 1;
+    });
+    return counts;
+  }, [allPolicies]);
 
   return (
     <div className="w-full">
@@ -32,10 +49,10 @@ export default function Top20Page() {
             </div>
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold mb-3">
-                Top 20 Consensus Policies
+                All Policies ({allPolicies.length})
               </h1>
               <p className="text-lg sm:text-xl text-blue-100 max-w-3xl">
-                All 20 policies with the highest bipartisan support in America.
+                All {allPolicies.length} policies with the highest bipartisan support in America.
                 Each has been validated by major polling organizations and has
                 majority support across party lines.
               </p>
@@ -45,7 +62,7 @@ export default function Top20Page() {
           {/* Stats Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-2xl font-bold">20</div>
+              <div className="text-2xl font-bold">{allPolicies.length}</div>
               <div className="text-sm text-blue-100">Total Policies</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
@@ -67,10 +84,31 @@ export default function Top20Page() {
       {/* Policies Section */}
       <section className="bg-neutral-light py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <PolicyList
-            policies={allPolicies}
-            subtitle="Ranked by average bipartisan support across recent polling data"
+          {/* Category Filter */}
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            policyCounts={policyCounts}
           />
+
+          {/* Filtered Results */}
+          {filteredPolicies.length > 0 ? (
+            <PolicyList
+              policies={filteredPolicies}
+              subtitle={
+                selectedCategory === 'all'
+                  ? 'Ranked by average bipartisan support across recent polling data'
+                  : `Showing ${filteredPolicies.length} ${selectedCategory.replace('-', ' ')} ${filteredPolicies.length === 1 ? 'policy' : 'policies'}`
+              }
+              onCategoryClick={(category) => setSelectedCategory(category as CategoryType)}
+            />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-neutral text-lg">
+                No policies found in the {selectedCategory.replace('-', ' ')} category.
+              </p>
+            </div>
+          )}
 
           {/* Bottom CTA */}
           <div className="mt-16 text-center bg-white rounded-xl shadow-md p-8 sm:p-12">

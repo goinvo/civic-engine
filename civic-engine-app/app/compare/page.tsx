@@ -18,9 +18,9 @@ export default function ComparePage() {
     setPolicyB(shuffled[1]);
   };
 
-  const handleSelect = (winner: 'A' | 'B') => {
-    // In the full version, this would record the preference
-    console.log(`User selected: ${winner === 'A' ? policyA.title : policyB.title}`);
+  const handleRate = (ratingA: number, ratingB: number) => {
+    // In the full version, this would record the ratings
+    console.log(`Ratings - Policy A: ${ratingA}, Policy B: ${ratingB}`);
   };
 
   return (
@@ -66,7 +66,7 @@ export default function ComparePage() {
           <CompareWidget
             policyA={policyA}
             policyB={policyB}
-            onSelect={handleSelect}
+            onRate={handleRate}
           />
 
           {/* How it Works */}
@@ -92,11 +92,11 @@ export default function ComparePage() {
                   <span className="text-primary font-bold text-xl">2</span>
                 </div>
                 <h3 className="font-bold text-neutral-dark mb-2">
-                  Make Your Choice
+                  Rate Your Support
                 </h3>
                 <p className="text-neutral text-sm">
-                  Select the policy you would prioritize if you could only choose
-                  one to implement first.
+                  Use the 5-point scale to indicate your level of support for
+                  each policy independently.
                 </p>
               </div>
               <div>
@@ -104,11 +104,11 @@ export default function ComparePage() {
                   <span className="text-primary font-bold text-xl">3</span>
                 </div>
                 <h3 className="font-bold text-neutral-dark mb-2">
-                  Compare More (Full Version)
+                  Submit & Compare More
                 </h3>
                 <p className="text-neutral text-sm">
-                  In the full platform, your comparisons help us rank policies
-                  based on real voter preferences.
+                  Submit your ratings and compare more policies. In the full
+                  platform, your ratings help measure public support levels.
                 </p>
               </div>
             </div>
@@ -122,9 +122,9 @@ export default function ComparePage() {
             </h3>
             <p className="text-neutral-dark text-sm">
               The full version will include verified voter accounts, allowing you
-              to participate in monthly policy rankings. Your comparisons will be
-              recorded securely and contribute to understanding what policies
-              Americans truly prioritize.
+              to rate policies monthly. Your ratings will be recorded securely
+              and aggregated to show support levels across demographics, helping
+              Americans understand where we truly find common ground.
             </p>
           </div>
         </div>
