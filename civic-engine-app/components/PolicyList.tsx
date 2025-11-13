@@ -30,14 +30,7 @@ export default function PolicyList({
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut',
-      },
-    },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
@@ -66,7 +59,11 @@ export default function PolicyList({
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
         {policies.map((policy) => (
-          <motion.div key={policy.id} variants={itemVariants}>
+          <motion.div
+            key={policy.id}
+            variants={itemVariants}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          >
             <PolicyCard policy={policy} showVoteButton={showVoteButtons} />
           </motion.div>
         ))}
