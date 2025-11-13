@@ -22,7 +22,12 @@ export default function Home() {
 
             {/* Hero Title */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              What <span className="text-accent-light">Most of Us</span> Agree On
+              What <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: 'linear-gradient(12deg, #ef4444 0%, #ffffff 100%)'
+                }}
+              >Most of Us</span> Agree On
             </h1>
 
             {/* Hero Subtitle */}
@@ -35,21 +40,21 @@ export default function Home() {
             {/* Hero Stats */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 mb-8">
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-6 h-6 text-accent-light" />
+                <CheckCircle2 className="w-6 h-6 text-red-300" />
                 <div className="text-left">
                   <div className="text-2xl font-bold">20</div>
                   <div className="text-sm text-blue-200">Consensus Policies</div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-6 h-6 text-accent-light" />
+                <CheckCircle2 className="w-6 h-6 text-red-300" />
                 <div className="text-left">
                   <div className="text-2xl font-bold">70%+</div>
                   <div className="text-sm text-blue-200">Average Support</div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-6 h-6 text-accent-light" />
+                <CheckCircle2 className="w-6 h-6 text-red-300" />
                 <div className="text-left">
                   <div className="text-2xl font-bold">2025</div>
                   <div className="text-sm text-blue-200">Latest Data</div>

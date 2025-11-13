@@ -26,7 +26,7 @@ export default function ComparePage() {
   return (
     <div className="w-full min-h-screen bg-neutral-light">
       {/* Header Section */}
-      <section className="bg-gradient-to-r from-primary via-accent to-primary-light text-white">
+      <section className="bg-gradient-to-r from-primary via-blue-600 to-blue-400 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="mb-6">
             <Link

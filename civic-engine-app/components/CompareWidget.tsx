@@ -141,12 +141,12 @@ export default function CompareWidget({ policyA, policyB, onSelect }: CompareWid
 
           {/* Badge */}
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent-light rounded-lg flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-red-200 rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             {IconB && (
               <div className="w-10 h-10 bg-neutral-light rounded-lg flex items-center justify-center">
-                <IconB className="w-5 h-5 text-accent" />
+                <IconB className="w-5 h-5 text-red-500" />
               </div>
             )}
           </div>
@@ -163,7 +163,7 @@ export default function CompareWidget({ policyA, policyB, onSelect }: CompareWid
 
           {/* Support */}
           <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
-            <div className="text-2xl font-bold text-accent">
+            <div className="text-2xl font-bold text-red-500">
               {policyB.averageSupport}%
             </div>
             <div className="text-sm text-neutral">bipartisan support</div>
@@ -178,7 +178,7 @@ export default function CompareWidget({ policyA, policyB, onSelect }: CompareWid
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="text-center bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 sm:p-8 border border-primary/20"
+            className="text-center bg-gradient-to-r from-primary/10 to-red-50 rounded-xl p-6 sm:p-8 border border-primary/20"
           >
             <h3 className="text-xl sm:text-2xl font-bold text-neutral-dark mb-3">
               You chose: {selected === 'A' ? policyA.title : policyB.title}
