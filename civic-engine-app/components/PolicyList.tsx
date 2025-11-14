@@ -39,14 +39,14 @@ export default function PolicyList({
     <section className="w-full">
       {/* Section Header */}
       {(title || subtitle) && (
-        <div className="mb-8 text-center">
+        <div className="mb-10 text-center">
           {title && (
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-dark mb-3">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-neutral-dark mb-4 tracking-tight">
               {title}
             </h2>
           )}
           {subtitle && (
-            <p className="text-neutral text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-neutral text-lg sm:text-xl max-w-2xl mx-auto font-medium">
               {subtitle}
             </p>
           )}

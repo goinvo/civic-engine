@@ -108,6 +108,21 @@ export default function CompareWidget({ policyA, policyB, onRate }: CompareWidge
             <div className="text-sm text-neutral">bipartisan support</div>
           </div>
 
+          {/* Impact Summary */}
+          {policyA.resourceFlow && (
+            <div className="pb-4 mb-4 border-b border-gray-200">
+              <p className="text-xs font-bold text-gray-500 uppercase mb-2">How it works</p>
+              <div className="flex items-center text-xs font-medium text-neutral-dark">
+                <span className="text-primary font-bold">From:</span>
+                <span className="ml-1 truncate">{policyA.resourceFlow.from}</span>
+              </div>
+              <div className="flex items-center text-xs font-medium text-neutral-dark mt-1">
+                <span className="text-primary font-bold">To:</span>
+                <span className="ml-1 truncate">{policyA.resourceFlow.to}</span>
+              </div>
+            </div>
+          )}
+
           {/* Likert Scale */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-neutral-dark mb-2">
@@ -172,6 +187,21 @@ export default function CompareWidget({ policyA, policyB, onRate }: CompareWidge
             </div>
             <div className="text-sm text-neutral">bipartisan support</div>
           </div>
+
+          {/* Impact Summary */}
+          {policyB.resourceFlow && (
+            <div className="pb-4 mb-4 border-b border-gray-200">
+              <p className="text-xs font-bold text-gray-500 uppercase mb-2">How it works</p>
+              <div className="flex items-center text-xs font-medium text-neutral-dark">
+                <span className="text-red-500 font-bold">From:</span>
+                <span className="ml-1 truncate">{policyB.resourceFlow.from}</span>
+              </div>
+              <div className="flex items-center text-xs font-medium text-neutral-dark mt-1">
+                <span className="text-red-500 font-bold">To:</span>
+                <span className="ml-1 truncate">{policyB.resourceFlow.to}</span>
+              </div>
+            </div>
+          )}
 
           {/* Likert Scale */}
           <div className="space-y-2">

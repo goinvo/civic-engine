@@ -99,26 +99,26 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
         </div>
 
         {/* Title */}
-        <h3 className="text-xl sm:text-2xl font-bold text-neutral-dark mb-3 leading-tight">
+        <h3 className="text-2xl sm:text-3xl font-black text-neutral-dark mb-3 leading-tight tracking-tight">
           {policy.title}
         </h3>
 
         {/* Description */}
-        <p className="text-neutral text-sm sm:text-base leading-relaxed mb-4">
+        <p className="text-neutral text-base sm:text-lg leading-relaxed mb-4 font-medium">
           {policy.description}
         </p>
 
         {/* Support Percentage and Trending */}
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
-              <ThumbsUp className="w-4 h-4 text-primary" />
+        <div className="flex items-center justify-between mb-4 pb-4 border-b-2 border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
+              <ThumbsUp className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-primary">
+              <p className="text-3xl font-black text-primary tracking-tight">
                 {policy.averageSupport}%
               </p>
-              <p className="text-xs text-neutral">Average Support</p>
+              <p className="text-sm text-neutral font-medium">Average Support</p>
             </div>
           </div>
 
@@ -150,7 +150,7 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
           {/* Expand/Collapse Button */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center justify-center space-x-2 px-4 py-3 bg-neutral-light hover:bg-gray-200 text-neutral-dark rounded-lg transition-colors font-medium flex-1"
+            className="flex items-center justify-center space-x-2 px-5 py-3.5 bg-neutral-light hover:bg-gray-200 text-neutral-dark rounded-lg transition-all hover:scale-[1.02] font-bold flex-1"
             aria-expanded={isExpanded}
             aria-label={isExpanded ? 'Hide details' : 'Show more details'}
           >
@@ -167,7 +167,7 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
           {showVoteButton && (
             <button
               disabled
-              className="px-4 py-3 bg-gray-100 text-gray-400 rounded-lg font-medium cursor-not-allowed flex-1 sm:flex-initial"
+              className="px-5 py-3.5 bg-gray-100 text-gray-400 rounded-lg font-bold cursor-not-allowed flex-1 sm:flex-initial"
               title="Login required to vote"
             >
               Vote
@@ -241,8 +241,8 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
               )}
 
               {/* Policy Details */}
-              <div className="mb-4">
-                <h4 className="font-bold text-neutral-dark mb-3 flex items-center space-x-2">
+              <div className="mb-6">
+                <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
                   <span className="w-1 h-5 bg-primary rounded-full"></span>
                   <span>Key Details</span>
                 </h4>
@@ -255,10 +255,10 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-neutral-dark text-sm">
+                        <p className="font-bold text-neutral-dark text-sm">
                           {detail.title}
                         </p>
-                        <p className="text-neutral text-sm mt-1">
+                        <p className="text-neutral text-sm mt-1 font-medium">
                           {detail.description}
                         </p>
                       </div>
@@ -266,6 +266,102 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
                   ))}
                 </ul>
               </div>
+
+              {/* Impact Section - Resource Flow */}
+              {policy.resourceFlow && (
+                <div className="mb-6 pb-6 border-b-2 border-gray-200">
+                  <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
+                    <span className="w-1 h-5 bg-primary rounded-full"></span>
+                    <span>How It Works</span>
+                  </h4>
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <p className="text-xs font-bold text-blue-700 uppercase mb-1">From</p>
+                        <p className="text-sm font-bold text-neutral-dark">{policy.resourceFlow.from}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-blue-700 uppercase mb-1">To</p>
+                        <p className="text-sm font-bold text-neutral-dark">{policy.resourceFlow.to}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-blue-700 uppercase mb-1">How</p>
+                        <p className="text-sm font-bold text-neutral-dark">{policy.resourceFlow.channel}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Impact Section - If-Then */}
+              {policy.ifThen && policy.ifThen.length > 0 && (
+                <div className="mb-6 pb-6 border-b-2 border-gray-200">
+                  <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
+                    <span className="w-1 h-5 bg-primary rounded-full"></span>
+                    <span>In Practice</span>
+                  </h4>
+                  <ul className="space-y-2">
+                    {policy.ifThen.map((statement, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <span className="text-primary font-bold mt-0.5">→</span>
+                        <p className="text-sm font-medium text-neutral-dark">{statement}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Impact Section - Causal Chain */}
+              {policy.causalChain && (
+                <div className="mb-6 pb-6 border-b-2 border-gray-200">
+                  <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
+                    <span className="w-1 h-5 bg-primary rounded-full"></span>
+                    <span>Policy Goal</span>
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                        <span className="text-green-700 font-bold text-xs">1</span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-green-700 uppercase mb-1">Immediate Action</p>
+                        <p className="text-sm font-bold text-neutral-dark">{policy.causalChain.immediate}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                        <span className="text-green-700 font-bold text-xs">2</span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-green-700 uppercase mb-1">Intended Outcome</p>
+                        <p className="text-sm font-bold text-neutral-dark">{policy.causalChain.outcome}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Questions & Clarifications */}
+              {policy.commonQuestions && policy.commonQuestions.length > 0 && (
+                <div className="mb-6 pb-6 border-b-2 border-gray-200">
+                  <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
+                    <span className="w-1 h-5 bg-primary rounded-full"></span>
+                    <span>Common Questions</span>
+                  </h4>
+                  <div className="space-y-4">
+                    {policy.commonQuestions.map((qa, index) => (
+                      <div key={index} className="bg-gray-50 rounded-lg p-4">
+                        <p className="font-black text-neutral-dark text-sm mb-2">
+                          {qa.question}
+                        </p>
+                        <p className="text-sm font-medium text-neutral">
+                          {qa.answer}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Sources */}
               <div className="pt-4 border-t border-gray-200">

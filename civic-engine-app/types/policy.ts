@@ -45,6 +45,31 @@ export interface PolicyDetail {
 }
 
 /**
+ * Resource flow - shows who pays, who benefits, and how
+ */
+export interface ResourceFlow {
+  from: string;   // e.g. "Federal income taxes", "Employers", "Landlords"
+  to: string;     // e.g. "Working families", "Renters", "Small businesses"
+  channel: string; // e.g. "Tax credit", "Regulation", "Direct subsidy"
+}
+
+/**
+ * Causal chain - shows the policy's logic
+ */
+export interface CausalChain {
+  immediate: string; // What the policy does
+  outcome: string;   // What it's meant to achieve
+}
+
+/**
+ * Common questions and answers about the policy
+ */
+export interface CommonQuestion {
+  question: string;
+  answer: string;
+}
+
+/**
  * Main Policy interface
  */
 export interface Policy {
@@ -58,6 +83,12 @@ export interface Policy {
 
   // Expandable details
   details: PolicyDetail[];
+
+  // Impact structure - how the policy works
+  resourceFlow?: ResourceFlow; // Who pays, who benefits, how it flows
+  ifThen?: string[]; // Practical examples: "If X, then Y"
+  causalChain?: CausalChain; // The policy's logic: immediate action → outcome
+  commonQuestions?: CommonQuestion[]; // FAQ about the policy
 
   // Sources and support data
   sources: PolicySource[];

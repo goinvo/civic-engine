@@ -1,161 +1,103 @@
-'use client';
-
-import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, TrendingUp } from 'lucide-react';
-import PolicyList from '@/components/PolicyList';
-import CategoryFilter, { CategoryType } from '@/components/CategoryFilter';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
+import PolicyListItem from '@/components/PolicyListItem';
 import { getTopPolicies } from '@/data/policies';
 
 export default function Top20Page() {
   const allPolicies = getTopPolicies(20);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
-
-  // Filter policies by category
-  const filteredPolicies = useMemo(() => {
-    if (selectedCategory === 'all') {
-      return allPolicies;
-    }
-    return allPolicies.filter(policy => policy.category === selectedCategory);
-  }, [allPolicies, selectedCategory]);
-
-  // Count policies per category
-  const policyCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: allPolicies.length };
-    allPolicies.forEach(policy => {
-      counts[policy.category] = (counts[policy.category] || 0) + 1;
-    });
-    return counts;
-  }, [allPolicies]);
 
   return (
-    <div className="w-full">
-      {/* Header Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-light text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center space-x-2 text-blue-100 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Home</span>
-            </Link>
-          </div>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      {/* Back Link */}
+      <div className="mb-8">
+        <Link
+          href="/"
+          className="inline-flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-bold"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Top 10</span>
+        </Link>
+      </div>
 
-          <div className="flex items-start space-x-4 mb-6">
-            <div className="flex-shrink-0 w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <TrendingUp className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-4xl sm:text-5xl font-bold mb-3">
-                All Policies ({allPolicies.length})
-              </h1>
-              <p className="text-lg sm:text-xl text-blue-100 max-w-3xl">
-                All {allPolicies.length} policies with the highest bipartisan support in America.
-                Each has been validated by major polling organizations and has
-                majority support across party lines.
-              </p>
-            </div>
-          </div>
+      {/* Header - Left Aligned */}
+      <section className="mb-16">
+        <h1 className="font-display text-6xl sm:text-7xl font-black text-black mb-6 leading-tight">
+          All {allPolicies.length} Policies
+        </h1>
+        <p className="font-body text-xl text-gray-700 font-medium max-w-3xl mb-10">
+          Every policy shown has majority support from Democrats, Republicans, and Independents. These are the issues that unite Americans across party lines.
+        </p>
 
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-2xl font-bold">{allPolicies.length}</div>
-              <div className="text-sm text-blue-100">Total Policies</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-2xl font-bold">76%</div>
-              <div className="text-sm text-blue-100">Avg Support</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-2xl font-bold">55%+</div>
-              <div className="text-sm text-blue-100">Min Bipartisan</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-2xl font-bold">2025</div>
-              <div className="text-sm text-blue-100">Latest Data</div>
-            </div>
+        {/* Stats - Neobrutalist Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-yellow-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-black">{allPolicies.length}</div>
+            <div className="text-sm font-body text-black font-bold">Total Policies</div>
+          </div>
+          <div className="bg-blue-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-black">76%</div>
+            <div className="text-sm font-body text-black font-bold">Avg Support</div>
+          </div>
+          <div className="bg-green-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-black">55%+</div>
+            <div className="text-sm font-body text-black font-bold">Min Bipartisan</div>
+          </div>
+          <div className="bg-pink-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-black">2025</div>
+            <div className="text-sm font-body text-black font-bold">Latest Data</div>
           </div>
         </div>
       </section>
 
-      {/* Policies Section */}
-      <section className="bg-neutral-light py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Filter */}
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            policyCounts={policyCounts}
-          />
-
-          {/* Filtered Results */}
-          {filteredPolicies.length > 0 ? (
-            <PolicyList
-              policies={filteredPolicies}
-              subtitle={
-                selectedCategory === 'all'
-                  ? 'Ranked by average bipartisan support across recent polling data'
-                  : `Showing ${filteredPolicies.length} ${selectedCategory.replace('-', ' ')} ${filteredPolicies.length === 1 ? 'policy' : 'policies'}`
-              }
-              onCategoryClick={(category) => setSelectedCategory(category as CategoryType)}
-            />
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-neutral text-lg">
-                No policies found in the {selectedCategory.replace('-', ' ')} category.
-              </p>
-            </div>
-          )}
-
-          {/* Bottom CTA */}
-          <div className="mt-16 text-center bg-white rounded-xl shadow-md p-8 sm:p-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-neutral-dark mb-4">
-              Want to Compare Policies?
-            </h2>
-            <p className="text-neutral mb-6 max-w-2xl mx-auto">
-              Use our comparison tool to see how different policies stack up
-              against each other and understand the nuances between them.
-            </p>
-            <Link
-              href="/compare"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium shadow-md hover:shadow-lg"
-            >
-              <span>Compare Policies</span>
-              <ArrowLeft className="w-5 h-5 rotate-180" />
-            </Link>
-          </div>
+      {/* All Policies List */}
+      <section className="mb-16">
+        <h2 className="font-display text-4xl font-black text-black mb-4">Complete List</h2>
+        <p className="font-body text-gray-700 font-medium mb-8">
+          Ranked by average bipartisan support across recent polling data.
+        </p>
+        <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          {allPolicies.map((policy) => (
+            <PolicyListItem key={policy.id} policy={policy} />
+          ))}
         </div>
       </section>
 
-      {/* Categories Overview */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-neutral-dark mb-8 text-center">
-            Policy Categories
+      {/* Compare CTA - Neobrutalist Card */}
+      <section className="mb-16">
+        <div className="bg-purple-300 border-4 border-black p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-black mb-4">
+            Want to Compare Policies?
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {[
-              { name: 'Healthcare', count: 3, color: 'bg-red-100 text-red-700' },
-              { name: 'Governance', count: 5, color: 'bg-indigo-100 text-indigo-700' },
-              { name: 'Environment', count: 4, color: 'bg-emerald-100 text-emerald-700' },
-              { name: 'Justice', count: 2, color: 'bg-purple-100 text-purple-700' },
-              { name: 'Education', count: 2, color: 'bg-blue-100 text-blue-700' },
-              { name: 'Economy', count: 1, color: 'bg-green-100 text-green-700' },
-              { name: 'Infrastructure', count: 2, color: 'bg-orange-100 text-orange-700' },
-            ].map((category) => (
-              <div
-                key={category.name}
-                className={`${category.color} rounded-lg p-4 text-center`}
-              >
-                <div className="text-2xl font-bold">{category.count}</div>
-                <div className="text-sm font-medium">{category.name}</div>
-              </div>
-            ))}
-          </div>
+          <p className="font-body text-black font-medium mb-6 max-w-2xl">
+            Use our comparison tool to see how different policies stack up against each other and understand the nuances between them.
+          </p>
+          <Link
+            href="/compare"
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          >
+            <span>Compare Policies</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
+      </section>
+
+      {/* Data Source Info */}
+      <section className="mb-16">
+        <h2 className="font-display text-4xl font-black text-black mb-6">
+          Data You Can Trust
+        </h2>
+        <p className="font-body text-gray-700 font-medium max-w-3xl mb-6">
+          All policy data comes from reputable, non-partisan polling organizations including YouGov, Pew Research Center, and the Associated Press-NORC. Each policy shown has documented support of at least 55% from Democrats, Republicans, and Independents.
+        </p>
+        <a
+          href="https://americans-agree.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-bold underline"
+        >
+          <span>Explore the Data Source</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
       </section>
     </div>
   );
