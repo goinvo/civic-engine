@@ -58,7 +58,7 @@ export default function Navbar() {
             {/* Login Button */}
             <button
               onClick={() => setLoginModalOpen(true)}
-              className="flex items-center space-x-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 px-4 py-2 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity text-sm font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
               aria-label="Login"
             >
               <User className="w-4 h-4" />
@@ -69,7 +69,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-neutral-light transition-colors"
+            className="md:hidden p-2 hover:bg-neutral-light transition-colors border-2 border-black"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (

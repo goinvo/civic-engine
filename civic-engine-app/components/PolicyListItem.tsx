@@ -24,8 +24,8 @@ export default function PolicyListItem({ policy, isActive = false }: PolicyListI
         onClick={() => setIsExpanded(!isExpanded)}
         className={`
           flex items-center justify-between py-4 px-6
-          hover:bg-yellow-100 transition-colors cursor-pointer
-          ${isExpanded ? 'bg-yellow-100' : ''}
+          hover:bg-gray-100 transition-colors cursor-pointer
+          ${isExpanded ? 'bg-gray-100' : ''}
         `}
       >
         <div className="flex items-center space-x-3 flex-1">
@@ -64,21 +64,21 @@ export default function PolicyListItem({ policy, isActive = false }: PolicyListI
 
               {/* Support Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div className="bg-yellow-300 border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                   <div className="text-3xl font-display font-black text-black">{policy.averageSupport}%</div>
                   <div className="text-xs font-body text-black font-bold">Avg Support</div>
                 </div>
                 {policy.partySupport && (
                   <>
-                    <div className="bg-blue-300 border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <div className="text-2xl font-display font-black text-black">{policy.partySupport.democrats}%</div>
-                      <div className="text-xs font-body text-black font-bold">Democrats</div>
+                    <div className="bg-[#2F3BBD] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <div className="text-2xl font-display font-black text-white">{policy.partySupport.democrats}%</div>
+                      <div className="text-xs font-body text-white font-bold">Democrats</div>
                     </div>
-                    <div className="bg-red-300 border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <div className="text-2xl font-display font-black text-black">{policy.partySupport.republicans}%</div>
-                      <div className="text-xs font-body text-black font-bold">Republicans</div>
+                    <div className="bg-[#C91A2B] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <div className="text-2xl font-display font-black text-white">{policy.partySupport.republicans}%</div>
+                      <div className="text-xs font-body text-white font-bold">Republicans</div>
                     </div>
-                    <div className="bg-green-300 border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                       <div className="text-2xl font-display font-black text-black">{policy.partySupport.independents}%</div>
                       <div className="text-xs font-body text-black font-bold">Independents</div>
                     </div>
@@ -103,7 +103,7 @@ export default function PolicyListItem({ policy, isActive = false }: PolicyListI
               {policy.resourceFlow && (
                 <div className="mb-6">
                   <h3 className="font-display text-xl font-black text-black mb-3">How It Works</h3>
-                  <div className="bg-blue-200 border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="bg-[#AFC5F5] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <div className="text-xs font-display font-black text-black uppercase mb-1">From</div>
@@ -141,7 +141,7 @@ export default function PolicyListItem({ policy, isActive = false }: PolicyListI
               {policy.causalChain && (
                 <div className="mb-6">
                   <h3 className="font-display text-xl font-black text-black mb-3">Policy Goal</h3>
-                  <div className="bg-green-200 border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="bg-[#FEB0B4] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div className="space-y-3">
                       <div>
                         <div className="text-xs font-display font-black text-black uppercase mb-1">Immediate Action</div>

@@ -1,0 +1,603 @@
+'use client';
+
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { Policy } from '@/types/policy';
+
+interface ScrollPolicyListProps {
+  policies: Policy[];
+}
+
+export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [isAtBottom, setIsAtBottom] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [transitionProgress, setTransitionProgress] = useState<number>(0);
+  const [maxWindowHeight, setMaxWindowHeight] = useState<string>('calc(100vh - 8rem)');
+  const [isAtTop, setIsAtTop] = useState<boolean>(true);
+
+  // NEW: State to track if we are mid-fade
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollSectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const policyWindowRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const desktopButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const desktopHeaderRef = useRef<HTMLHeadingElement>(null);
+  const [buttonPositions, setButtonPositions] = useState<{ top: number; height: number }[]>([]);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
+  const lastScrollYRef = useRef<number>(0);
+  const scrollDirectionRef = useRef<'UP' | 'DOWN'>('DOWN');
+
+  // --- RESIZE & LAYOUT LOGIC (Standard) ---
+  useEffect(() => {
+    const calculateHeight = () => {
+      const viewportHeight = window.innerHeight;
+      const isMobile = window.innerWidth < 1024;
+      const reservedSpace = isMobile ? 272 : 216;
+      const calculatedHeight = viewportHeight - reservedSpace;
+      setMaxWindowHeight(`${calculatedHeight}px`);
+    };
+    calculateHeight();
+    window.addEventListener('resize', calculateHeight);
+    return () => window.removeEventListener('resize', calculateHeight);
+  }, []);
+
+  useEffect(() => {
+    const measurePositions = () => {
+      if (desktopHeaderRef.current) {
+        const headerRect = desktopHeaderRef.current.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(desktopHeaderRef.current);
+        const marginBottom = parseFloat(computedStyle.marginBottom);
+        setHeaderHeight(headerRect.height + marginBottom);
+      }
+      const positions = desktopButtonRefs.current.map((button) => {
+        if (!button) return { top: 0, height: 0 };
+        const rect = button.getBoundingClientRect();
+        const parent = button.offsetParent;
+        if (!parent) return { top: 0, height: 0 };
+        const top = button.offsetTop;
+        const height = rect.height;
+        return { top, height };
+      });
+      setButtonPositions(positions);
+    };
+    const timer = setTimeout(measurePositions, 100);
+    window.addEventListener('resize', measurePositions);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', measurePositions);
+    };
+  }, [policies]);
+
+  // --- OBSERVERS (Standard) ---
+  useEffect(() => {
+    const observers = scrollSectionRefs.current.map((ref, index) => {
+      if (!ref) return null;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+              setActiveIndex(index);
+            }
+          });
+        },
+        { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], rootMargin: '0px 0px -40% 0px' }
+      );
+      observer.observe(ref);
+      return observer;
+    });
+    return () => observers.forEach((observer) => observer?.disconnect());
+  }, [policies]);
+
+  // --- INTERNAL SCROLL TRACKING (Standard) ---
+  useEffect(() => {
+    const contentElement = contentRef.current;
+    if (!contentElement) return;
+    const handleContentScroll = () => {
+      const maxScroll = contentElement.scrollHeight - contentElement.clientHeight;
+      const atBottom = contentElement.scrollTop >= maxScroll - 10;
+      const atTop = contentElement.scrollTop <= 10;
+      setIsAtBottom(atBottom);
+      setIsAtTop(atTop);
+    };
+    contentElement.addEventListener('scroll', handleContentScroll, { passive: true });
+    return () => contentElement.removeEventListener('scroll', handleContentScroll);
+  }, []);
+
+  // --- MAIN SCROLL LOGIC ---
+  useEffect(() => {
+    const handlePageScroll = () => {
+      const isMobile = window.innerWidth < 1024;
+      const currentSection = scrollSectionRefs.current[activeIndex];
+      const policyWindow = policyWindowRef.current;
+
+      const scrollY = window.scrollY;
+      const scrollDirection = scrollY > lastScrollYRef.current ? 'DOWN' :
+        scrollY < lastScrollYRef.current ? 'UP' :
+          scrollDirectionRef.current;
+
+      if (scrollY !== lastScrollYRef.current) {
+        scrollDirectionRef.current = scrollDirection;
+      }
+      lastScrollYRef.current = scrollY;
+
+      if (!currentSection || !contentRef.current || !policyWindow) return;
+
+      const sectionRect = currentSection.getBoundingClientRect();
+      const windowRect = policyWindow.getBoundingClientRect();
+      const sectionHeight = currentSection.offsetHeight;
+      const windowTop = windowRect.top;
+      const relativeScroll = windowTop - sectionRect.top;
+      const rawProgress = sectionHeight > 0 ? relativeScroll / sectionHeight : 0;
+      const progress = Math.max(0, Math.min(1, rawProgress));
+
+      setScrollProgress(progress);
+
+      // --- FIX START ---
+      if (!isMobile) {
+        // If we are currently fading between pages, DO NOT touch the scroll position.
+        // This prevents the "Jump" on the exiting component.
+        if (!isTransitioning) {
+          const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
+          const targetScroll = progress * maxScroll;
+          contentRef.current.scrollTop = targetScroll;
+
+          const atBottom = targetScroll >= maxScroll - 10;
+          const atTop = targetScroll <= 10;
+          setIsAtBottom(atBottom);
+          setIsAtTop(atTop);
+        }
+      }
+      // --- FIX END ---
+
+      // Mobile Logic (Standard)
+      if (isMobile && isAtBottom && activeIndex < policies.length - 1) {
+        const deadZoneProgress = Math.max(0, Math.min(1, (progress - 0.7) / 0.3));
+        setTransitionProgress(deadZoneProgress);
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => setTransitionProgress(0), 150);
+      } else if (isMobile) {
+        setTransitionProgress(0);
+      }
+    };
+
+    window.addEventListener('scroll', handlePageScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handlePageScroll);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, [activeIndex, policies.length, isAtBottom, isTransitioning]); // Added isTransitioning dependency
+
+  const scrollToPolicy = (index: number) => {
+    scrollSectionRefs.current[index]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Mobile Nav (Unchanged) */}
+      <div className="lg:hidden sticky top-20 z-30 mb-4">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="w-full bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between overflow-hidden relative"
+        >
+          <div className="flex items-center space-x-2 relative">
+            {/* (Truncated for brevity - same as before) */}
+            {policies.map((policy, index) => {
+              if (index !== activeIndex && index !== activeIndex + 1) return null;
+              const isCurrent = index === activeIndex;
+              const isNext = index === activeIndex + 1;
+              const yOffset = isCurrent ? -transitionProgress * 100 : isNext ? (1 - transitionProgress) * 100 : 0;
+              return (
+                <motion.span
+                  key={policy.id}
+                  className="font-display font-black text-sm text-black absolute left-0"
+                  animate={{
+                    y: `${yOffset}%`,
+                    opacity: isCurrent ? 1 - transitionProgress : transitionProgress,
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                >
+                  {policy.rank}. {policy.title}
+                </motion.span>
+              );
+            })}
+          </div>
+          <motion.div animate={{ rotate: isMobileMenuOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
+            <svg className="w-5 h-5 text-black" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </motion.div>
+        </button>
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden bg-white border-4 border-t-0 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -mt-1"
+            >
+              <div className="p-2 space-y-2 max-h-[60vh] overflow-y-auto">
+                {policies.map((policy, index) => (
+                  <button
+                    key={policy.id}
+                    onClick={() => {
+                      scrollToPolicy(index);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white hover:bg-gray-100'}`}
+                  >
+                    {policy.rank}. {policy.title}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Desktop Sidebar (Unchanged) */}
+      <div className="hidden lg:block w-64 flex-shrink-0">
+        <div className="sticky top-24 bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+          <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black">Policies</h3>
+          {(() => {
+            const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
+            const rectTop = shouldRender ? buttonPositions[activeIndex].top + buttonPositions[0].height : 0;
+            const rectHeight = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
+              ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
+              : shouldRender ? buttonPositions[activeIndex].height : 0;
+
+            return shouldRender ? (
+              <motion.div
+                className="absolute left-4 right-4 bg-[#C91A2B] pointer-events-none z-0"
+                initial={false}
+                animate={{ top: rectTop, height: rectHeight }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            ) : null;
+          })()}
+          <div className="space-y-2 relative z-10">
+            {policies.map((policy, index) => (
+              <button
+                key={policy.id}
+                ref={(el) => { desktopButtonRefs.current[index] = el; }}
+                onClick={() => scrollToPolicy(index)}
+                className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'text-white' : 'text-black'}`}
+              >
+                {policy.rank}. {policy.title}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Container */}
+      <div className="flex-1 relative pb-32" ref={containerRef}>
+        <div ref={policyWindowRef} className="sticky top-[180px] lg:top-24 z-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              // --- FIX START ---
+              // Freeze scroll syncing while this animation plays
+              onAnimationStart={() => setIsTransitioning(true)}
+              onAnimationComplete={() => setIsTransitioning(false)}
+              // --- FIX END ---
+              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+              className="relative"
+            >
+              <PolicyWindow
+                policy={policies[activeIndex]}
+                contentRef={contentRef}
+                isAtBottom={isAtBottom}
+                isAtTop={isAtTop}
+                hasNext={activeIndex < policies.length - 1}
+                hasPrevious={activeIndex > 0}
+                maxHeight={maxWindowHeight}
+                entryDirection={scrollDirectionRef.current}
+              />
+
+              {/* Next Policy Preview (Unchanged) */}
+              <AnimatePresence>
+                {transitionProgress > 0 && activeIndex < policies.length - 1 && (
+                  <motion.div
+                    className="absolute top-full left-0 right-0 lg:hidden mt-4"
+                    initial={{ y: 40, opacity: 0 }}
+                    animate={{ y: 40 - transitionProgress * 60, opacity: transitionProgress }}
+                    exit={{ y: 40, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  >
+                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
+                      <h2 className="font-display font-black text-2xl text-black mb-2">
+                        {policies[activeIndex + 1].rank}. {policies[activeIndex + 1].title}
+                      </h2>
+                      <p className="font-body text-sm text-gray-600 font-medium">
+                        {policies[activeIndex + 1].averageSupport}% bipartisan support
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Invisible Scroll Sections */}
+        <div className="relative -mt-[80vh]">
+          {policies.map((_, index) => (
+            <div
+              key={index}
+              ref={(el) => { scrollSectionRefs.current[index] = el; }}
+              className="h-[60vh] lg:h-[80vh]"
+              style={{ pointerEvents: 'none' }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PolicyWindow({
+  policy,
+  contentRef,
+  isAtBottom,
+  isAtTop,
+  hasNext,
+  hasPrevious,
+  maxHeight,
+  entryDirection,
+}: {
+  policy: Policy;
+  contentRef: React.RefObject<HTMLDivElement | null>;
+  isAtBottom: boolean;
+  isAtTop: boolean;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  maxHeight: string;
+  entryDirection: 'UP' | 'DOWN';
+}) {
+  const localRef = useRef<HTMLDivElement | null>(null);
+
+  const setRefs = (element: HTMLDivElement | null) => {
+    localRef.current = element;
+    // We only update the parent ref if this is the *entering* component
+    // This prevents the exiting component from hijacking the ref during unmount
+    if (element && contentRef) {
+      (contentRef as React.MutableRefObject<HTMLDivElement | null>).current = element;
+    }
+  };
+
+  // This ensures the NEW component starts at the correct position
+  useLayoutEffect(() => {
+    const el = localRef.current;
+    if (!el) return;
+
+    if (entryDirection === 'UP') {
+      el.scrollTop = el.scrollHeight;
+    } else {
+      el.scrollTop = 0;
+    }
+  }, [policy.id, entryDirection]);
+
+  useEffect(() => {
+    const contentElement = localRef.current;
+    if (!contentElement) return;
+
+    const preventScrollPropagation = (e: TouchEvent) => {
+      const element = contentElement;
+      const scrollTop = element.scrollTop;
+      const scrollHeight = element.scrollHeight;
+      const height = element.clientHeight;
+
+      if (scrollTop > 0 && scrollTop < scrollHeight - height) {
+        e.stopPropagation();
+      }
+    };
+
+    contentElement.addEventListener('touchmove', preventScrollPropagation, { passive: true });
+    return () => contentElement.removeEventListener('touchmove', preventScrollPropagation);
+  }, []);
+
+  return (
+    <div className="relative">
+      <div
+        ref={setRefs}
+        className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-y-auto lg:overflow-hidden overscroll-contain"
+        style={{ maxHeight }}
+      >
+        <div className="px-6 pt-12 pb-6">
+          {/* Header */}
+          <div className="mb-6">
+            <h2 className="font-display font-black text-3xl text-black mb-2">
+              {policy.rank}. {policy.title}
+            </h2>
+          </div>
+
+          {/* Policy Description */}
+          <p className="font-body text-lg text-gray-700 font-medium mb-6">
+            {policy.description}
+          </p>
+
+          {/* Support Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="text-3xl font-display font-black text-black">{policy.averageSupport}%</div>
+              <div className="text-xs font-body text-black font-bold">Avg Support</div>
+            </div>
+            {policy.partySupport && (
+              <>
+                <div className="bg-[#2F3BBD] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="text-2xl font-display font-black text-white">{policy.partySupport.democrats}%</div>
+                  <div className="text-xs font-body text-white font-bold">Democrats</div>
+                </div>
+                <div className="bg-[#C91A2B] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="text-2xl font-display font-black text-white">{policy.partySupport.republicans}%</div>
+                  <div className="text-xs font-body text-white font-bold">Republicans</div>
+                </div>
+                <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="text-2xl font-display font-black text-black">{policy.partySupport.independents}%</div>
+                  <div className="text-xs font-body text-black font-bold">Independents</div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Key Details */}
+          <div className="mb-6">
+            <h3 className="font-display text-xl font-black text-black mb-3">Key Details</h3>
+            <ul className="space-y-3">
+              {policy.details.map((detail, index) => (
+                <li key={index}>
+                  <h4 className="font-display font-black text-black mb-1">{detail.title}</h4>
+                  <p className="font-body text-gray-700 font-medium">{detail.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* How It Works */}
+          {policy.resourceFlow && (
+            <div className="mb-6">
+              <h3 className="font-display text-xl font-black text-black mb-3">How It Works</h3>
+              <div className="bg-[#AFC5F5] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <div className="text-xs font-display font-black text-black uppercase mb-1">From</div>
+                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.from}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-display font-black text-black uppercase mb-1">To</div>
+                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.to}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-display font-black text-black uppercase mb-1">How</div>
+                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.channel}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* In Practice */}
+          {policy.ifThen && policy.ifThen.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-display text-xl font-black text-black mb-3">In Practice</h3>
+              <ul className="space-y-2">
+                {policy.ifThen.map((statement, index) => (
+                  <li key={index} className="flex items-start space-x-2">
+                    <span className="font-display text-black font-bold mt-0.5">→</span>
+                    <p className="font-body font-medium text-gray-700 text-sm">{statement}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Policy Goal */}
+          {policy.causalChain && (
+            <div className="mb-6">
+              <h3 className="font-display text-xl font-black text-black mb-3">Policy Goal</h3>
+              <div className="bg-[#FEB0B4] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xs font-display font-black text-black uppercase mb-1">Immediate Action</div>
+                    <p className="font-body font-bold text-black text-sm">{policy.causalChain.immediate}</p>
+                  </div>
+                  <div>
+                    <div className="text-xs font-display font-black text-black uppercase mb-1">Intended Outcome</div>
+                    <p className="font-body font-bold text-black text-sm">{policy.causalChain.outcome}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Common Questions */}
+          {policy.commonQuestions && policy.commonQuestions.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-display text-xl font-black text-black mb-3">Common Questions</h3>
+              <div className="space-y-4">
+                {policy.commonQuestions.map((qa, index) => (
+                  <div key={index}>
+                    <h4 className="font-display font-black text-black mb-1 text-sm">{qa.question}</h4>
+                    <p className="font-body font-medium text-gray-700 text-sm">{qa.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Data Sources */}
+          <div className="mb-4">
+            <h3 className="font-display text-xl font-black text-black mb-3">Data Sources</h3>
+            <ul className="space-y-2">
+              {policy.sources.map((source, index) => (
+                <li key={index}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-medium group text-sm"
+                  >
+                    <ArrowUpRight className="w-4 h-4" />
+                    <span className="group-hover:underline">
+                      {source.organization} ({source.year})
+                      {source.supportPercentage && ` - ${source.supportPercentage}% support`}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Last Updated */}
+          <div className="text-xs text-gray-600">
+            Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isAtBottom && hasNext && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-[calc(100%+20px)] left-1/2 transform -translate-x-1/2 flex flex-col items-center pointer-events-none z-20"
+          >
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex flex-col items-center"
+            >
+              <span className="font-display font-bold text-sm text-gray-600 mb-2">
+                Continue scrolling for next policy
+              </span>
+              <div className="w-10 h-10 border-3 border-black bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                <svg className="w-5 h-5 text-white" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

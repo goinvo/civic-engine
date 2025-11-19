@@ -1,96 +1,137 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import PolicyListItem from '@/components/PolicyListItem';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import ScrollPolicyList from '@/components/ScrollPolicyList';
 import { getTopPolicies } from '@/data/policies';
 
 export default function Home() {
   const topTenPolicies = getTopPolicies(10);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    // Calculate navbar height
+    const navbar = document.querySelector('nav');
+    if (navbar) {
+      setNavbarHeight(navbar.offsetHeight);
+    }
+  }, []);
+
+  const scrollToPolicies = () => {
+    const policiesSection = document.getElementById('policies-section');
+    policiesSection?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      {/* Hero Section - Left Aligned */}
-      <section className="mb-16">
-        <h1 className="font-display text-6xl sm:text-7xl font-black text-black mb-6 leading-tight">
-          What Most of Us Agree On
-        </h1>
-        <p className="font-body text-xl text-gray-700 font-medium max-w-3xl mb-10">
-          Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
-        </p>
+    <>
+      {/* Full-Height Hero Section */}
+      <section
+        className="flex items-center justify-center relative px-6"
+        style={{
+          minHeight: `calc(100vh - ${navbarHeight}px)`,
+          paddingBottom: '80px' // Extra space for scroll indicator
+        }}
+      >
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="font-display text-7xl sm:text-8xl md:text-9xl font-black text-black mb-8 leading-tight">
+            What Most of Us<br />Agree On
+          </h1>
+          <p className="font-body text-2xl text-gray-700 font-medium max-w-3xl mx-auto mb-12">
+            Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
+          </p>
 
-        {/* Stats - Neobrutalist Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-yellow-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="text-5xl font-display font-black text-black">20</div>
-            <div className="text-sm font-body text-black font-bold">Consensus Policies</div>
+          {/* Stats - Neobrutalist Cards - Patriotic Colors */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+            <div className="bg-[#C91A2B] border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="text-6xl font-display font-black text-white">20</div>
+              <div className="text-base font-body text-white font-bold">Consensus Policies</div>
+            </div>
+            <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="text-6xl font-display font-black text-black">70%+</div>
+              <div className="text-base font-body text-black font-bold">Average Support</div>
+            </div>
+            <div className="bg-[#2F3BBD] border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="text-6xl font-display font-black text-white">2025</div>
+              <div className="text-base font-body text-white font-bold">Latest Data</div>
+            </div>
           </div>
-          <div className="bg-blue-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="text-5xl font-display font-black text-black">70%+</div>
-            <div className="text-sm font-body text-black font-bold">Average Support</div>
-          </div>
-          <div className="bg-pink-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="text-5xl font-display font-black text-black">2025</div>
-            <div className="text-sm font-body text-black font-bold">Latest Data</div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Link
+              href="/top20"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+            >
+              <span>View All 20 Policies</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/compare"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-white border-4 border-black text-black hover:bg-gray-100 transition-colors font-bold shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+            >
+              <span>Compare Policies</span>
+            </Link>
           </div>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/top20"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-bold"
-          >
-            <span>View All 20 Policies</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/compare"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-white border-2 border-black text-black rounded-lg hover:bg-gray-100 transition-colors font-bold"
-          >
-            <span>Compare Policies</span>
-          </Link>
-        </div>
+        {/* Animated Scroll Indicator */}
+        <motion.button
+          onClick={scrollToPolicies}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer group"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <span className="font-display font-bold text-sm text-gray-600 mb-2 group-hover:text-black transition-colors">
+            Scroll to explore
+          </span>
+          <div className="w-12 h-12 border-4 border-black bg-[#C91A2B] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:opacity-90 transition-opacity">
+            <ChevronDown className="w-6 h-6 text-white" strokeWidth={3} />
+          </div>
+        </motion.button>
       </section>
 
-      {/* Top 10 Policies - Simple List */}
-      <section className="mb-16">
-        <h2 className="font-display text-4xl font-black text-black mb-4">Top 10 Policies</h2>
-        <p className="font-body text-gray-700 font-medium mb-8">
-          These are the most widely supported policy proposals across America, based on recent polling data.
-        </p>
-        <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          {topTenPolicies.map((policy) => (
-            <PolicyListItem key={policy.id} policy={policy} />
-          ))}
+      {/* Policies Section with Scroll */}
+      <section id="policies-section" className="max-w-7xl mx-auto px-6 py-16">
+        <div className="text-center mb-16">
+          <h2 className="font-display text-5xl font-black text-black mb-4">Top 10 Policies</h2>
+          <p className="font-body text-xl text-gray-700 font-medium max-w-3xl mx-auto">
+            Scroll through to explore each policy in detail. They'll automatically expand as you scroll.
+          </p>
         </div>
-        <div className="mt-8">
+
+        <ScrollPolicyList policies={topTenPolicies} />
+
+        <div className="mt-16 text-center">
           <Link
             href="/top20"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-bold"
+            className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
           >
             <span>See All 20 Policies</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
 
-      {/* Info Section - Left Aligned */}
-      <section className="mb-16">
+      {/* Info Section */}
+      <section className="max-w-7xl mx-auto px-6 py-16 text-center">
         <h2 className="font-display text-4xl font-black text-black mb-6">
           Data You Can Trust
         </h2>
-        <p className="font-body text-gray-700 font-medium max-w-3xl mb-6">
+        <p className="font-body text-lg text-gray-700 font-medium max-w-3xl mx-auto mb-6">
           All policy data comes from reputable, non-partisan polling organizations including YouGov, Pew Research Center, and the Associated Press-NORC. Each policy shown has documented support of at least 55% from Democrats, Republicans, and Independents.
         </p>
         <a
           href="https://americans-agree.org"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-bold underline"
+          className="inline-flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-bold underline text-lg"
         >
           <span>Explore the Data Source</span>
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-5 h-5" />
         </a>
       </section>
-    </div>
+    </>
   );
 }

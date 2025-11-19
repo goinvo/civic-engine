@@ -4,28 +4,30 @@
   --background: #ffffff;
   --foreground: #1f2937;
 
-  /* Patriotic Theme - Muted Colors */
-  --primary-blue: #1e3a8a;
-  --primary-blue-light: #3b82f6;
-  --primary-blue-dark: #1e40af;
-  --accent-red: #ef4444;
-  --accent-red-light: #fca5a5;
-  --accent-red-lighter: #fee2e2;
+  /* Brand Colors - Neobrutalist Patriotic Theme */
+  --brand-red: #C91A2B;
+  --brand-blue: #2F3BBD;
+  --brand-red-light: #FEB0B4;
+  --brand-blue-light: #AFC5F5;
+
+  /* Legacy support (deprecated) */
+  --primary-blue: #2F3BBD;
+  --accent-red: #C91A2B;
   --neutral-gray: #6b7280;
   --neutral-light: #f3f4f6;
   --neutral-dark: #111827;
 }
 
 @theme inline {
-  /* Colors */
+  /* Brand Colors */
+  --color-brand-red: var(--brand-red);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-red-light: var(--brand-red-light);
+  --color-brand-blue-light: var(--brand-blue-light);
+
+  /* Base Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary-blue);
-  --color-primary-light: var(--primary-blue-light);
-  --color-primary-dark: var(--primary-blue-dark);
-  --color-accent: var(--accent-red);
-  --color-accent-light: var(--accent-red-light);
-  --color-accent-lighter: var(--accent-red-lighter);
   --color-neutral: var(--neutral-gray);
   --color-neutral-light: var(--neutral-light);
   --color-neutral-dark: var(--neutral-dark);

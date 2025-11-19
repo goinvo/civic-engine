@@ -30,19 +30,19 @@ export default function Top20Page() {
 
         {/* Stats - Neobrutalist Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-yellow-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="text-4xl font-display font-black text-black">{allPolicies.length}</div>
-            <div className="text-sm font-body text-black font-bold">Total Policies</div>
+          <div className="bg-[#C91A2B] border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-white">{allPolicies.length}</div>
+            <div className="text-sm font-body text-white font-bold">Total Policies</div>
           </div>
-          <div className="bg-blue-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <div className="text-4xl font-display font-black text-black">76%</div>
             <div className="text-sm font-body text-black font-bold">Avg Support</div>
           </div>
-          <div className="bg-green-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="text-4xl font-display font-black text-black">55%+</div>
-            <div className="text-sm font-body text-black font-bold">Min Bipartisan</div>
+          <div className="bg-[#2F3BBD] border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="text-4xl font-display font-black text-white">55%+</div>
+            <div className="text-sm font-body text-white font-bold">Min Bipartisan</div>
           </div>
-          <div className="bg-pink-300 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <div className="text-4xl font-display font-black text-black">2025</div>
             <div className="text-sm font-body text-black font-bold">Latest Data</div>
           </div>
@@ -64,7 +64,7 @@ export default function Top20Page() {
 
       {/* Compare CTA - Neobrutalist Card */}
       <section className="mb-16">
-        <div className="bg-purple-300 border-4 border-black p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div className="bg-gray-100 border-4 border-black p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
           <h2 className="font-display text-3xl sm:text-4xl font-black text-black mb-4">
             Want to Compare Policies?
           </h2>
@@ -73,7 +73,7 @@ export default function Top20Page() {
           </p>
           <Link
             href="/compare"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           >
             <span>Compare Policies</span>
             <ArrowRight className="w-4 h-4" />
