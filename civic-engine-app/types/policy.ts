@@ -92,6 +92,8 @@ export interface Policy {
 
   // Sources and support data
   sources: PolicySource[];
+  // Additional explanatory notes and caveats for each policy (optional)
+  notes?: string[];
   averageSupport: number; // Average percentage support across sources
   partySupport?: PartySupport; // Support breakdown by party
 

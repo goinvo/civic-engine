@@ -20,6 +20,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
 
   // NEW: State to track if we are mid-fade
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [entryDirectionState, setEntryDirectionState] = useState<'UP' | 'DOWN'>('DOWN');
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollSectionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -290,7 +291,10 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               exit={{ opacity: 0, y: -20 }}
               // --- FIX START ---
               // Freeze scroll syncing while this animation plays
-              onAnimationStart={() => setIsTransitioning(true)}
+              onAnimationStart={() => {
+                setIsTransitioning(true);
+                setEntryDirectionState(scrollDirectionRef.current);
+              }}
               onAnimationComplete={() => setIsTransitioning(false)}
               // --- FIX END ---
               transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
@@ -298,13 +302,15 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             >
               <PolicyWindow
                 policy={policies[activeIndex]}
-                contentRef={contentRef}
                 isAtBottom={isAtBottom}
                 isAtTop={isAtTop}
                 hasNext={activeIndex < policies.length - 1}
                 hasPrevious={activeIndex > 0}
                 maxHeight={maxWindowHeight}
-                entryDirection={scrollDirectionRef.current}
+                entryDirection={entryDirectionState}
+                onContentRefChange={(el) => {
+                  contentRef.current = el;
+                }}
               />
 
               {/* Next Policy Preview (Unchanged) */}
@@ -350,22 +356,22 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
 
 function PolicyWindow({
   policy,
-  contentRef,
   isAtBottom,
   isAtTop,
   hasNext,
   hasPrevious,
   maxHeight,
   entryDirection,
+  onContentRefChange,
 }: {
   policy: Policy;
-  contentRef: React.RefObject<HTMLDivElement | null>;
   isAtBottom: boolean;
   isAtTop: boolean;
   hasNext: boolean;
   hasPrevious: boolean;
   maxHeight: string;
   entryDirection: 'UP' | 'DOWN';
+  onContentRefChange: (el: HTMLDivElement | null) => void;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
 
@@ -373,9 +379,7 @@ function PolicyWindow({
     localRef.current = element;
     // We only update the parent ref if this is the *entering* component
     // This prevents the exiting component from hijacking the ref during unmount
-    if (element && contentRef) {
-      (contentRef as React.MutableRefObject<HTMLDivElement | null>).current = element;
-    }
+    onContentRefChange(element);
   };
 
   // This ensures the NEW component starts at the correct position
@@ -560,6 +564,20 @@ function PolicyWindow({
               ))}
             </ul>
           </div>
+
+          {/* Notes */}
+          {policy.notes && policy.notes.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-display text-xl font-black text-black mb-3">Notes</h3>
+              <ul className="space-y-2 list-disc pl-5">
+                {policy.notes.map((note, index) => (
+                  <li key={index} className="font-body text-gray-700 text-sm font-medium">
+                    {note}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Last Updated */}
           <div className="text-xs text-gray-600">
