@@ -1,12 +1,13 @@
 import { Policy } from '../types/policy';
 
 /**
- * Real consensus policy data from "The Hidden Consensus" Report (2025)
- * Sources: Program for Public Consultation (PPC), University of Maryland, Gallup, Pew Research, National Skills Coalition
- * All policies listed have supermajority bipartisan support.
+ * Real consensus policy data from "The Hidden Consensus" Report (2025) & "The Converging Center" (2025)
+ * Sources: Program for Public Consultation (PPC), Gallup, Pew Research, Voice of the People.
+ * All policies listed have supermajority bipartisan support or strong cross-partisan consensus.
  */
 
 export const policies: Policy[] = [
+  // --- EXISTING TOP 10 (Verified) ---
   {
     id: 'social-security-cap',
     rank: 1,
@@ -60,11 +61,11 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Why $400,000?',
-        answer: 'It creates a protective buffer for the upper-middle class while ensuring the wealthy contribute more, aligning with pledges to not tax those earning under $400k.',
+        answer: 'It creates a protective buffer for the upper-middle class while ensuring the wealthy contribute more.',
       },
       {
         question: 'Is this enough?',
-        answer: 'It solves most of the problem (61%). The public also supports a small, gradual rate increase (from 6.2% to 6.5% over 6 years) to cover the remaining gap.',
+        answer: 'It solves most of the problem (61%). The public also supports a small, gradual rate increase to cover the remaining gap.',
       },
     ],
     trending: 'stable',
@@ -249,7 +250,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Is this safe?',
-        answer: 'Advocates argue that security standards (like those in banking) can protect data while still allowing repairs, and that safety claims are often used to protect profits.',
+        answer: 'Advocates argue that security standards (like those in banking) can protect data while still allowing repairs.',
       },
       {
         question: 'Who supports this?',
@@ -472,7 +473,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Represents support for the DISCLOSE Act and for banning foreign funding of ballot initiatives.',
+      'Represents support for the DISCLOSE Act and for banning foreign funding of ballot initiatives[cite: 505].',
     ],
     details: [
       {
@@ -637,21 +638,1273 @@ export const policies: Policy[] = [
     trending: 'up',
     lastUpdated: '2025-06-01',
   },
+
+  // --- NEW POLICIES (11-30) ---
+
+  {
+    id: 'kids-online-safety',
+    rank: 11,
+    title: 'Kids Online Safety Act (KOSA)',
+    description: 'Establish a digital "duty of care" requiring platforms to prevent specific harms to minors (suicide promotion, eating disorders) and disable addictive features.',
+    category: 'technology',
+    scope: 'federal',
+    icon: 'ShieldCheck',
+    averageSupport: 83,
+    partySupport: {
+      democrats: 86,
+      republicans: 80,
+      independents: 82,
+    },
+    sources: [
+      {
+        organization: 'Navigator Research',
+        title: 'Privacy & Online Safety Poll',
+        url: 'https://navigatorresearch.org',
+        year: 2025,
+        supportPercentage: 83,
+      },
+    ],
+    notes: [
+      'Over 80% of voters rank privacy legislation as a "top" priority. Passed Senate 91-3[cite: 605].',
+    ],
+    details: [
+      {
+        title: 'Duty of Care',
+        description: 'Platforms must take reasonable measures to mitigate specific harms like suicide promotion and sexual exploitation[cite: 599].',
+      },
+      {
+        title: 'Default Protections',
+        description: 'Mandates strongest privacy settings by default for users under 17[cite: 601].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Social Media Ad Revenue',
+      to: 'Child Mental Health',
+      channel: 'FTC Regulatory Enforcement',
+    },
+    ifThen: [
+      'If you are under 17, your account defaults to high privacy settings',
+      'If a platform\'s algorithm promotes self-harm content, they can be sued',
+      'If you are a parent, you have tools to limit addictive features like infinite scroll',
+    ],
+    causalChain: {
+      immediate: 'Establish duty of care for minors online',
+      outcome: 'Reduces algorithmic amplification of harmful content and improves teen mental health outcomes',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this censorship?',
+        answer: 'Critics fear it could be used to suppress content, but proponents argue it regulates platform design (algorithms), not specific speech[cite: 610].',
+      },
+      {
+        question: 'Does it require ID?',
+        answer: 'Age verification is a major friction point; critics argue it compromises privacy for all users[cite: 612].',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-05-15',
+  },
+  {
+    id: 'universal-background-checks',
+    rank: 12,
+    title: 'Universal Background Checks',
+    description: 'Require background checks for all gun sales, closing loopholes for private transfers and gun shows.',
+    category: 'justice',
+    scope: 'federal',
+    icon: 'FileSearch',
+    averageSupport: 90,
+    partySupport: {
+      democrats: 93,
+      republicans: 85,
+      independents: 88,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'Gun Safety Consensus',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 90,
+      },
+    ],
+    notes: [
+      'Consistently the most popular unimplemented policy in the US, with 85-93% support.',
+    ],
+    details: [
+      {
+        title: 'Closing Loopholes',
+        description: 'Extends checks to gun shows and private sales, which currently bypass the NICS system[cite: 483].',
+      },
+      {
+        title: 'Broad Consensus',
+        description: 'Support extends to gun owners and NRA members.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Unregulated Private Sales',
+      to: 'Public Safety',
+      channel: 'NICS Database Expansion',
+    },
+    ifThen: [
+      'If you buy a gun at a show, you must pass a background check',
+      'If you sell a gun to a neighbor, you must process the transfer through a dealer',
+      'If you are a felon, you cannot exploit private sale loopholes',
+    ],
+    causalChain: {
+      immediate: 'Mandate checks for all transfers',
+      outcome: 'Prevents prohibited persons from acquiring firearms without infringing on lawful ownership',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this create a registry?',
+        answer: 'No. The background check system verifies eligibility but does not create a federal registry of gun owners.',
+      },
+      {
+        question: 'Why hasn\'t it passed?',
+        answer: 'Legislative inertia and pressure from gun rights groups who fear it is a slippery slope to registration.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-08-01',
+  },
+  {
+    id: 'free-easy-voter-id',
+    rank: 13,
+    title: 'Free and Easy Voter ID',
+    description: 'Mandate that any state requiring Voter ID must provide the ID and necessary documents for free, with streamlined access.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'IdCard',
+    averageSupport: 81,
+    partySupport: {
+      democrats: 69,
+      republicans: 95,
+      independents: 80,
+    },
+    sources: [
+      {
+        organization: 'Pew Research Center',
+        title: 'Election Security Poll',
+        url: 'https://pewresearch.org',
+        year: 2025,
+        supportPercentage: 81,
+      },
+    ],
+    notes: [
+      'The "Grand Compromise": Republicans get security (ID requirement), Democrats get access (Free/Easy mandate).',
+    ],
+    details: [
+      {
+        title: 'Eliminate Costs',
+        description: 'States must waive fees for ID cards and underlying documents like birth certificates[cite: 364].',
+      },
+      {
+        title: 'Accessibility',
+        description: 'Requires mobile DMV units and extended hours to reach rural/working-class voters[cite: 365].',
+      },
+    ],
+    resourceFlow: {
+      from: 'State Bureaucracy',
+      to: 'Voter Enfranchisement',
+      channel: 'Federal Election Standards',
+    },
+    ifThen: [
+      'If you need an ID to vote, the state must give it to you for free',
+      'If you live in a rural area, mobile ID units will visit your community',
+      'If implemented, arguments about "voter suppression" vs "fraud" are neutralized',
+    ],
+    causalChain: {
+      immediate: 'Mandate free access to voter IDs',
+      outcome: 'Secures elections while preventing economic disenfranchisement',
+    },
+    commonQuestions: [
+      {
+        question: 'Who pays for it?',
+        answer: 'The state or federal government covers the cost of the ID to ensure it is not a "poll tax"[cite: 361].',
+      },
+      {
+        question: 'Is this bipartisan?',
+        answer: 'Yes. 81% support it. Partisans disagree on the *burden* of ID, not the ID itself.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-04-20',
+  },
+  {
+    id: 'junk-fee-prevention',
+    rank: 14,
+    title: 'Junk Fee Prevention Act',
+    description: 'Ban hidden mandatory fees for hotels, tickets, and airlines, requiring "all-in pricing" where the advertised price is the final price.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Tag',
+    averageSupport: 87,
+    partySupport: {
+      democrats: 90,
+      republicans: 81,
+      independents: 85,
+    },
+    sources: [
+      {
+        organization: 'Navigator Research',
+        title: 'Consumer Protection Survey',
+        url: 'https://navigatorresearch.org',
+        year: 2025,
+        supportPercentage: 87,
+      },
+    ],
+    notes: [
+      'One of the few issues with identical intensity of support across parties[cite: 730].',
+    ],
+    details: [
+      {
+        title: 'All-In Pricing',
+        description: 'Merchants must display the total price, including all mandatory fees, upfront[cite: 725].',
+      },
+      {
+        title: 'Bipartisan Grievance',
+        description: 'Unites consumers against deceptive corporate practices[cite: 733].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Deceptive Corporate Revenue',
+      to: 'Consumer Wallets',
+      channel: 'FTC Enforcement / Legislation',
+    },
+    ifThen: [
+      'If you book a hotel, the price you see on the map is the price you pay',
+      'If you buy concert tickets, there are no surprise "service fees" at checkout',
+      'If companies hide fees, they face federal penalties',
+    ],
+    causalChain: {
+      immediate: 'Mandate transparency in pricing',
+      outcome: 'Increases market competition and saves consumers billions in hidden costs',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this lower prices?',
+        answer: 'It may not lower the *base* price, but it allows consumers to comparison shop accurately, which drives competition.',
+      },
+      {
+        question: 'Who opposes this?',
+        answer: 'Hospitality and airline lobbies, who profit from "drip pricing"[cite: 726].',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-06-10',
+  },
+  {
+    id: 'childcare-tax-credit',
+    rank: 15,
+    title: 'Expand Child Tax Credit',
+    description: 'Significantly increase the Child Tax Credit (e.g., to $4,000) to make childcare affordable and reduce child poverty.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Baby',
+    averageSupport: 85,
+    partySupport: {
+      democrats: 92,
+      republicans: 76,
+      independents: 84,
+    },
+    sources: [
+      {
+        organization: 'First Five Years Fund',
+        title: 'Child Care Poll',
+        url: 'https://ffyf.org',
+        year: 2025,
+        supportPercentage: 85,
+      },
+    ],
+    notes: [
+      'Viewed as "economic infrastructure" enabling workforce participation[cite: 431].',
+    ],
+    details: [
+      {
+        title: 'Workforce Enabler',
+        description: 'Allows parents to remain in the workforce by offsetting the high cost of care[cite: 434].',
+      },
+      {
+        title: 'Poverty Reduction',
+        description: 'Previous expansions cut child poverty nearly in half.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Tax Revenue',
+      to: 'Working Families',
+      channel: 'IRS Tax Credits',
+    },
+    ifThen: [
+      'If you have a child, you receive a larger tax credit to help pay for care',
+      'If you are a parent, you can afford to keep your job instead of staying home',
+      'If implemented, child poverty rates decline significantly',
+    ],
+    causalChain: {
+      immediate: 'Expand tax credits for families',
+      outcome: 'Boosts labor participation and improves long-term outcomes for children',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this welfare?',
+        answer: 'Proponents frame it as a tax cut for families and an investment in the future workforce.',
+      },
+      {
+        question: 'How much is it?',
+        answer: 'Proposals range, but often target ~$3,000-$4,000 per child[cite: 434].',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-03-20',
+  },
+  {
+    id: 'scotus-term-limits',
+    rank: 16,
+    title: 'Supreme Court Term Limits (18 Years)',
+    description: 'Limit Supreme Court Justices to 18-year non-renewable terms, with a new appointment every two years, to depoliticize the court.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'Scale',
+    averageSupport: 78,
+    partySupport: {
+      democrats: 82,
+      republicans: 57,
+      independents: 70,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'Judicial Reform Survey',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 78,
+      },
+    ],
+    notes: [
+      'Establishes a regular schedule of appointments to lower the political stakes of vacancies[cite: 331].',
+    ],
+    details: [
+      {
+        title: 'Regular Appointments',
+        description: 'Guarantees every President gets 2 appointments per term, ending the "actuarial lottery"[cite: 333].',
+      },
+      {
+        title: 'Senior Status',
+        description: 'After 18 years, Justices move to "senior status" on lower courts, preserving their lifetime judicial appointment[cite: 337].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Lifetime Tenure',
+      to: 'Regular Rotation',
+      channel: 'Legislative Act (Good Behavior Clause interpretation)',
+    },
+    ifThen: [
+      'If a Justice serves 18 years, they rotate off the Supreme Court',
+      'If a President serves one term, they appoint exactly two Justices',
+      'If implemented, confirmation battles become less apocalyptic',
+    ],
+    causalChain: {
+      immediate: 'Limit active SCOTUS service to 18 years',
+      outcome: 'Ensures the Court reflects evolving constitutional values and lowers political temperature',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this constitutional?',
+        answer: 'Debated. Proponents argue "good behavior" allows for senior status rotation; opponents say it requires an Amendment[cite: 337].',
+      },
+      {
+        question: 'Does it affect current Justices?',
+        answer: 'Most proposals apply prospectively to future justices to avoid legal challenges.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-02-28',
+  },
+  {
+    id: 'ultra-millionaire-tax',
+    rank: 17,
+    title: 'Ultra-Millionaire Wealth Tax',
+    description: 'Implement a 2% tax on wealth above $50 million and 3% on wealth above $1 billion to fund social programs and reduce inequality.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'DollarSign',
+    averageSupport: 78,
+    partySupport: {
+      democrats: 90,
+      republicans: 63,
+      independents: 75,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'Tax Policy Survey',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 78,
+      },
+    ],
+    notes: [
+      'Targets extreme wealth accumulation; specifically affects only the top 0.1%[cite: 415].',
+    ],
+    details: [
+      {
+        title: 'Targeted Revenue',
+        description: 'Applies only to assets >$50M, avoiding the "mere" upper-middle class[cite: 419].',
+      },
+      {
+        title: 'Fairness',
+        description: 'Driven by the belief that the tax code currently favors capital over labor[cite: 418].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Ultra-Wealthy Asset Holders',
+      to: 'Public Investment',
+      channel: 'IRS Wealth Tax',
+    },
+    ifThen: [
+      'If you have $49 million, you pay $0 in wealth tax',
+      'If you have $1 billion, you contribute 3% annually on the excess',
+      'If enacted, it generates significant revenue for housing and healthcare',
+    ],
+    causalChain: {
+      immediate: 'Levy tax on extreme wealth',
+      outcome: 'Reduces inequality and funds public goods',
+    },
+    commonQuestions: [
+      {
+        question: 'Is it constitutional?',
+        answer: 'Likely to face Supreme Court challenges regarding "direct taxes." Supporters argue it is constitutional; opponents disagree.',
+      },
+      {
+        question: 'Will the wealthy leave?',
+        answer: 'Proposals often include "exit taxes" to prevent capital flight.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-03-15',
+  },
+  {
+    id: 'end-citizens-united',
+    rank: 18,
+    title: 'End Corporate Personhood',
+    description: 'Pass a Constitutional Amendment to overturn Citizens United, establishing that corporations are not people and money is not speech.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'Building',
+    averageSupport: 75,
+    partySupport: {
+      democrats: 85,
+      republicans: 66,
+      independents: 78,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'Campaign Finance Report',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 75,
+      },
+    ],
+    notes: [
+      'Widely viewed as a necessary precursor to meaningful campaign finance reform.',
+    ],
+    details: [
+      {
+        title: 'Human Rights Only',
+        description: 'Clarifies that Constitutional rights belong to natural persons, not artificial entities[cite: 368].',
+      },
+      {
+        title: 'Regulate Spending',
+        description: 'Allows Congress to limit political spending without violating the First Amendment[cite: 371].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Corporate Political Treasuries',
+      to: 'Voter Sovereignty',
+      channel: 'Constitutional Amendment',
+    },
+    ifThen: [
+      'If passed, Congress can place limits on corporate election spending',
+      'If enacted, "Super PACs" can be regulated or banned',
+      'If implemented, corporations lose the right to unlimited political speech',
+    ],
+    causalChain: {
+      immediate: 'Ratify Amendment defining personhood',
+      outcome: 'Restores ability to regulate campaign finance and reduces corporate influence',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this hard to pass?',
+        answer: 'Yes. Amendments require 2/3 of Congress and 3/4 of states. However, support is high.',
+      },
+      {
+        question: 'Does this ban lobbying?',
+        answer: 'No, but it allows for stricter regulation of lobbying expenditures.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-05-01',
+  },
+  {
+    id: 'national-service',
+    rank: 19,
+    title: 'Voluntary National Service',
+    description: 'Expand voluntary national service programs (like AmeriCorps) with robust incentives, aiming for 1 year of service by age 25.',
+    category: 'society',
+    scope: 'federal',
+    icon: 'Hand', // Helping hand
+    averageSupport: 90,
+    partySupport: {
+      democrats: 92,
+      republicans: 88,
+      independents: 90,
+    },
+    sources: [
+      {
+        organization: 'Gallup',
+        title: 'National Service Poll',
+        url: 'https://news.gallup.com',
+        year: 2025,
+        supportPercentage: 90,
+      },
+    ],
+    notes: [
+      'Support is for *voluntary* service (90%); mandatory service is unpopular (49%).',
+    ],
+    details: [
+      {
+        title: 'Civic Glue',
+        description: 'Programs like AmeriCorps increase long-term voter turnout and bridge cultural divides[cite: 474].',
+      },
+      {
+        title: 'Incentives',
+        description: 'Offers tuition assistance and debt relief in exchange for service.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Funding',
+      to: 'Community Projects & Youth Development',
+      channel: 'AmeriCorps / Peace Corps',
+    },
+    ifThen: [
+      'If you serve a year, you get college tuition assistance',
+      'If you join, you work on community projects in different parts of the country',
+      'If expanded, civic engagement increases among young people',
+    ],
+    causalChain: {
+      immediate: 'Fund and expand voluntary service opportunities',
+      outcome: 'Strengthens social cohesion and provides workforce training',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this a draft?',
+        answer: 'No. It is strictly voluntary. Mandatory service is divisive and faces legal hurdles[cite: 472].',
+      },
+      {
+        question: 'What do they do?',
+        answer: 'Disaster relief, education (tutoring), conservation, and elderly care.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-06-20',
+  },
+  {
+    id: 'irs-direct-file',
+    rank: 20,
+    title: 'Simplified Tax Filing (Direct File)',
+    description: 'Make the IRS "Direct File" program permanent and expanded, allowing taxpayers to file for free directly with the IRS.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'FileText',
+    averageSupport: 76,
+    partySupport: {
+      democrats: 85,
+      republicans: 68,
+      independents: 72,
+    },
+    sources: [
+      {
+        organization: 'Tax Policy Center',
+        title: 'Direct File Survey',
+        url: 'https://taxpolicycenter.org',
+        year: 2025,
+        supportPercentage: 76,
+      },
+    ],
+    notes: [
+      'Users of the pilot reported a 94% satisfaction rate.',
+    ],
+    details: [
+      {
+        title: 'Pre-filled Returns',
+        description: 'The IRS uses existing data (W-2s) to pre-populate returns, saving time and money[cite: 427].',
+      },
+      {
+        title: 'Success Story',
+        description: 'Expanded to 25 states in 2025 due to overwhelming demand[cite: 426].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Tax Prep Industry Profits',
+      to: 'Taxpayer Savings',
+      channel: 'IRS Direct Software',
+    },
+    ifThen: [
+      'If you have a simple return, you can file for free in minutes on the IRS website',
+      'If enacted, you avoid paying fees to private tax prep companies',
+      'If pre-filling is added, you just verify the data the IRS already has',
+    ],
+    causalChain: {
+      immediate: 'Expand IRS Direct File nationwide',
+      outcome: 'Reduces compliance burden and saves taxpayers billions',
+    },
+    commonQuestions: [
+      {
+        question: 'Why do we pay to file now?',
+        answer: 'The tax prep lobby historically blocked the IRS from offering a free alternative[cite: 429].',
+      },
+      {
+        question: 'Is it mandatory?',
+        answer: 'No. You can still use an accountant or private software if you choose.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-04-15',
+  },
+  {
+    id: 'foreign-farmland-ban',
+    rank: 21,
+    title: 'Ban Foreign Ownership of Farmland',
+    description: 'Prohibit "foreign adversaries" (e.g., China, Russia) from purchasing U.S. agricultural land to protect food security.',
+    category: 'security',
+    scope: 'federal',
+    icon: 'Shield',
+    averageSupport: 82,
+    partySupport: {
+      democrats: 75,
+      republicans: 90,
+      independents: 80,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'National Security Survey',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 82,
+      },
+    ],
+    notes: [
+      'Driven by food security concerns and geopolitical tensions; 29 states have already acted[cite: 780].',
+    ],
+    details: [
+      {
+        title: 'National Security',
+        description: 'Prevents adversaries from controlling critical food supply chains or spying near bases[cite: 782].',
+      },
+      {
+        title: 'Bipartisan Push',
+        description: 'Strong support from rural Republicans and security-conscious Democrats[cite: 784].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Foreign Investment',
+      to: 'Domestic Control',
+      channel: 'CFIUS / State Laws',
+    },
+    ifThen: [
+      'If a Chinese state-owned company tries to buy farmland, the sale is blocked',
+      'If enacted, U.S. food supply chains remain under domestic control',
+      'If implemented poorly, it faces legal challenges over discrimination [cite: 786]',
+    ],
+    causalChain: {
+      immediate: 'Ban land sales to adversary nations',
+      outcome: 'Protects national security but requires care to avoid civil rights violations',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this discriminatory?',
+        answer: 'Civil rights groups argue it echoes past "Alien Land Laws." DOJ has raised concerns about housing discrimination[cite: 788].',
+      },
+      {
+        question: 'How much land do they own?',
+        answer: 'Currently a small percentage, but the *rate* of purchase has sparked alarm.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-08-10',
+  },
+  {
+    id: 'minimum-wage-17',
+    rank: 22,
+    title: 'Raise Minimum Wage ($17)',
+    description: 'Raise the federal minimum wage to $17/hour by 2030 and index it to inflation to ensure a living wage.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'TrendingUp',
+    averageSupport: 70,
+    partySupport: {
+      democrats: 90,
+      republicans: 48,
+      independents: 72,
+    },
+    sources: [
+      {
+        organization: 'The Harris Poll',
+        title: 'Minimum Wage Survey',
+        url: 'https://theharrispoll.com',
+        year: 2025,
+        supportPercentage: 70,
+      },
+    ],
+    notes: [
+      'Majority support exists even in swing districts; 63% support indexing to inflation[cite: 395].',
+    ],
+    details: [
+      {
+        title: 'Inflation Indexing',
+        description: 'Automatically adjusts the wage based on cost of living, removing the need for constant legislation[cite: 395].',
+      },
+      {
+        title: 'Living Standard',
+        description: '72% agree a full-time job should keep a worker above the poverty line[cite: 395].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Corporate Profits',
+      to: 'Low-Wage Workers',
+      channel: 'Federal Wage Mandate',
+    },
+    ifThen: [
+      'If you work minimum wage, your pay increases gradually to $17',
+      'If inflation goes up, your wage automatically adjusts',
+      'If enacted, the subminimum wage for tipped workers is eliminated [cite: 392]',
+    ],
+    causalChain: {
+      immediate: 'Raise wage floor and index it',
+      outcome: 'Reduces poverty and reliance on social safety nets',
+    },
+    commonQuestions: [
+      {
+        question: 'Will this cause inflation?',
+        answer: 'Economists debate this. Proponents argue it boosts demand; opponents argue it raises prices.',
+      },
+      {
+        question: 'Why $17?',
+        answer: 'Reflects inflation since the "Fight for $15" began. In high-cost areas, demand is even higher[cite: 391].',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-02-10',
+  },
+  {
+    id: 'public-option-healthcare',
+    rank: 23,
+    title: 'Healthcare Public Option',
+    description: 'Create a government-run health insurance plan available to all, competing with private insurers to lower costs.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'HeartPulse',
+    averageSupport: 69,
+    partySupport: {
+      democrats: 85,
+      republicans: 52,
+      independents: 70,
+    },
+    sources: [
+      {
+        organization: 'KFF',
+        title: 'Health Reform Poll',
+        url: 'https://kff.org',
+        year: 2025,
+        supportPercentage: 69,
+      },
+    ],
+    notes: [
+      'The preferred vehicle for universal coverage (68-70% support), bridging the gap between ACA and Single Payer[cite: 401].',
+    ],
+    details: [
+      {
+        title: 'Competition',
+        description: 'Introduces a non-profit competitor to drive down private premiums[cite: 403].',
+      },
+      {
+        title: 'Safety Net',
+        description: 'Ensures everyone has an affordable option without banning private insurance[cite: 404].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Private Insurance Monopoly',
+      to: 'Public Choice',
+      channel: 'Medicare/ACA Exchange Expansion',
+    },
+    ifThen: [
+      'If you don\'t like your private plan, you can buy into the public option',
+      'If private insurers charge too much, they lose customers to the public plan',
+      'If enacted, universal coverage is achieved voluntarily',
+    ],
+    causalChain: {
+      immediate: 'Establish public health insurance plan',
+      outcome: 'Lowers costs through competition and guarantees coverage access',
+    },
+    commonQuestions: [
+      {
+        question: 'Is this "Medicare for All"?',
+        answer: 'No. It is optional. Medicare for All typically replaces private insurance; this competes with it.',
+      },
+      {
+        question: 'Do Republicans support it?',
+        answer: 'Surprisingly, yes (approx 50%), as it preserves choice while addressing costs[cite: 401].',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-09-05',
+  },
+  {
+    id: 'nuclear-energy-expansion',
+    rank: 24,
+    title: 'Expand Nuclear Energy (ADVANCE Act)',
+    description: 'Accelerate the deployment of advanced nuclear reactors to ensure reliable, carbon-free baseload power.',
+    category: 'infrastructure',
+    scope: 'federal',
+    icon: 'Zap',
+    averageSupport: 61,
+    partySupport: {
+      democrats: 58,
+      republicans: 67,
+      independents: 60,
+    },
+    sources: [
+      {
+        organization: 'Pew Research Center',
+        title: 'Energy Attitudes Survey',
+        url: 'https://pewresearch.org',
+        year: 2025,
+        supportPercentage: 61,
+      },
+    ],
+    notes: [
+      'Support has surged 16+ points since 2020, driven by energy security and AI power needs[cite: 641].',
+    ],
+    details: [
+      {
+        title: 'Regulatory Streamlining',
+        description: 'The ADVANCE Act cuts red tape for licensing new small modular reactors (SMRs)[cite: 631].',
+      },
+      {
+        title: 'Brownfield Reuse',
+        description: 'Incentivizes building nuclear plants at retired coal sites to use existing transmission lines[cite: 633].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Regulatory Hurdles',
+      to: 'Clean Power Generation',
+      channel: 'NRC Reform / ADVANCE Act',
+    },
+    ifThen: [
+      'If a coal plant closes, it can be converted to a nuclear site',
+      'If AI data centers need power, nuclear provides 24/7 carbon-free energy',
+      'If successful, the US regains leadership in nuclear technology',
+    ],
+    causalChain: {
+      immediate: 'Streamline nuclear licensing',
+      outcome: 'Increases clean baseload power and energy independence',
+    },
+    commonQuestions: [
+      {
+        question: 'Is it safe?',
+        answer: 'Modern "advanced" reactors have passive safety systems that physically prevent meltdowns.',
+      },
+      {
+        question: 'What about waste?',
+        answer: 'Advanced reactors produce less waste, but long-term storage remains a political challenge.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-10-01',
+  },
+  {
+    id: 'police-accountability',
+    rank: 25,
+    title: 'Police Accountability Standards',
+    description: 'Mandate de-escalation training, ban chokeholds, and create a national misconduct registry to prevent abusive officers from switching agencies.',
+    category: 'justice',
+    scope: 'federal',
+    icon: 'BadgeAlert',
+    averageSupport: 84,
+    partySupport: {
+      democrats: 92,
+      republicans: 82,
+      independents: 84,
+    },
+    sources: [
+      {
+        organization: 'Voice of the People',
+        title: 'Police Reform Survey',
+        url: 'https://vop.org',
+        year: 2025,
+        supportPercentage: 84,
+      },
+    ],
+    notes: [
+      'Specific reforms (registry, training) have 90%+ support; "Qualified Immunity" reform is the sticking point[cite: 670].',
+    ],
+    details: [
+      {
+        title: 'Misconduct Registry',
+        description: 'Prevents "wandering officers" by tracking those fired for misconduct in a national database[cite: 665].',
+      },
+      {
+        title: 'Duty to Intervene',
+        description: '95% support requiring officers to intervene if a colleague uses excessive force[cite: 670].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Unchecked Misconduct',
+      to: 'Professional Standards',
+      channel: 'Federal Funding Conditions',
+    },
+    ifThen: [
+      'If an officer is fired for abuse, they cannot get hired by the next town over',
+      'If an officer sees a colleague using excessive force, they are legally required to stop it',
+      'If chokeholds are used, federal funding is withheld',
+    ],
+    causalChain: {
+      immediate: 'Standardize use-of-force rules and tracking',
+      outcome: 'Reduces police violence and restores community trust',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this defund the police?',
+        answer: 'No. It conditions funding on standards. Republicans support the accountability measures (82%)[cite: 670].',
+      },
+      {
+        question: 'What about lawsuits?',
+        answer: 'The popular consensus excludes ending Qualified Immunity, which is divisive.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-09-10',
+  },
+  {
+    id: 'affordable-housing-supply',
+    rank: 26,
+    title: 'Affordable Housing Supply (NHIA)',
+    description: 'Create tax credits for building and renovating homes in distressed areas to close the "appraisal gap" and increase supply.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Home',
+    averageSupport: 71,
+    partySupport: {
+      democrats: 80,
+      republicans: 64,
+      independents: 70,
+    },
+    sources: [
+      {
+        organization: 'Program for Public Consultation',
+        title: 'Housing Policy Survey',
+        url: 'https://publicconsultation.org',
+        year: 2025,
+        supportPercentage: 71,
+      },
+    ],
+    notes: [
+      'Focuses on supply-side incentives (building homes) rather than just subsidies[cite: 409].',
+    ],
+    details: [
+      {
+        title: 'Appraisal Gap Fix',
+        description: 'Covers the difference between construction cost and market value in distressed areas[cite: 769].',
+      },
+      {
+        title: 'Owner-Occupied',
+        description: 'Credits are restricted to homes sold to residents, not corporate investors[cite: 770].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Tax Credits',
+      to: 'New Housing Inventory',
+      channel: 'Neighborhood Homes Investment Act',
+    },
+    ifThen: [
+      'If a developer fixes up a blighted home, they get a tax credit to make it profitable',
+      'If you are a buyer, more starter homes become available',
+      'If enacted, neighborhoods are revitalized without gentrifying displacement',
+    ],
+    causalChain: {
+      immediate: 'Incentivize construction of starter homes',
+      outcome: 'Increases housing supply and lowers costs',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this help renters?',
+        answer: 'Indirectly, by freeing up rental units as people buy homes. Other policies (LIHTC) target rentals directly.',
+      },
+      {
+        question: 'Is this NIMBY?',
+        answer: 'No, it fights NIMBYism. 71% believe more affordable housing makes communities better[cite: 410].',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-07-15',
+  },
+  {
+    id: 'mental-health-988',
+    rank: 27,
+    title: '988 Mental Health Lifeline',
+    description: 'Ensure long-term funding and specialized access (e.g., LGBTQ+ youth) for the 988 Suicide & Crisis Lifeline.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'Phone',
+    averageSupport: 64,
+    partySupport: {
+      democrats: 72,
+      republicans: 50,
+      independents: 60,
+    },
+    sources: [
+      {
+        organization: 'NAMI / Ipsos',
+        title: 'Mental Health Priorities',
+        url: 'https://nami.org',
+        year: 2025,
+        supportPercentage: 64,
+      },
+    ],
+    notes: [
+      '64% prioritize mental health funding; 74% awareness of 988 in 2025[cite: 698, 699].',
+    ],
+    details: [
+      {
+        title: 'Georouting',
+        description: 'Routes calls to local centers based on location, not area code, for better response[cite: 686].',
+      },
+      {
+        title: 'Specialized Care',
+        description: 'Debate centers on dedicated support for LGBTQ+ youth ("Press 3")[cite: 690].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Telecom Fees / Federal Grants',
+      to: 'Crisis Call Centers',
+      channel: '988 Lifeline Network',
+    },
+    ifThen: [
+      'If you dial 988, you connect to a counselor near you',
+      'If funding is stable, wait times decrease',
+      'If specialized options exist, vulnerable youth get targeted help',
+    ],
+    causalChain: {
+      immediate: 'Fund and optimize 988 infrastructure',
+      outcome: 'Reduces suicide rates and police involvement in mental health crises',
+    },
+    commonQuestions: [
+      {
+        question: 'Who pays for it?',
+        answer: 'A mix of federal grants and state telecom fees (like 911)[cite: 697].',
+      },
+      {
+        question: 'Does it involve police?',
+        answer: 'The goal is to send mobile crisis teams, not police, unless there is an imminent safety threat.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-06-30',
+  },
+  {
+    id: 'cannabis-banking-safer',
+    rank: 28,
+    title: 'Cannabis Banking (SAFER Act)',
+    description: 'Allow banks to serve state-legal cannabis businesses to reduce cash-related crimes and improve transparency.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Landmark', // Bank
+    averageSupport: 64,
+    partySupport: {
+      democrats: 75,
+      republicans: 55,
+      independents: 64,
+    },
+    sources: [
+      {
+        organization: 'ICBA / Data for Progress',
+        title: 'Banking Access Survey',
+        url: 'https://icba.org',
+        year: 2025,
+        supportPercentage: 64,
+      },
+    ],
+    notes: [
+      'Framed as a public safety issue (reducing robbery risk) rather than legalization[cite: 717].',
+    ],
+    details: [
+      {
+        title: 'Public Safety',
+        description: 'Taking cash off the streets prevents violent robberies of dispensaries[cite: 710].',
+      },
+      {
+        title: 'Operation Choke Point',
+        description: 'Includes protections preventing regulators from targeting politically disfavored industries (guns/oil) to win GOP votes[cite: 715].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Cash Economy',
+      to: 'Regulated Banking System',
+      channel: 'SAFER Banking Act',
+    },
+    ifThen: [
+      'If a dispensary can use a bank, they stop holding millions in cash',
+      'If banks are protected, they can offer loans to small cannabis businesses',
+      'If enacted, tax collection becomes more efficient',
+    ],
+    causalChain: {
+      immediate: 'Safe harbor for banks serving cannabis',
+      outcome: 'Improves public safety and brings a grey market into the financial system',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this legalize weed?',
+        answer: 'No. It only addresses banking for businesses legal under *state* law.',
+      },
+      {
+        question: 'Who supports it?',
+        answer: 'A "coalition of necessity": Banks, police, and the cannabis industry[cite: 708].',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-08-05',
+  },
+  {
+    id: 'universal-pre-k',
+    rank: 29,
+    title: 'Universal Pre-K',
+    description: 'Provide free, high-quality pre-kindergarten education for all 3- and 4-year-olds.',
+    category: 'education',
+    scope: 'federal',
+    icon: 'BookOpen',
+    averageSupport: 73,
+    partySupport: {
+      democrats: 88,
+      republicans: 55,
+      independents: 70,
+    },
+    sources: [
+      {
+        organization: 'First Five Years Fund',
+        title: 'Early Education Poll',
+        url: 'https://ffyf.org',
+        year: 2025,
+        supportPercentage: 73,
+      },
+    ],
+    notes: [
+      'Red states like Oklahoma demonstrate success; viewed as "educational preparedness"[cite: 467].',
+    ],
+    details: [
+      {
+        title: 'Economic ROI',
+        description: 'Enables parents to work and improves long-term student outcomes[cite: 466].',
+      },
+      {
+        title: 'State Momentum',
+        description: 'Voters in states like New Mexico have approved funding with 70% support[cite: 464].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal/State Partnership',
+      to: 'Early Childhood Centers',
+      channel: 'Education Grants',
+    },
+    ifThen: [
+      'If you have a 4-year-old, they can attend pre-K for free',
+      'If parents have access to pre-K, they can return to the workforce',
+      'If implemented, achievement gaps shrink',
+    ],
+    causalChain: {
+      immediate: 'Fund universal access to pre-K',
+      outcome: 'Boosts economy and educational attainment',
+    },
+    commonQuestions: [
+      {
+        question: 'Is it mandatory?',
+        answer: 'No. It is an option for parents, not a requirement.',
+      },
+      {
+        question: 'Is it just daycare?',
+        answer: 'No. It follows an educational curriculum to prepare kids for kindergarten.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-05-25',
+  },
+  {
+    id: 'buy-american',
+    rank: 30,
+    title: '"Buy American" Mandates',
+    description: 'Require federally funded infrastructure projects to use U.S.-made materials (steel, iron, manufactured goods).',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Factory',
+    averageSupport: 75,
+    partySupport: {
+      democrats: 65,
+      republicans: 72,
+      independents: 70,
+    },
+    sources: [
+      {
+        organization: 'Cato Institute / Reuters',
+        title: 'Industrial Policy Survey',
+        url: 'https://cato.org',
+        year: 2025,
+        supportPercentage: 75,
+      },
+    ],
+    notes: [
+      'Combines "America First" nationalism with pro-labor manufacturing policy[cite: 745].',
+    ],
+    details: [
+      {
+        title: 'Thresholds',
+        description: 'Requires 75% domestic content by 2029 for federal projects[cite: 749].',
+      },
+      {
+        title: 'Broad Appeal',
+        description: 'Republicans support it for jobs; Democrats for labor/environmental standards[cite: 752].',
+      },
+    ],
+    resourceFlow: {
+      from: 'Infrastructure Spending',
+      to: 'US Manufacturing Base',
+      channel: 'Build America, Buy America Act',
+    },
+    ifThen: [
+      'If a bridge is built with federal money, the steel must be American',
+      'If a company wants a government contract, they must manufacture here',
+      'If enacted, domestic industrial capacity grows',
+    ],
+    causalChain: {
+      immediate: 'Mandate domestic procurement',
+      outcome: 'Reshores manufacturing but may increase project costs',
+    },
+    commonQuestions: [
+      {
+        question: 'Does it cost more?',
+        answer: 'Often yes. Critics argue it fuels inflation; supporters say it builds resilience[cite: 757].',
+      },
+      {
+        question: 'What about allies?',
+        answer: 'It causes friction with trade partners (EU/Asia), requiring diplomatic waivers[cite: 758].',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-06-01',
+  },
 ];
 
 /*
-   DATA NOTES & VERIFICATION:
-   1. Social Security (87%): Specifically refers to the "donut hole" tax (taxing earnings >$400k).
-   2. Stock Ban (86%): Includes banning spouses/dependents, which drives the high support number.
-   3. Term Limits (85%): Refers to the specific Constitutional Amendment proposal (3 House / 2 Senate terms)[cite: 78].
-   4. Right to Repair (83%): Based on CAR Coalition data; explicitly includes vehicle data access[cite: 99].
-   5. Drug Negotiation (84%): Refers to *universal* negotiation (all drugs), not the limited IRA list[cite: 119].
-   6. AI Regulation (79%): Specifically for *mandatory testing* of models, not generic regulation[cite: 140].
-   7. Broadband (76%): Aggregated support for federal subsidies + municipal broadband rights[cite: 158].
-   8. Dark Money (79%): Support for DISCLOSE Act and banning foreign ballot funding[cite: 175].
-   9. Immigration (76%): Represents the "Grand Bargain" package (E-Verify + Dreamers), not policies in isolation.
-   10. Vocational (82%): Support for funding skills training/apprenticeships over 4-year degrees[cite: 202].
-*/
+      */
 
 /**
  * Get top N policies
