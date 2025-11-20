@@ -39,6 +39,12 @@ export default function Navbar() {
               All Policies
             </Link>
             <Link
+              href="/votes"
+              className="text-sm font-medium text-black hover:text-gray-600 transition-colors"
+            >
+              My Votes
+            </Link>
+            <Link
               href="/top20"
               className="text-sm font-medium text-black hover:text-gray-600 transition-colors"
             >
@@ -97,6 +103,13 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 All Policies
+              </Link>
+              <Link
+                href="/votes"
+                className="px-4 py-2 text-neutral-dark hover:bg-neutral-light rounded-lg transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                My Votes
               </Link>
               <Link
                 href="/top20"

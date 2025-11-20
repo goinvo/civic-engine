@@ -245,16 +245,21 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
         </AnimatePresence>
       </div>
 
-      {/* Desktop Sidebar (Unchanged) */}
+      {/* Desktop Sidebar */}
       <div className="hidden lg:block w-64 flex-shrink-0">
         <div className="sticky top-24 bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
           <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black">Policies</h3>
           {(() => {
             const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
-            const rectTop = shouldRender ? buttonPositions[activeIndex].top + buttonPositions[0].height : 0;
-            const rectHeight = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
+
+            const rectTop = shouldRender
+              ? headerHeight + buttonPositions[activeIndex].top + 18
+              : 0;
+
+            const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
               ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
               : shouldRender ? buttonPositions[activeIndex].height : 0;
+            const rectHeight = Math.max(0, rectHeightRaw - 2);
 
             return shouldRender ? (
               <motion.div
