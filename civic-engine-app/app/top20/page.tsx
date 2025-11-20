@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import PolicyListItem from '@/components/PolicyListItem';
-import { getTopPolicies } from '@/data/policies';
+import { getAllPoliciesSorted } from '@/data/policies';
 
 export default function Top20Page() {
-  const allPolicies = getTopPolicies(20);
+  const allPolicies = getAllPoliciesSorted();
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -56,30 +56,13 @@ export default function Top20Page() {
           Ranked by average bipartisan support across recent polling data.
         </p>
         <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          {allPolicies.map((policy) => (
-            <PolicyListItem key={policy.id} policy={policy} />
+          {allPolicies.map((policy, index) => (
+            <PolicyListItem key={policy.id} policy={policy} displayRank={index + 1} />
           ))}
         </div>
       </section>
 
-      {/* Compare CTA - Neobrutalist Card */}
-      <section className="mb-16">
-        <div className="bg-gray-100 border-4 border-black p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-black mb-4">
-            Want to Compare Policies?
-          </h2>
-          <p className="font-body text-black font-medium mb-6 max-w-2xl">
-            Use our comparison tool to see how different policies stack up against each other and understand the nuances between them.
-          </p>
-          <Link
-            href="/compare"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-          >
-            <span>Compare Policies</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
+      {/* Compare CTA removed */}
 
       {/* Data Source Info */}
       <section className="mb-16">

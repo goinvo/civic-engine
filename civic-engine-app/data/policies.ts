@@ -1904,13 +1904,15 @@ export const policies: Policy[] = [
 ];
 
 /*
-      */
+*/
 
 /**
  * Get top N policies
  */
 export function getTopPolicies(limit: number = 10): Policy[] {
-  return policies.slice(0, limit);
+  return [...policies]
+    .sort((a, b) => b.averageSupport - a.averageSupport || a.rank - b.rank)
+    .slice(0, Math.max(0, limit));
 }
 
 /**
@@ -1925,4 +1927,18 @@ export function getPolicyById(id: string): Policy | undefined {
  */
 export function getPoliciesByCategory(category: string): Policy[] {
   return policies.filter((policy) => policy.category === category);
+}
+
+/**
+ * Get all policies sorted by average support (desc), tie-break by rank (asc)
+ */
+export function getAllPoliciesSorted(): Policy[] {
+  return [...policies].sort((a, b) => b.averageSupport - a.averageSupport || a.rank - b.rank);
+}
+
+/**
+ * Get total policies count
+ */
+export function getPoliciesCount(): number {
+  return policies.length;
 }

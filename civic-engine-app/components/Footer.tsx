@@ -43,15 +43,7 @@ export default function Footer() {
                   href="/top20"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  Top 20 Policies
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/compare"
-                  className="text-gray-300 hover:text-white transition-colors text-sm"
-                >
-                  Compare Policies
+                  All Policies
                 </Link>
               </li>
               <li>

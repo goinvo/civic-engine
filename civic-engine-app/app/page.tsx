@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollPolicyList from '@/components/ScrollPolicyList';
-import { getTopPolicies } from '@/data/policies';
+import { getTopPolicies, getPoliciesCount } from '@/data/policies';
 
 export default function Home() {
   const topTenPolicies = getTopPolicies(10);
+  const totalPolicies = getPoliciesCount();
   const [navbarHeight, setNavbarHeight] = useState(0);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function Home() {
           {/* Stats - Neobrutalist Cards - Patriotic Colors */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
             <div className="bg-[#C91A2B] border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              <div className="text-6xl font-display font-black text-white">20</div>
+              <div className="text-6xl font-display font-black text-white">{totalPolicies}</div>
               <div className="text-base font-body text-white font-bold">Consensus Policies</div>
             </div>
             <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
@@ -64,14 +65,8 @@ export default function Home() {
               href="/top20"
               className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
             >
-              <span>View All 20 Policies</span>
+              <span>View All {totalPolicies} Policies</span>
               <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/compare"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-white border-4 border-black text-black hover:bg-gray-100 transition-colors font-bold shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
-            >
-              <span>Compare Policies</span>
             </Link>
           </div>
         </div>
@@ -108,7 +103,7 @@ export default function Home() {
             href="/top20"
             className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
           >
-            <span>See All 20 Policies</span>
+            <span>See All {totalPolicies} Policies</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

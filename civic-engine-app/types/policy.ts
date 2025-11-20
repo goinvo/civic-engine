@@ -14,6 +14,9 @@ export type PolicyCategory =
   | 'civil-rights'
   | 'defense'
   | 'infrastructure'
+  | 'technology'
+  | 'security'
+  | 'society'
   | 'other';
 
 /**

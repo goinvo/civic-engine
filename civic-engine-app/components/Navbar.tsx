@@ -39,10 +39,10 @@ export default function Navbar() {
               All Policies
             </Link>
             <Link
-              href="/compare"
+              href="/top20"
               className="text-sm font-medium text-black hover:text-gray-600 transition-colors"
             >
-              Compare
+              All Policies
             </Link>
 
             {/* Language Switcher */}
@@ -99,11 +99,11 @@ export default function Navbar() {
                 All Policies
               </Link>
               <Link
-                href="/compare"
+                href="/top20"
                 className="px-4 py-2 text-neutral-dark hover:bg-neutral-light rounded-lg transition-colors font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Compare
+                All Policies
               </Link>
 
               {/* Mobile Language Selector */}

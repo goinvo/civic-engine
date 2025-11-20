@@ -8,10 +8,12 @@ import { Policy } from '@/types/policy';
 interface PolicyListItemProps {
   policy: Policy;
   isActive?: boolean;
+  displayRank?: number;
 }
 
-export default function PolicyListItem({ policy, isActive = false }: PolicyListItemProps) {
+export default function PolicyListItem({ policy, isActive = false, displayRank }: PolicyListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const rankToShow = displayRank ?? policy.rank;
 
   return (
     <motion.div
@@ -36,7 +38,7 @@ export default function PolicyListItem({ policy, isActive = false }: PolicyListI
             <Plus className="w-5 h-5 text-black flex-shrink-0" strokeWidth={3} />
           </motion.div>
           <span className="font-display font-black text-base text-black">
-            {policy.rank}. {policy.title}
+            {rankToShow}. {policy.title}
           </span>
         </div>
         <div className="text-right flex-shrink-0 ml-4">

@@ -206,7 +206,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 >
-                  {policy.rank}. {policy.title}
+                  {index + 1}. {policy.title}
                 </motion.span>
               );
             })}
@@ -236,7 +236,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                     }}
                     className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white hover:bg-gray-100'}`}
                   >
-                    {policy.rank}. {policy.title}
+                    {index + 1}. {policy.title}
                   </button>
                 ))}
               </div>
@@ -273,7 +273,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                 onClick={() => scrollToPolicy(index)}
                 className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'text-white' : 'text-black'}`}
               >
-                {policy.rank}. {policy.title}
+                {index + 1}. {policy.title}
               </button>
             ))}
           </div>
@@ -311,6 +311,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                 onContentRefChange={(el) => {
                   contentRef.current = el;
                 }}
+                displayRank={activeIndex + 1}
               />
 
               {/* Next Policy Preview (Unchanged) */}
@@ -325,7 +326,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                   >
                     <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
                       <h2 className="font-display font-black text-2xl text-black mb-2">
-                        {policies[activeIndex + 1].rank}. {policies[activeIndex + 1].title}
+                        {activeIndex + 2}. {policies[activeIndex + 1].title}
                       </h2>
                       <p className="font-body text-sm text-gray-600 font-medium">
                         {policies[activeIndex + 1].averageSupport}% bipartisan support
@@ -363,6 +364,7 @@ function PolicyWindow({
   maxHeight,
   entryDirection,
   onContentRefChange,
+  displayRank,
 }: {
   policy: Policy;
   isAtBottom: boolean;
@@ -372,6 +374,7 @@ function PolicyWindow({
   maxHeight: string;
   entryDirection: 'UP' | 'DOWN';
   onContentRefChange: (el: HTMLDivElement | null) => void;
+  displayRank: number;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
 
@@ -424,7 +427,7 @@ function PolicyWindow({
           {/* Header */}
           <div className="mb-6">
             <h2 className="font-display font-black text-3xl text-black mb-2">
-              {policy.rank}. {policy.title}
+              {displayRank}. {policy.title}
             </h2>
           </div>
 
