@@ -473,7 +473,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Represents support for the DISCLOSE Act and for banning foreign funding of ballot initiatives[cite: 505].',
+      'Represents support for the DISCLOSE Act and for banning foreign funding of ballot initiatives',
     ],
     details: [
       {
@@ -665,16 +665,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Over 80% of voters rank privacy legislation as a "top" priority. Passed Senate 91-3[cite: 605].',
+      'Over 80% of voters rank privacy legislation as a "top" priority. Passed Senate 91-3',
     ],
     details: [
       {
         title: 'Duty of Care',
-        description: 'Platforms must take reasonable measures to mitigate specific harms like suicide promotion and sexual exploitation[cite: 599].',
+        description: 'Platforms must take reasonable measures to mitigate specific harms like suicide promotion and sexual exploitation',
       },
       {
         title: 'Default Protections',
-        description: 'Mandates strongest privacy settings by default for users under 17[cite: 601].',
+        description: 'Mandates strongest privacy settings by default for users under 17',
       },
     ],
     resourceFlow: {
@@ -694,11 +694,11 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Is this censorship?',
-        answer: 'Critics fear it could be used to suppress content, but proponents argue it regulates platform design (algorithms), not specific speech[cite: 610].',
+        answer: 'Critics fear it could be used to suppress content, but proponents argue it regulates platform design (algorithms), not specific speech',
       },
       {
         question: 'Does it require ID?',
-        answer: 'Age verification is a major friction point; critics argue it compromises privacy for all users[cite: 612].',
+        answer: 'Age verification is a major friction point; critics argue it compromises privacy for all users',
       },
     ],
     trending: 'up',
@@ -733,7 +733,7 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Closing Loopholes',
-        description: 'Extends checks to gun shows and private sales, which currently bypass the NICS system[cite: 483].',
+        description: 'Extends checks to gun shows and private sales, which currently bypass the NICS system',
       },
       {
         title: 'Broad Consensus',
@@ -796,11 +796,11 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Eliminate Costs',
-        description: 'States must waive fees for ID cards and underlying documents like birth certificates[cite: 364].',
+        description: 'States must waive fees for ID cards and underlying documents like birth certificates',
       },
       {
         title: 'Accessibility',
-        description: 'Requires mobile DMV units and extended hours to reach rural/working-class voters[cite: 365].',
+        description: 'Requires mobile DMV units and extended hours to reach rural/working-class voters',
       },
     ],
     resourceFlow: {
@@ -820,7 +820,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Who pays for it?',
-        answer: 'The state or federal government covers the cost of the ID to ensure it is not a "poll tax"[cite: 361].',
+        answer: 'The state or federal government covers the cost of the ID to ensure it is not a "poll tax"',
       },
       {
         question: 'Is this bipartisan?',
@@ -854,16 +854,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'One of the few issues with identical intensity of support across parties[cite: 730].',
+      'One of the few issues with identical intensity of support across parties',
     ],
     details: [
       {
         title: 'All-In Pricing',
-        description: 'Merchants must display the total price, including all mandatory fees, upfront[cite: 725].',
+        description: 'Merchants must display the total price, including all mandatory fees, upfront',
       },
       {
         title: 'Bipartisan Grievance',
-        description: 'Unites consumers against deceptive corporate practices[cite: 733].',
+        description: 'Unites consumers against deceptive corporate practices',
       },
     ],
     resourceFlow: {
@@ -887,7 +887,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Who opposes this?',
-        answer: 'Hospitality and airline lobbies, who profit from "drip pricing"[cite: 726].',
+        answer: 'Hospitality and airline lobbies, who profit from "drip pricing"',
       },
     ],
     trending: 'up',
@@ -917,12 +917,12 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Viewed as "economic infrastructure" enabling workforce participation[cite: 431].',
+      'Viewed as "economic infrastructure" enabling workforce participation',
     ],
     details: [
       {
         title: 'Workforce Enabler',
-        description: 'Allows parents to remain in the workforce by offsetting the high cost of care[cite: 434].',
+        description: 'Allows parents to remain in the workforce by offsetting the high cost of care',
       },
       {
         title: 'Poverty Reduction',
@@ -950,7 +950,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'How much is it?',
-        answer: 'Proposals range, but often target ~$3,000-$4,000 per child[cite: 434].',
+        answer: 'Proposals range, but often target ~$3,000-$4,000 per child',
       },
     ],
     trending: 'stable',
@@ -980,16 +980,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Establishes a regular schedule of appointments to lower the political stakes of vacancies[cite: 331].',
+      'Establishes a regular schedule of appointments to lower the political stakes of vacancies',
     ],
     details: [
       {
         title: 'Regular Appointments',
-        description: 'Guarantees every President gets 2 appointments per term, ending the "actuarial lottery"[cite: 333].',
+        description: 'Guarantees every President gets 2 appointments per term, ending the "actuarial lottery"',
       },
       {
         title: 'Senior Status',
-        description: 'After 18 years, Justices move to "senior status" on lower courts, preserving their lifetime judicial appointment[cite: 337].',
+        description: 'After 18 years, Justices move to "senior status" on lower courts, preserving their lifetime judicial appointment',
       },
     ],
     resourceFlow: {
@@ -1009,7 +1009,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Is this constitutional?',
-        answer: 'Debated. Proponents argue "good behavior" allows for senior status rotation; opponents say it requires an Amendment[cite: 337].',
+        answer: 'Debated. Proponents argue "good behavior" allows for senior status rotation; opponents say it requires an Amendment',
       },
       {
         question: 'Does it affect current Justices?',
@@ -1043,16 +1043,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Targets extreme wealth accumulation; specifically affects only the top 0.1%[cite: 415].',
+      'Targets extreme wealth accumulation; specifically affects only the top 0.1%',
     ],
     details: [
       {
         title: 'Targeted Revenue',
-        description: 'Applies only to assets >$50M, avoiding the "mere" upper-middle class[cite: 419].',
+        description: 'Applies only to assets >$50M, avoiding the "mere" upper-middle class',
       },
       {
         title: 'Fairness',
-        description: 'Driven by the belief that the tax code currently favors capital over labor[cite: 418].',
+        description: 'Driven by the belief that the tax code currently favors capital over labor',
       },
     ],
     resourceFlow: {
@@ -1111,11 +1111,11 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Human Rights Only',
-        description: 'Clarifies that Constitutional rights belong to natural persons, not artificial entities[cite: 368].',
+        description: 'Clarifies that Constitutional rights belong to natural persons, not artificial entities',
       },
       {
         title: 'Regulate Spending',
-        description: 'Allows Congress to limit political spending without violating the First Amendment[cite: 371].',
+        description: 'Allows Congress to limit political spending without violating the First Amendment',
       },
     ],
     resourceFlow: {
@@ -1174,7 +1174,7 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Civic Glue',
-        description: 'Programs like AmeriCorps increase long-term voter turnout and bridge cultural divides[cite: 474].',
+        description: 'Programs like AmeriCorps increase long-term voter turnout and bridge cultural divides',
       },
       {
         title: 'Incentives',
@@ -1198,7 +1198,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Is this a draft?',
-        answer: 'No. It is strictly voluntary. Mandatory service is divisive and faces legal hurdles[cite: 472].',
+        answer: 'No. It is strictly voluntary. Mandatory service is divisive and faces legal hurdles',
       },
       {
         question: 'What do they do?',
@@ -1237,11 +1237,11 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Pre-filled Returns',
-        description: 'The IRS uses existing data (W-2s) to pre-populate returns, saving time and money[cite: 427].',
+        description: 'The IRS uses existing data (W-2s) to pre-populate returns, saving time and money',
       },
       {
         title: 'Success Story',
-        description: 'Expanded to 25 states in 2025 due to overwhelming demand[cite: 426].',
+        description: 'Expanded to 25 states in 2025 due to overwhelming demand',
       },
     ],
     resourceFlow: {
@@ -1261,7 +1261,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Why do we pay to file now?',
-        answer: 'The tax prep lobby historically blocked the IRS from offering a free alternative[cite: 429].',
+        answer: 'The tax prep lobby historically blocked the IRS from offering a free alternative',
       },
       {
         question: 'Is it mandatory?',
@@ -1295,16 +1295,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Driven by food security concerns and geopolitical tensions; 29 states have already acted[cite: 780].',
+      'Driven by food security concerns and geopolitical tensions; 29 states have already acted',
     ],
     details: [
       {
         title: 'National Security',
-        description: 'Prevents adversaries from controlling critical food supply chains or spying near bases[cite: 782].',
+        description: 'Prevents adversaries from controlling critical food supply chains or spying near bases',
       },
       {
         title: 'Bipartisan Push',
-        description: 'Strong support from rural Republicans and security-conscious Democrats[cite: 784].',
+        description: 'Strong support from rural Republicans and security-conscious Democrats',
       },
     ],
     resourceFlow: {
@@ -1315,7 +1315,7 @@ export const policies: Policy[] = [
     ifThen: [
       'If a Chinese state-owned company tries to buy farmland, the sale is blocked',
       'If enacted, U.S. food supply chains remain under domestic control',
-      'If implemented poorly, it faces legal challenges over discrimination [cite: 786]',
+      'If implemented poorly, it faces legal challenges over discrimination ',
     ],
     causalChain: {
       immediate: 'Ban land sales to adversary nations',
@@ -1324,7 +1324,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Is this discriminatory?',
-        answer: 'Civil rights groups argue it echoes past "Alien Land Laws." DOJ has raised concerns about housing discrimination[cite: 788].',
+        answer: 'Civil rights groups argue it echoes past "Alien Land Laws." DOJ has raised concerns about housing discrimination',
       },
       {
         question: 'How much land do they own?',
@@ -1358,16 +1358,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Majority support exists even in swing districts; 63% support indexing to inflation[cite: 395].',
+      'Majority support exists even in swing districts; 63% support indexing to inflation',
     ],
     details: [
       {
         title: 'Inflation Indexing',
-        description: 'Automatically adjusts the wage based on cost of living, removing the need for constant legislation[cite: 395].',
+        description: 'Automatically adjusts the wage based on cost of living, removing the need for constant legislation',
       },
       {
         title: 'Living Standard',
-        description: '72% agree a full-time job should keep a worker above the poverty line[cite: 395].',
+        description: '72% agree a full-time job should keep a worker above the poverty line',
       },
     ],
     resourceFlow: {
@@ -1378,7 +1378,7 @@ export const policies: Policy[] = [
     ifThen: [
       'If you work minimum wage, your pay increases gradually to $17',
       'If inflation goes up, your wage automatically adjusts',
-      'If enacted, the subminimum wage for tipped workers is eliminated [cite: 392]',
+      'If enacted, the subminimum wage for tipped workers is eliminated ',
     ],
     causalChain: {
       immediate: 'Raise wage floor and index it',
@@ -1391,7 +1391,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Why $17?',
-        answer: 'Reflects inflation since the "Fight for $15" began. In high-cost areas, demand is even higher[cite: 391].',
+        answer: 'Reflects inflation since the "Fight for $15" began. In high-cost areas, demand is even higher',
       },
     ],
     trending: 'stable',
@@ -1421,16 +1421,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'The preferred vehicle for universal coverage (68-70% support), bridging the gap between ACA and Single Payer[cite: 401].',
+      'The preferred vehicle for universal coverage (68-70% support), bridging the gap between ACA and Single Payer',
     ],
     details: [
       {
         title: 'Competition',
-        description: 'Introduces a non-profit competitor to drive down private premiums[cite: 403].',
+        description: 'Introduces a non-profit competitor to drive down private premiums',
       },
       {
         title: 'Safety Net',
-        description: 'Ensures everyone has an affordable option without banning private insurance[cite: 404].',
+        description: 'Ensures everyone has an affordable option without banning private insurance',
       },
     ],
     resourceFlow: {
@@ -1454,7 +1454,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Do Republicans support it?',
-        answer: 'Surprisingly, yes (approx 50%), as it preserves choice while addressing costs[cite: 401].',
+        answer: 'Surprisingly, yes (approx 50%), as it preserves choice while addressing costs',
       },
     ],
     trending: 'stable',
@@ -1484,16 +1484,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Support has surged 16+ points since 2020, driven by energy security and AI power needs[cite: 641].',
+      'Support has surged 16+ points since 2020, driven by energy security and AI power needs',
     ],
     details: [
       {
         title: 'Regulatory Streamlining',
-        description: 'The ADVANCE Act cuts red tape for licensing new small modular reactors (SMRs)[cite: 631].',
+        description: 'The ADVANCE Act cuts red tape for licensing new small modular reactors (SMRs)',
       },
       {
         title: 'Brownfield Reuse',
-        description: 'Incentivizes building nuclear plants at retired coal sites to use existing transmission lines[cite: 633].',
+        description: 'Incentivizes building nuclear plants at retired coal sites to use existing transmission lines',
       },
     ],
     resourceFlow: {
@@ -1547,16 +1547,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Specific reforms (registry, training) have 90%+ support; "Qualified Immunity" reform is the sticking point[cite: 670].',
+      'Specific reforms (registry, training) have 90%+ support; "Qualified Immunity" reform is the sticking point',
     ],
     details: [
       {
         title: 'Misconduct Registry',
-        description: 'Prevents "wandering officers" by tracking those fired for misconduct in a national database[cite: 665].',
+        description: 'Prevents "wandering officers" by tracking those fired for misconduct in a national database',
       },
       {
         title: 'Duty to Intervene',
-        description: '95% support requiring officers to intervene if a colleague uses excessive force[cite: 670].',
+        description: '95% support requiring officers to intervene if a colleague uses excessive force',
       },
     ],
     resourceFlow: {
@@ -1576,7 +1576,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Does this defund the police?',
-        answer: 'No. It conditions funding on standards. Republicans support the accountability measures (82%)[cite: 670].',
+        answer: 'No. It conditions funding on standards. Republicans support the accountability measures (82%)',
       },
       {
         question: 'What about lawsuits?',
@@ -1610,16 +1610,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Focuses on supply-side incentives (building homes) rather than just subsidies[cite: 409].',
+      'Focuses on supply-side incentives (building homes) rather than just subsidies',
     ],
     details: [
       {
         title: 'Appraisal Gap Fix',
-        description: 'Covers the difference between construction cost and market value in distressed areas[cite: 769].',
+        description: 'Covers the difference between construction cost and market value in distressed areas',
       },
       {
         title: 'Owner-Occupied',
-        description: 'Credits are restricted to homes sold to residents, not corporate investors[cite: 770].',
+        description: 'Credits are restricted to homes sold to residents, not corporate investors',
       },
     ],
     resourceFlow: {
@@ -1643,7 +1643,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Is this NIMBY?',
-        answer: 'No, it fights NIMBYism. 71% believe more affordable housing makes communities better[cite: 410].',
+        answer: 'No, it fights NIMBYism. 71% believe more affordable housing makes communities better',
       },
     ],
     trending: 'up',
@@ -1673,16 +1673,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      '64% prioritize mental health funding; 74% awareness of 988 in 2025[cite: 698, 699].',
+      '64% prioritize mental health funding; 74% awareness of 988 in 2025',
     ],
     details: [
       {
         title: 'Georouting',
-        description: 'Routes calls to local centers based on location, not area code, for better response[cite: 686].',
+        description: 'Routes calls to local centers based on location, not area code, for better response',
       },
       {
         title: 'Specialized Care',
-        description: 'Debate centers on dedicated support for LGBTQ+ youth ("Press 3")[cite: 690].',
+        description: 'Debate centers on dedicated support for LGBTQ+ youth ("Press 3")',
       },
     ],
     resourceFlow: {
@@ -1702,7 +1702,7 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Who pays for it?',
-        answer: 'A mix of federal grants and state telecom fees (like 911)[cite: 697].',
+        answer: 'A mix of federal grants and state telecom fees (like 911)',
       },
       {
         question: 'Does it involve police?',
@@ -1736,16 +1736,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Framed as a public safety issue (reducing robbery risk) rather than legalization[cite: 717].',
+      'Framed as a public safety issue (reducing robbery risk) rather than legalization',
     ],
     details: [
       {
         title: 'Public Safety',
-        description: 'Taking cash off the streets prevents violent robberies of dispensaries[cite: 710].',
+        description: 'Taking cash off the streets prevents violent robberies of dispensaries',
       },
       {
         title: 'Operation Choke Point',
-        description: 'Includes protections preventing regulators from targeting politically disfavored industries (guns/oil) to win GOP votes[cite: 715].',
+        description: 'Includes protections preventing regulators from targeting politically disfavored industries (guns/oil) to win GOP votes',
       },
     ],
     resourceFlow: {
@@ -1769,7 +1769,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Who supports it?',
-        answer: 'A "coalition of necessity": Banks, police, and the cannabis industry[cite: 708].',
+        answer: 'A "coalition of necessity": Banks, police, and the cannabis industry',
       },
     ],
     trending: 'up',
@@ -1799,16 +1799,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Red states like Oklahoma demonstrate success; viewed as "educational preparedness"[cite: 467].',
+      'Red states like Oklahoma demonstrate success; viewed as "educational preparedness"',
     ],
     details: [
       {
         title: 'Economic ROI',
-        description: 'Enables parents to work and improves long-term student outcomes[cite: 466].',
+        description: 'Enables parents to work and improves long-term student outcomes',
       },
       {
         title: 'State Momentum',
-        description: 'Voters in states like New Mexico have approved funding with 70% support[cite: 464].',
+        description: 'Voters in states like New Mexico have approved funding with 70% support',
       },
     ],
     resourceFlow: {
@@ -1862,16 +1862,16 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Combines "America First" nationalism with pro-labor manufacturing policy[cite: 745].',
+      'Combines "America First" nationalism with pro-labor manufacturing policy',
     ],
     details: [
       {
         title: 'Thresholds',
-        description: 'Requires 75% domestic content by 2029 for federal projects[cite: 749].',
+        description: 'Requires 75% domestic content by 2029 for federal projects',
       },
       {
         title: 'Broad Appeal',
-        description: 'Republicans support it for jobs; Democrats for labor/environmental standards[cite: 752].',
+        description: 'Republicans support it for jobs; Democrats for labor/environmental standards',
       },
     ],
     resourceFlow: {
@@ -1891,11 +1891,11 @@ export const policies: Policy[] = [
     commonQuestions: [
       {
         question: 'Does it cost more?',
-        answer: 'Often yes. Critics argue it fuels inflation; supporters say it builds resilience[cite: 757].',
+        answer: 'Often yes. Critics argue it fuels inflation; supporters say it builds resilience',
       },
       {
         question: 'What about allies?',
-        answer: 'It causes friction with trade partners (EU/Asia), requiring diplomatic waivers[cite: 758].',
+        answer: 'It causes friction with trade partners (EU/Asia), requiring diplomatic waivers',
       },
     ],
     trending: 'up',
