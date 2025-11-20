@@ -36,10 +36,10 @@ export default function Home() {
         }}
       >
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="font-display text-7xl sm:text-8xl md:text-9xl font-black text-black mb-8 leading-tight">
+          <h1 className="font-display text-7xl sm:text-8xl md:text-9xl font-black text-black dark:text-white mb-8 leading-tight">
             What Most of Us<br />Agree On
           </h1>
-          <p className="font-body text-2xl text-gray-700 font-medium max-w-3xl mx-auto mb-12">
+          <p className="font-body text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-12">
             Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
           </p>
 
@@ -78,7 +78,7 @@ export default function Home() {
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span className="font-display font-bold text-sm text-gray-600 mb-2 group-hover:text-black transition-colors">
+          <span className="font-display font-bold text-sm text-gray-600 dark:text-gray-400 mb-2 group-hover:text-black dark:group-hover:text-white transition-colors">
             Scroll to explore
           </span>
           <div className="w-12 h-12 border-4 border-black bg-[#C91A2B] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:opacity-90 transition-opacity">
@@ -90,8 +90,8 @@ export default function Home() {
       {/* Policies Section with Scroll */}
       <section id="policies-section" className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center mb-16">
-          <h2 className="font-display text-5xl font-black text-black mb-4">Top 10 Policies</h2>
-          <p className="font-body text-xl text-gray-700 font-medium max-w-3xl mx-auto">
+          <h2 className="font-display text-5xl font-black text-black dark:text-white mb-4">Top 10 Policies</h2>
+          <p className="font-body text-xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto">
             Scroll through to explore each policy in detail. They'll automatically expand as you scroll.
           </p>
         </div>
@@ -111,17 +111,17 @@ export default function Home() {
 
       {/* Info Section */}
       <section className="max-w-7xl mx-auto px-6 py-16 text-center">
-        <h2 className="font-display text-4xl font-black text-black mb-6">
+        <h2 className="font-display text-4xl font-black text-black dark:text-white mb-6">
           Data You Can Trust
         </h2>
-        <p className="font-body text-lg text-gray-700 font-medium max-w-3xl mx-auto mb-6">
+        <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-6">
           All policy data comes from reputable, non-partisan polling organizations including YouGov, Pew Research Center, and the Associated Press-NORC. Each policy shown has documented support of at least 55% from Democrats, Republicans, and Independents.
         </p>
         <a
           href="https://americans-agree.org"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-bold underline text-lg"
+          className="inline-flex items-center space-x-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors font-bold underline text-lg"
         >
           <span>Explore the Data Source</span>
           <ArrowRight className="w-5 h-5" />

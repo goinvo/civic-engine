@@ -23,7 +23,9 @@
       "Bash(timeout /t 3 /nobreak)",
       "Bash(cmd //c \"taskkill /F /IM node.exe\")",
       "Bash(if exist .nextdevlock del /F /Q .nextdevlock 2)",
-      "Bash(if exist civic-engine-app.nextdevlock del /F /Q civic-engine-app.nextdevlock 2)"
+      "Bash(if exist civic-engine-app.nextdevlock del /F /Q civic-engine-app.nextdevlock 2)",
+      "Bash(if exist .nextdev-lock del /F /Q .nextdev-lock 2)",
+      "Bash(del /F /Q \"C:\\Users\\quest\\Programming\\GoInvo\\civic-engine\\civic-engine-app\\.next\\dev\\lock\" 2)"
     ],
     "deny": [],
     "ask": []

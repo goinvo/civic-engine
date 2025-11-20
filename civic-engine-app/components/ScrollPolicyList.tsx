@@ -187,7 +187,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       <div className="lg:hidden sticky top-20 z-30 mb-4">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="w-full bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between overflow-hidden relative"
+          className="w-full bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] flex items-center justify-between overflow-hidden relative"
         >
           <div className="flex items-center space-x-2 relative">
             {/* (Truncated for brevity - same as before) */}
@@ -199,7 +199,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               return (
                 <motion.span
                   key={policy.id}
-                  className="font-display font-black text-sm text-black absolute left-0"
+                  className="font-display font-black text-sm text-black dark:text-white absolute left-0"
                   animate={{
                     y: `${yOffset}%`,
                     opacity: isCurrent ? 1 - transitionProgress : transitionProgress,
@@ -212,7 +212,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             })}
           </div>
           <motion.div animate={{ rotate: isMobileMenuOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
-            <svg className="w-5 h-5 text-black" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-black dark:text-white" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </motion.div>
@@ -224,7 +224,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="overflow-hidden bg-white border-4 border-t-0 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -mt-1"
+              className="overflow-hidden bg-white dark:bg-gray-800 border-4 border-t-0 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] -mt-1"
             >
               <div className="p-2 space-y-2 max-h-[60vh] overflow-y-auto">
                 {policies.map((policy, index) => (
@@ -234,7 +234,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                       scrollToPolicy(index);
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white hover:bg-gray-100'}`}
+                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
                   >
                     {index + 1}. {policy.title}
                   </button>
@@ -247,8 +247,8 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
 
       {/* Desktop Sidebar */}
       <div className="hidden lg:block w-64 flex-shrink-0">
-        <div className="sticky top-24 bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
-          <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black">Policies</h3>
+        <div className="sticky top-24 bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
+          <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
           {(() => {
             const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
 
@@ -276,7 +276,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                 key={policy.id}
                 ref={(el) => { desktopButtonRefs.current[index] = el; }}
                 onClick={() => scrollToPolicy(index)}
-                className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black ${activeIndex === index ? 'text-white' : 'text-black'}`}
+                className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'text-white' : 'text-black dark:text-white'}`}
               >
                 {index + 1}. {policy.title}
               </button>
@@ -329,11 +329,11 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                     exit={{ y: 40, opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   >
-                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
-                      <h2 className="font-display font-black text-2xl text-black mb-2">
+                    <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] p-6">
+                      <h2 className="font-display font-black text-2xl text-black dark:text-white mb-2">
                         {activeIndex + 2}. {policies[activeIndex + 1].title}
                       </h2>
-                      <p className="font-body text-sm text-gray-600 font-medium">
+                      <p className="font-body text-sm text-gray-600 dark:text-gray-400 font-medium">
                         {policies[activeIndex + 1].averageSupport}% bipartisan support
                       </p>
                     </div>
@@ -425,41 +425,41 @@ function PolicyWindow({
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-y-auto lg:overflow-hidden overscroll-contain"
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain"
         style={{ maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
           {/* Header */}
           <div className="mb-6">
-            <h2 className="font-display font-black text-3xl text-black mb-2">
+            <h2 className="font-display font-black text-3xl text-black dark:text-white mb-2">
               {displayRank}. {policy.title}
             </h2>
           </div>
 
           {/* Policy Description */}
-          <p className="font-body text-lg text-gray-700 font-medium mb-6">
+          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium mb-6">
             {policy.description}
           </p>
 
           {/* Support Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <div className="text-3xl font-display font-black text-black">{policy.averageSupport}%</div>
-              <div className="text-xs font-body text-black font-bold">Avg Support</div>
+            <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+              <div className="text-3xl font-display font-black text-black dark:text-white">{policy.averageSupport}%</div>
+              <div className="text-xs font-body text-black dark:text-gray-300 font-bold">Avg Support</div>
             </div>
             {policy.partySupport && (
               <>
-                <div className="bg-[#2F3BBD] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-[#2F3BBD] border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                   <div className="text-2xl font-display font-black text-white">{policy.partySupport.democrats}%</div>
                   <div className="text-xs font-body text-white font-bold">Democrats</div>
                 </div>
-                <div className="bg-[#C91A2B] border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-[#C91A2B] border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                   <div className="text-2xl font-display font-black text-white">{policy.partySupport.republicans}%</div>
                   <div className="text-xs font-body text-white font-bold">Republicans</div>
                 </div>
-                <div className="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                  <div className="text-2xl font-display font-black text-black">{policy.partySupport.independents}%</div>
-                  <div className="text-xs font-body text-black font-bold">Independents</div>
+                <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                  <div className="text-2xl font-display font-black text-black dark:text-white">{policy.partySupport.independents}%</div>
+                  <div className="text-xs font-body text-black dark:text-gray-300 font-bold">Independents</div>
                 </div>
               </>
             )}
@@ -467,12 +467,12 @@ function PolicyWindow({
 
           {/* Key Details */}
           <div className="mb-6">
-            <h3 className="font-display text-xl font-black text-black mb-3">Key Details</h3>
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>
             <ul className="space-y-3">
               {policy.details.map((detail, index) => (
                 <li key={index}>
-                  <h4 className="font-display font-black text-black mb-1">{detail.title}</h4>
-                  <p className="font-body text-gray-700 font-medium">{detail.description}</p>
+                  <h4 className="font-display font-black text-black dark:text-white mb-1">{detail.title}</h4>
+                  <p className="font-body text-gray-700 dark:text-gray-300 font-medium">{detail.description}</p>
                 </li>
               ))}
             </ul>
@@ -481,20 +481,20 @@ function PolicyWindow({
           {/* How It Works */}
           {policy.resourceFlow && (
             <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black mb-3">How It Works</h3>
-              <div className="bg-[#AFC5F5] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">How It Works</h3>
+              <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <div className="text-xs font-display font-black text-black uppercase mb-1">From</div>
-                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.from}</div>
+                    <div className="text-xs font-display font-black text-white uppercase mb-1">From</div>
+                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.from}</div>
                   </div>
                   <div>
-                    <div className="text-xs font-display font-black text-black uppercase mb-1">To</div>
-                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.to}</div>
+                    <div className="text-xs font-display font-black text-white uppercase mb-1">To</div>
+                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.to}</div>
                   </div>
                   <div>
-                    <div className="text-xs font-display font-black text-black uppercase mb-1">How</div>
-                    <div className="font-body font-bold text-black text-sm">{policy.resourceFlow.channel}</div>
+                    <div className="text-xs font-display font-black text-white uppercase mb-1">How</div>
+                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.channel}</div>
                   </div>
                 </div>
               </div>
@@ -504,12 +504,12 @@ function PolicyWindow({
           {/* In Practice */}
           {policy.ifThen && policy.ifThen.length > 0 && (
             <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black mb-3">In Practice</h3>
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">In Practice</h3>
               <ul className="space-y-2">
                 {policy.ifThen.map((statement, index) => (
                   <li key={index} className="flex items-start space-x-2">
-                    <span className="font-display text-black font-bold mt-0.5">→</span>
-                    <p className="font-body font-medium text-gray-700 text-sm">{statement}</p>
+                    <span className="font-display text-black dark:text-white font-bold mt-0.5">→</span>
+                    <p className="font-body font-medium text-gray-700 dark:text-gray-300 text-sm">{statement}</p>
                   </li>
                 ))}
               </ul>
@@ -519,16 +519,16 @@ function PolicyWindow({
           {/* Policy Goal */}
           {policy.causalChain && (
             <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black mb-3">Policy Goal</h3>
-              <div className="bg-[#FEB0B4] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Policy Goal</h3>
+              <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="space-y-3">
                   <div>
-                    <div className="text-xs font-display font-black text-black uppercase mb-1">Immediate Action</div>
-                    <p className="font-body font-bold text-black text-sm">{policy.causalChain.immediate}</p>
+                    <div className="text-xs font-display font-black text-white uppercase mb-1">Immediate Action</div>
+                    <p className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.causalChain.immediate}</p>
                   </div>
                   <div>
-                    <div className="text-xs font-display font-black text-black uppercase mb-1">Intended Outcome</div>
-                    <p className="font-body font-bold text-black text-sm">{policy.causalChain.outcome}</p>
+                    <div className="text-xs font-display font-black text-white uppercase mb-1">Intended Outcome</div>
+                    <p className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.causalChain.outcome}</p>
                   </div>
                 </div>
               </div>
@@ -538,12 +538,12 @@ function PolicyWindow({
           {/* Common Questions */}
           {policy.commonQuestions && policy.commonQuestions.length > 0 && (
             <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black mb-3">Common Questions</h3>
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Common Questions</h3>
               <div className="space-y-4">
                 {policy.commonQuestions.map((qa, index) => (
                   <div key={index}>
-                    <h4 className="font-display font-black text-black mb-1 text-sm">{qa.question}</h4>
-                    <p className="font-body font-medium text-gray-700 text-sm">{qa.answer}</p>
+                    <h4 className="font-display font-black text-black dark:text-white mb-1 text-sm">{qa.question}</h4>
+                    <p className="font-body font-medium text-gray-700 dark:text-gray-300 text-sm">{qa.answer}</p>
                   </div>
                 ))}
               </div>
@@ -552,7 +552,7 @@ function PolicyWindow({
 
           {/* Data Sources */}
           <div className="mb-4">
-            <h3 className="font-display text-xl font-black text-black mb-3">Data Sources</h3>
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Data Sources</h3>
             <ul className="space-y-2">
               {policy.sources.map((source, index) => (
                 <li key={index}>
@@ -560,7 +560,7 @@ function PolicyWindow({
                     href={source.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-medium group text-sm"
+                    className="flex items-center space-x-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors font-medium group text-sm"
                   >
                     <ArrowUpRight className="w-4 h-4" />
                     <span className="group-hover:underline">
@@ -576,10 +576,10 @@ function PolicyWindow({
           {/* Notes */}
           {policy.notes && policy.notes.length > 0 && (
             <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black mb-3">Notes</h3>
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Notes</h3>
               <ul className="space-y-2 list-disc pl-5">
                 {policy.notes.map((note, index) => (
-                  <li key={index} className="font-body text-gray-700 text-sm font-medium">
+                  <li key={index} className="font-body text-gray-700 dark:text-gray-300 text-sm font-medium">
                     {note}
                   </li>
                 ))}
@@ -588,7 +588,7 @@ function PolicyWindow({
           )}
 
           {/* Last Updated */}
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
             Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -612,10 +612,10 @@ function PolicyWindow({
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="flex flex-col items-center"
             >
-              <span className="font-display font-bold text-sm text-gray-600 mb-2">
+              <span className="font-display font-bold text-sm text-gray-600 dark:text-gray-400 mb-2">
                 Continue scrolling for next policy
               </span>
-              <div className="w-10 h-10 border-3 border-black bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+              <div className="w-10 h-10 border-3 border-black dark:border-gray-600 bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
                 <svg className="w-5 h-5 text-white" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
