@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ArrowUpRight } from 'lucide-react';
+import { Plus, ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Policy } from '@/types/policy';
+import { useVoting } from '@/contexts/VotingContext';
 
 interface PolicyListItemProps {
   policy: Policy;
@@ -14,6 +15,8 @@ interface PolicyListItemProps {
 export default function PolicyListItem({ policy, isActive = false, displayRank }: PolicyListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const rankToShow = displayRank ?? policy.rank;
+  const { addVote, getVote } = useVoting();
+  const currentVote = getVote(policy.id);
 
   return (
     <motion.div
@@ -197,12 +200,46 @@ export default function PolicyListItem({ policy, isActive = false, displayRank }
               </div>
 
               {/* Last Updated */}
-              <div className="text-xs text-gray-600 dark:text-gray-400">
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-6">
                 Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}
+              </div>
+
+              {/* Voting Buttons */}
+              <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700 -mb-6 pb-6">
+                <h3 className="font-display text-xl font-black text-black dark:text-white mb-4">What's your position?</h3>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'support')}
+                    className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
+                      currentVote?.vote === 'support'
+                        ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                        : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                    }`}
+                  >
+                    <ThumbsUp className="w-6 h-6" strokeWidth={3} />
+                    <span>Support</span>
+                  </button>
+                  <button
+                    onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'oppose')}
+                    className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
+                      currentVote?.vote === 'oppose'
+                        ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                        : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                    }`}
+                  >
+                    <ThumbsDown className="w-6 h-6" strokeWidth={3} />
+                    <span>Oppose</span>
+                  </button>
+                </div>
+                {currentVote && (
+                  <p className="text-center text-sm font-body font-medium text-gray-600 dark:text-gray-400 mt-3">
+                    You voted {currentVote.vote === 'support' ? 'to support' : 'to oppose'} this policy
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>

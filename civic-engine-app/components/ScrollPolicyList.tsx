@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Policy } from '@/types/policy';
+import { useVoting } from '@/contexts/VotingContext';
 
 interface ScrollPolicyListProps {
   policies: Policy[];
@@ -82,12 +83,18 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+            // FIX: Simplified trigger condition.
+            // We rely on the rootMargin to ensure this only fires when the element
+            // is occupying the center of the screen.
+            if (entry.isIntersecting) {
               setActiveIndex(index);
             }
           });
         },
-        { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], rootMargin: '0px 0px -40% 0px' }
+        // FIX: Adjusted rootMargin to '-45%'.
+        // This creates a narrow "active zone" in the middle of the screen.
+        // The next policy won't activate until it pushes significantly up into the viewport.
+        { threshold: 0, rootMargin: '-45% 0px -45% 0px' }
       );
       observer.observe(ref);
       return observer;
@@ -145,7 +152,12 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
         // This prevents the "Jump" on the exiting component.
         if (!isTransitioning) {
           const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
-          const targetScroll = progress * maxScroll;
+
+          // Adjust progress so content reaches bottom earlier (at 65% progress instead of 100%)
+          // This allows users to interact with voting buttons for the remaining 35% of scroll
+          // before the IntersectionObserver triggers the transition to the next policy
+          const adjustedProgress = Math.min(1, progress / 0.65);
+          const targetScroll = adjustedProgress * maxScroll;
           contentRef.current.scrollTop = targetScroll;
 
           const atBottom = targetScroll >= maxScroll - 10;
@@ -189,7 +201,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="w-full bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] flex items-center justify-between overflow-hidden relative"
         >
-          <div className="flex items-center space-x-2 relative">
+          <div className="flex items-center space-x-2 relative flex-1 min-w-0 pr-4">
             {/* (Truncated for brevity - same as before) */}
             {policies.map((policy, index) => {
               if (index !== activeIndex && index !== activeIndex + 1) return null;
@@ -199,7 +211,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               return (
                 <motion.span
                   key={policy.id}
-                  className="font-display font-black text-sm text-black dark:text-white absolute left-0"
+                  className="font-display font-black text-sm text-black dark:text-white absolute left-0 whitespace-nowrap overflow-hidden text-ellipsis max-w-full"
                   animate={{
                     y: `${yOffset}%`,
                     opacity: isCurrent ? 1 - transitionProgress : transitionProgress,
@@ -286,7 +298,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       </div>
 
       {/* Scroll Container */}
-      <div className="flex-1 relative pb-32" ref={containerRef}>
+      <div className="flex-1 relative pb-48 lg:pb-32" ref={containerRef}>
         <div ref={policyWindowRef} className="sticky top-[180px] lg:top-24 z-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -350,7 +362,9 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             <div
               key={index}
               ref={(el) => { scrollSectionRefs.current[index] = el; }}
-              className="h-[60vh] lg:h-[80vh]"
+              // FIX: Increased height to 180vh. This ensures the "time" spent on each
+              // policy is long enough to scroll through all content, including the bottom voting buttons.
+              className="h-[60vh] lg:h-[180vh]"
               style={{ pointerEvents: 'none' }}
             />
           ))}
@@ -382,6 +396,8 @@ function PolicyWindow({
   displayRank: number;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
+  const { addVote, getVote, hasVoted } = useVoting();
+  const currentVote = getVote(policy.id);
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
@@ -425,7 +441,7 @@ function PolicyWindow({
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain"
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         style={{ maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
@@ -588,12 +604,46 @@ function PolicyWindow({
           )}
 
           {/* Last Updated */}
-          <div className="text-xs text-gray-600 dark:text-gray-400">
+          <div className="text-xs text-gray-600 dark:text-gray-400 mb-6">
             Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
+          </div>
+
+          {/* Voting Buttons */}
+          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-4">What's your position?</h3>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'support')}
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
+                  currentVote?.vote === 'support'
+                    ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                }`}
+              >
+                <ThumbsUp className="w-6 h-6" strokeWidth={3} />
+                <span>Support</span>
+              </button>
+              <button
+                onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'oppose')}
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
+                  currentVote?.vote === 'oppose'
+                    ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                }`}
+              >
+                <ThumbsDown className="w-6 h-6" strokeWidth={3} />
+                <span>Oppose</span>
+              </button>
+            </div>
+            {currentVote && (
+              <p className="text-center text-sm font-body font-medium text-gray-600 dark:text-gray-400 mt-3">
+                You voted {currentVote.vote === 'support' ? 'to support' : 'to oppose'} this policy
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -610,9 +660,9 @@ function PolicyWindow({
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="flex flex-col items-center"
+              className="flex flex-col items-center px-4"
             >
-              <span className="font-display font-bold text-sm text-gray-600 dark:text-gray-400 mb-2">
+              <span className="font-display font-bold text-sm text-center text-gray-600 dark:text-gray-400 mb-2 whitespace-nowrap">
                 Continue scrolling for next policy
               </span>
               <div className="w-10 h-10 border-3 border-black dark:border-gray-600 bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
