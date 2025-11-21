@@ -18,6 +18,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
   const [transitionProgress, setTransitionProgress] = useState<number>(0);
   const [maxWindowHeight, setMaxWindowHeight] = useState<string>('calc(100vh - 8rem)');
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   // NEW: State to track if we are mid-fade
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
@@ -39,8 +40,9 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
   useEffect(() => {
     const calculateHeight = () => {
       const viewportHeight = window.innerHeight;
-      const isMobile = window.innerWidth < 1024;
-      const reservedSpace = isMobile ? 272 : 216;
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      const reservedSpace = mobile ? 272 : 216;
       const calculatedHeight = viewportHeight - reservedSpace;
       setMaxWindowHeight(`${calculatedHeight}px`);
     };
@@ -91,16 +93,16 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             }
           });
         },
-        // FIX: Adjusted rootMargin to '-45%'.
-        // This creates a narrow "active zone" in the middle of the screen.
-        // The next policy won't activate until it pushes significantly up into the viewport.
-        { threshold: 0, rootMargin: '-45% 0px -45% 0px' }
+        // FIX: Use different margins for mobile vs desktop
+        // Mobile: -20% allows more content to be visible before transition
+        // Desktop: -45% creates a narrow active zone for precise control
+        { threshold: 0, rootMargin: isMobile ? '-20% 0px -20% 0px' : '-45% 0px -45% 0px' }
       );
       observer.observe(ref);
       return observer;
     });
     return () => observers.forEach((observer) => observer?.disconnect());
-  }, [policies]);
+  }, [policies, isMobile]);
 
   // --- INTERNAL SCROLL TRACKING (Standard) ---
   useEffect(() => {
@@ -146,35 +148,33 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
 
       setScrollProgress(progress);
 
-      // --- FIX START ---
-      if (!isMobile) {
-        // If we are currently fading between pages, DO NOT touch the scroll position.
-        // This prevents the "Jump" on the exiting component.
-        if (!isTransitioning) {
-          const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
+      // We want this sync to happen on mobile too so the content scrolls 
+      // while the container stays sticky.
+      if (!isTransitioning) {
+        const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
 
-          // Adjust progress so content reaches bottom earlier (at 65% progress instead of 100%)
-          // This allows users to interact with voting buttons for the remaining 35% of scroll
-          // before the IntersectionObserver triggers the transition to the next policy
-          const adjustedProgress = Math.min(1, progress / 0.65);
-          const targetScroll = adjustedProgress * maxScroll;
-          contentRef.current.scrollTop = targetScroll;
+        // Keep your existing ratio logic
+        const adjustedProgress = Math.min(1, progress / 0.65);
+        const targetScroll = adjustedProgress * maxScroll;
 
-          const atBottom = targetScroll >= maxScroll - 10;
-          const atTop = targetScroll <= 10;
-          setIsAtBottom(atBottom);
-          setIsAtTop(atTop);
-        }
+        // Apply scroll position
+        contentRef.current.scrollTop = targetScroll;
+
+        const atBottom = targetScroll >= maxScroll - 10;
+        const atTop = targetScroll <= 10;
+        setIsAtBottom(atBottom);
+        setIsAtTop(atTop);
       }
-      // --- FIX END ---
 
       // Mobile Logic (Standard)
-      if (isMobile && isAtBottom && activeIndex < policies.length - 1) {
+      // We keep this separate to handle the "Next Policy" preview animations
+      const isMobileView = window.innerWidth < 1024;
+      if (isMobileView && isAtBottom && activeIndex < policies.length - 1) {
         const deadZoneProgress = Math.max(0, Math.min(1, (progress - 0.7) / 0.3));
         setTransitionProgress(deadZoneProgress);
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = setTimeout(() => setTransitionProgress(0), 150);
-      } else if (isMobile) {
+      } else if (isMobileView) {
         setTransitionProgress(0);
       }
     };
@@ -184,7 +184,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       window.removeEventListener('scroll', handlePageScroll);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
-  }, [activeIndex, policies.length, isAtBottom, isTransitioning]); // Added isTransitioning dependency
+  }, [activeIndex, policies.length, isAtBottom, isTransitioning]);
 
   const scrollToPolicy = (index: number) => {
     scrollSectionRefs.current[index]?.scrollIntoView({
@@ -329,6 +329,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                   contentRef.current = el;
                 }}
                 displayRank={activeIndex + 1}
+                isMobile={isMobile}
               />
 
               {/* Next Policy Preview (Unchanged) */}
@@ -357,14 +358,14 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
         </div>
 
         {/* Invisible Scroll Sections */}
-        <div className="relative -mt-[80vh]">
+        <div className="relative lg:-mt-[80vh]">
           {policies.map((_, index) => (
             <div
               key={index}
               ref={(el) => { scrollSectionRefs.current[index] = el; }}
-              // FIX: Increased height to 180vh. This ensures the "time" spent on each
-              // policy is long enough to scroll through all content, including the bottom voting buttons.
-              className="h-[60vh] lg:h-[180vh]"
+              // FIX: Mobile needs much taller sections (250vh) since content flows naturally
+              // Desktop uses 180vh with internal scrolling
+              className="h-[250vh] lg:h-[180vh]"
               style={{ pointerEvents: 'none' }}
             />
           ))}
@@ -384,6 +385,7 @@ function PolicyWindow({
   entryDirection,
   onContentRefChange,
   displayRank,
+  isMobile,
 }: {
   policy: Policy;
   isAtBottom: boolean;
@@ -394,10 +396,11 @@ function PolicyWindow({
   entryDirection: 'UP' | 'DOWN';
   onContentRefChange: (el: HTMLDivElement | null) => void;
   displayRank: number;
+  isMobile: boolean;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
   const { addVote, getVote, hasVoted } = useVoting();
-  const currentVote = getVote(policy.id);
+  const currentVote = getVote(Number(policy.id));
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
@@ -441,8 +444,8 @@ function PolicyWindow({
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ maxHeight }}
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ maxHeight: isMobile ? 'none' : maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
           {/* Header */}
@@ -618,22 +621,20 @@ function PolicyWindow({
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'support')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
-                  currentVote?.vote === 'support'
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${currentVote?.vote === 'support'
                     ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
                     : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
-                }`}
+                  }`}
               >
                 <ThumbsUp className="w-6 h-6" strokeWidth={3} />
                 <span>Support</span>
               </button>
               <button
                 onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'oppose')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${
-                  currentVote?.vote === 'oppose'
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${currentVote?.vote === 'oppose'
                     ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
                     : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
-                }`}
+                  }`}
               >
                 <ThumbsDown className="w-6 h-6" strokeWidth={3} />
                 <span>Oppose</span>
