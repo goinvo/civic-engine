@@ -444,8 +444,8 @@ function PolicyWindow({
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ maxHeight: isMobile ? 'none' : maxHeight }}
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
           {/* Header */}
