@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { VotingProvider } from "@/contexts/VotingContext";
+import { ValuesProvider } from "@/contexts/ValuesContext";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -33,13 +34,15 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
       >
-        <VotingProvider>
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </VotingProvider>
+        <ValuesProvider>
+          <VotingProvider>
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </VotingProvider>
+        </ValuesProvider>
       </body>
     </html>
   );
