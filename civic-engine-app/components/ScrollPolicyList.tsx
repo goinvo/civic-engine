@@ -470,17 +470,17 @@ function PolicyWindow({
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden pointer-events-none lg:pointer-events-auto"
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         style={{ maxHeight: maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
-          <div className="mb-6 pointer-events-auto">
+          <div className="mb-6">
             <h2 className="font-display font-black text-3xl text-black dark:text-white mb-2">
               {displayRank}. {policy.title}
             </h2>
           </div>
 
-          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium mb-6 pointer-events-auto">
+          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium mb-6">
             {policy.description}
           </p>
 
@@ -507,7 +507,7 @@ function PolicyWindow({
             )}
           </div>
 
-          <div className="mb-6 pointer-events-auto">
+          <div className="mb-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>
             <ul className="space-y-3">
               {policy.details.map((detail, index) => (
@@ -520,7 +520,7 @@ function PolicyWindow({
           </div>
 
           {policy.resourceFlow && (
-            <div className="mb-6 pointer-events-auto">
+            <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">How It Works</h3>
               <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -542,7 +542,7 @@ function PolicyWindow({
           )}
 
           {policy.ifThen && policy.ifThen.length > 0 && (
-            <div className="mb-6 pointer-events-auto">
+            <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">In Practice</h3>
               <ul className="space-y-2">
                 {policy.ifThen.map((statement, index) => (
@@ -556,7 +556,7 @@ function PolicyWindow({
           )}
 
           {policy.causalChain && (
-            <div className="mb-6 pointer-events-auto">
+            <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Policy Goal</h3>
               <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="space-y-3">
@@ -574,7 +574,7 @@ function PolicyWindow({
           )}
 
           {policy.commonQuestions && policy.commonQuestions.length > 0 && (
-            <div className="mb-6 pointer-events-auto">
+            <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Common Questions</h3>
               <div className="space-y-4">
                 {policy.commonQuestions.map((qa, index) => (
@@ -587,7 +587,7 @@ function PolicyWindow({
             </div>
           )}
 
-          <div className="mb-4 pointer-events-auto">
+          <div className="mb-4">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Data Sources</h3>
             <ul className="space-y-2">
               {policy.sources.map((source, index) => (
@@ -610,7 +610,7 @@ function PolicyWindow({
           </div>
 
           {policy.notes && policy.notes.length > 0 && (
-            <div className="mb-6 pointer-events-auto">
+            <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Notes</h3>
               <ul className="space-y-2 list-disc pl-5">
                 {policy.notes.map((note, index) => (
@@ -630,7 +630,7 @@ function PolicyWindow({
             })}
           </div>
 
-          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700 pointer-events-auto">
+          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-4">What's your position?</h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
