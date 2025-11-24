@@ -20,7 +20,6 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // NEW: State to track if we are mid-fade
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [entryDirectionState, setEntryDirectionState] = useState<'UP' | 'DOWN'>('DOWN');
 
@@ -35,6 +34,10 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const lastScrollYRef = useRef<number>(0);
   const scrollDirectionRef = useRef<'UP' | 'DOWN'>('DOWN');
+
+  // FIX 3: Robust Locking Mechanism
+  const isProgrammaticScrollRef = useRef<boolean>(false);
+  const isObserverLockedRef = useRef<boolean>(false);
 
   // --- RESIZE & LAYOUT LOGIC (Standard) ---
   useEffect(() => {
@@ -78,25 +81,24 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
     };
   }, [policies]);
 
-  // --- OBSERVERS (Standard) ---
+  // --- OBSERVERS ---
   useEffect(() => {
     const observers = scrollSectionRefs.current.map((ref, index) => {
       if (!ref) return null;
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // FIX: Simplified trigger condition.
-            // We rely on the rootMargin to ensure this only fires when the element
-            // is occupying the center of the screen.
+            // FIX 3: If we are programmatically scrolling, ignore the observer
+            // to prevent "bouncing" or skipping indexes
+            if (isObserverLockedRef.current) return;
+
             if (entry.isIntersecting) {
               setActiveIndex(index);
             }
           });
         },
-        // FIX: Use different margins for mobile vs desktop
-        // Mobile: -20% allows more content to be visible before transition
-        // Desktop: -45% creates a narrow active zone for precise control
-        { threshold: 0, rootMargin: isMobile ? '-20% 0px -20% 0px' : '-45% 0px -45% 0px' }
+        // FIX 3: Adjusted margins to prevent skipping
+        { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-45% 0px -45% 0px' }
       );
       observer.observe(ref);
       return observer;
@@ -104,25 +106,33 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
     return () => observers.forEach((observer) => observer?.disconnect());
   }, [policies, isMobile]);
 
-  // --- INTERNAL SCROLL TRACKING (Standard) ---
+  // --- INTERNAL SCROLL TRACKING ---
   useEffect(() => {
     const contentElement = contentRef.current;
     if (!contentElement) return;
+
     const handleContentScroll = () => {
       const maxScroll = contentElement.scrollHeight - contentElement.clientHeight;
-      const atBottom = contentElement.scrollTop >= maxScroll - 10;
-      const atTop = contentElement.scrollTop <= 10;
+      // FIX 2: Added a small buffer (5px) to make hitting "bottom" easier on mobile
+      const atBottom = contentElement.scrollTop >= maxScroll - 5;
+      const atTop = contentElement.scrollTop <= 5;
       setIsAtBottom(atBottom);
       setIsAtTop(atTop);
     };
+
     contentElement.addEventListener('scroll', handleContentScroll, { passive: true });
     return () => contentElement.removeEventListener('scroll', handleContentScroll);
-  }, []);
+  }, [activeIndex]); // Re-bind when active index changes (new content ref)
 
   // --- MAIN SCROLL LOGIC ---
   useEffect(() => {
+    let animationFrameId: number;
+    let scrollEndTimeout: NodeJS.Timeout;
+
     const handlePageScroll = () => {
-      const isMobile = window.innerWidth < 1024;
+      // FIX 3: Ignore scroll updates if the machine is doing the work
+      if (isProgrammaticScrollRef.current) return;
+
       const currentSection = scrollSectionRefs.current[activeIndex];
       const policyWindow = policyWindowRef.current;
 
@@ -142,36 +152,45 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       const windowRect = policyWindow.getBoundingClientRect();
       const sectionHeight = currentSection.offsetHeight;
       const windowTop = windowRect.top;
+
       const relativeScroll = windowTop - sectionRect.top;
       const rawProgress = sectionHeight > 0 ? relativeScroll / sectionHeight : 0;
       const progress = Math.max(0, Math.min(1, rawProgress));
 
       setScrollProgress(progress);
 
-      // We want this sync to happen on mobile too so the content scrolls 
-      // while the container stays sticky.
       if (!isTransitioning) {
-        const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(() => {
+          if (!contentRef.current) return;
 
-        // Keep your existing ratio logic
-        const adjustedProgress = Math.min(1, progress / 0.65);
-        const targetScroll = adjustedProgress * maxScroll;
+          const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
+          // FIX 2: Increased mobile ratio slightly to ensure users hit the bottom sooner
+          const speedRatio = isMobile ? 0.90 : 0.65;
+          const adjustedProgress = Math.min(1, progress / speedRatio);
+          const targetScroll = adjustedProgress * maxScroll;
 
-        // Apply scroll position
-        contentRef.current.scrollTop = targetScroll;
+          contentRef.current.scrollTop = targetScroll;
 
-        const atBottom = targetScroll >= maxScroll - 10;
-        const atTop = targetScroll <= 10;
-        setIsAtBottom(atBottom);
-        setIsAtTop(atTop);
+          const atBottom = targetScroll >= maxScroll - 5;
+          const atTop = targetScroll <= 5;
+          setIsAtBottom(atBottom);
+          setIsAtTop(atTop);
+        });
       }
 
-      // Mobile Logic (Standard)
-      // We keep this separate to handle the "Next Policy" preview animations
+      // FIX 2: Mobile Pull-to-next Logic
+      // Only trigger if we are strictly at the bottom AND scrolling down
       const isMobileView = window.innerWidth < 1024;
       if (isMobileView && isAtBottom && activeIndex < policies.length - 1) {
-        const deadZoneProgress = Math.max(0, Math.min(1, (progress - 0.7) / 0.3));
+        // We define a "Pull Zone" at the end of the scroll section
+        // 0.85 to 1.0 is the zone where the card is finished, but the window is still scrolling
+        const pullStart = 0.85;
+        const pullLength = 0.15;
+
+        const deadZoneProgress = Math.max(0, Math.min(1, (progress - pullStart) / pullLength));
         setTransitionProgress(deadZoneProgress);
+
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = setTimeout(() => setTransitionProgress(0), 150);
       } else if (isMobileView) {
@@ -179,30 +198,68 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
       }
     };
 
+    const handleScrollEnd = () => {
+      if (isProgrammaticScrollRef.current) return;
+
+      clearTimeout(scrollEndTimeout);
+      scrollEndTimeout = setTimeout(() => {
+        const isMobileView = window.innerWidth < 1024;
+
+        // FIX 2: Lowered threshold to 0.3 (30% pull) to make it feel more responsive
+        if (isMobileView && transitionProgress > 0.3 && activeIndex < policies.length - 1) {
+          scrollToPolicy(activeIndex + 1);
+        }
+      }, 100); // Fast reaction
+    };
+
     window.addEventListener('scroll', handlePageScroll, { passive: true });
+    window.addEventListener('scroll', handleScrollEnd, { passive: true });
+    window.addEventListener('touchend', handleScrollEnd, { passive: true });
+
     return () => {
       window.removeEventListener('scroll', handlePageScroll);
+      window.removeEventListener('scroll', handleScrollEnd);
+      window.removeEventListener('touchend', handleScrollEnd);
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(scrollEndTimeout);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
-  }, [activeIndex, policies.length, isAtBottom, isTransitioning]);
+  }, [activeIndex, policies.length, isAtBottom, isTransitioning, isMobile, transitionProgress]);
 
+  // FIX 1 & 3: Reliable Programmatic Scroll
   const scrollToPolicy = (index: number) => {
-    scrollSectionRefs.current[index]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
+    const targetRef = scrollSectionRefs.current[index];
+    if (!targetRef) return;
+
+    // LOCK interactions
+    isProgrammaticScrollRef.current = true;
+    isObserverLockedRef.current = true;
+
+    // Calculate absolute position manually (more reliable than scrollIntoView on mobile)
+    const yOffset = -20; // Slight offset for visual breathing room
+    const y = targetRef.getBoundingClientRect().top + window.scrollY + yOffset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+
+    // Manually set index immediately to ensure UI updates while scrolling
+    setActiveIndex(index);
+
+    // UNLOCK after animation
+    setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+      isObserverLockedRef.current = false;
+    }, 800);
   };
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
-      {/* Mobile Nav (Unchanged) */}
-      <div className="lg:hidden sticky top-20 z-30 mb-4">
+      {/* Mobile Nav */}
+      <div className="lg:hidden sticky top-20 z-50 mb-4 pointer-events-auto">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="w-full bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] flex items-center justify-between overflow-hidden relative"
+          className="w-full bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] flex items-center justify-between overflow-hidden relative pointer-events-auto"
         >
           <div className="flex items-center space-x-2 relative flex-1 min-w-0 pr-4">
-            {/* (Truncated for brevity - same as before) */}
             {policies.map((policy, index) => {
               if (index !== activeIndex && index !== activeIndex + 1) return null;
               const isCurrent = index === activeIndex;
@@ -236,17 +293,18 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="overflow-hidden bg-white dark:bg-gray-800 border-4 border-t-0 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] -mt-1"
+              className="overflow-hidden bg-white dark:bg-gray-800 border-4 border-t-0 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] -mt-1 pointer-events-auto"
             >
               <div className="p-2 space-y-2 max-h-[60vh] overflow-y-auto">
                 {policies.map((policy, index) => (
                   <button
                     key={policy.id}
                     onClick={() => {
-                      scrollToPolicy(index);
                       setIsMobileMenuOpen(false);
+                      // FIX 1: Ensure scrollToPolicy is called directly
+                      scrollToPolicy(index);
                     }}
-                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
+                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 pointer-events-auto ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
                   >
                     {index + 1}. {policy.title}
                   </button>
@@ -263,11 +321,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
           <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
           {(() => {
             const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
-
-            const rectTop = shouldRender
-              ? headerHeight + buttonPositions[activeIndex].top + 18
-              : 0;
-
+            const rectTop = shouldRender ? headerHeight + buttonPositions[activeIndex].top + 18 : 0;
             const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
               ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
               : shouldRender ? buttonPositions[activeIndex].height : 0;
@@ -306,14 +360,11 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              // --- FIX START ---
-              // Freeze scroll syncing while this animation plays
               onAnimationStart={() => {
                 setIsTransitioning(true);
                 setEntryDirectionState(scrollDirectionRef.current);
               }}
               onAnimationComplete={() => setIsTransitioning(false)}
-              // --- FIX END ---
               transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
               className="relative"
             >
@@ -332,7 +383,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
                 isMobile={isMobile}
               />
 
-              {/* Next Policy Preview (Unchanged) */}
+              {/* Next Policy Preview */}
               <AnimatePresence>
                 {transitionProgress > 0 && activeIndex < policies.length - 1 && (
                   <motion.div
@@ -363,9 +414,7 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             <div
               key={index}
               ref={(el) => { scrollSectionRefs.current[index] = el; }}
-              // FIX: Mobile needs much taller sections (250vh) since content flows naturally
-              // Desktop uses 180vh with internal scrolling
-              className="h-[250vh] lg:h-[180vh]"
+              className="h-[220vh] lg:h-[180vh]"
               style={{ pointerEvents: 'none' }}
             />
           ))}
@@ -399,21 +448,17 @@ function PolicyWindow({
   isMobile: boolean;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
-  const { addVote, getVote, hasVoted } = useVoting();
+  const { addVote, getVote } = useVoting();
   const currentVote = getVote(Number(policy.id));
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
-    // We only update the parent ref if this is the *entering* component
-    // This prevents the exiting component from hijacking the ref during unmount
     onContentRefChange(element);
   };
 
-  // This ensures the NEW component starts at the correct position
   useLayoutEffect(() => {
     const el = localRef.current;
     if (!el) return;
-
     if (entryDirection === 'UP') {
       el.scrollTop = el.scrollHeight;
     } else {
@@ -421,46 +466,24 @@ function PolicyWindow({
     }
   }, [policy.id, entryDirection]);
 
-  useEffect(() => {
-    const contentElement = localRef.current;
-    if (!contentElement) return;
-
-    const preventScrollPropagation = (e: TouchEvent) => {
-      const element = contentElement;
-      const scrollTop = element.scrollTop;
-      const scrollHeight = element.scrollHeight;
-      const height = element.clientHeight;
-
-      if (scrollTop > 0 && scrollTop < scrollHeight - height) {
-        e.stopPropagation();
-      }
-    };
-
-    contentElement.addEventListener('touchmove', preventScrollPropagation, { passive: true });
-    return () => contentElement.removeEventListener('touchmove', preventScrollPropagation);
-  }, []);
-
   return (
     <div className="relative">
       <div
         ref={setRefs}
-        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-y-auto lg:overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ maxHeight }}
+        className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden pointer-events-none lg:pointer-events-auto"
+        style={{ maxHeight: maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
-          {/* Header */}
-          <div className="mb-6">
+          <div className="mb-6 pointer-events-auto">
             <h2 className="font-display font-black text-3xl text-black dark:text-white mb-2">
               {displayRank}. {policy.title}
             </h2>
           </div>
 
-          {/* Policy Description */}
-          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium mb-6">
+          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium mb-6 pointer-events-auto">
             {policy.description}
           </p>
 
-          {/* Support Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
               <div className="text-3xl font-display font-black text-black dark:text-white">{policy.averageSupport}%</div>
@@ -484,8 +507,7 @@ function PolicyWindow({
             )}
           </div>
 
-          {/* Key Details */}
-          <div className="mb-6">
+          <div className="mb-6 pointer-events-auto">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>
             <ul className="space-y-3">
               {policy.details.map((detail, index) => (
@@ -497,9 +519,8 @@ function PolicyWindow({
             </ul>
           </div>
 
-          {/* How It Works */}
           {policy.resourceFlow && (
-            <div className="mb-6">
+            <div className="mb-6 pointer-events-auto">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">How It Works</h3>
               <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -520,9 +541,8 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* In Practice */}
           {policy.ifThen && policy.ifThen.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 pointer-events-auto">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">In Practice</h3>
               <ul className="space-y-2">
                 {policy.ifThen.map((statement, index) => (
@@ -535,9 +555,8 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* Policy Goal */}
           {policy.causalChain && (
-            <div className="mb-6">
+            <div className="mb-6 pointer-events-auto">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Policy Goal</h3>
               <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
                 <div className="space-y-3">
@@ -554,9 +573,8 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* Common Questions */}
           {policy.commonQuestions && policy.commonQuestions.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 pointer-events-auto">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Common Questions</h3>
               <div className="space-y-4">
                 {policy.commonQuestions.map((qa, index) => (
@@ -569,8 +587,7 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* Data Sources */}
-          <div className="mb-4">
+          <div className="mb-4 pointer-events-auto">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Data Sources</h3>
             <ul className="space-y-2">
               {policy.sources.map((source, index) => (
@@ -592,9 +609,8 @@ function PolicyWindow({
             </ul>
           </div>
 
-          {/* Notes */}
           {policy.notes && policy.notes.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 pointer-events-auto">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Notes</h3>
               <ul className="space-y-2 list-disc pl-5">
                 {policy.notes.map((note, index) => (
@@ -606,7 +622,6 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* Last Updated */}
           <div className="text-xs text-gray-600 dark:text-gray-400 mb-6">
             Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -615,8 +630,7 @@ function PolicyWindow({
             })}
           </div>
 
-          {/* Voting Buttons */}
-          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700">
+          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700 pointer-events-auto">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-4">What's your position?</h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
