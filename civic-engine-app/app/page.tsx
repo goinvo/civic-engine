@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollPolicyList from '@/components/ScrollPolicyList';
 import { getTopPolicies, getPoliciesCount } from '@/data/policies';
+import { useValues } from '@/contexts/ValuesContext';
 
 export default function Home() {
   const topTenPolicies = getTopPolicies(10);
   const totalPolicies = getPoliciesCount();
   const [navbarHeight, setNavbarHeight] = useState(0);
+  const { hasCompletedOnboarding } = useValues();
 
   useEffect(() => {
     // Calculate navbar height
@@ -39,9 +41,17 @@ export default function Home() {
           <h1 className="font-display text-7xl sm:text-8xl md:text-9xl font-black text-black dark:text-white mb-8 leading-tight">
             What Most of Us<br />Agree On
           </h1>
-          <p className="font-body text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-12">
+          <p className={`font-body text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto ${hasCompletedOnboarding ? 'mb-6' : 'mb-12'}`}>
             Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
           </p>
+
+          {/* Personalized Badge for users who completed onboarding */}
+          {hasCompletedOnboarding && (
+            <div className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-12">
+              <Sparkles className="w-5 h-5" strokeWidth={2.5} />
+              <span className="font-display font-bold text-sm">Personalized scores active</span>
+            </div>
+          )}
 
           {/* Stats - Neobrutalist Cards - Patriotic Colors */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
@@ -61,6 +71,15 @@ export default function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            {!hasCompletedOnboarding && (
+              <Link
+                href="/values"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>Get Personalized Scores</span>
+              </Link>
+            )}
             <Link
               href="/top20"
               className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
@@ -87,12 +106,41 @@ export default function Home() {
         </motion.button>
       </section>
 
+      {/* Personalization Feature Section */}
+      {!hasCompletedOnboarding && (
+        <section className="max-w-7xl mx-auto px-6 py-16">
+          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+            <div className="max-w-3xl mx-auto text-center">
+              <div className="w-16 h-16 bg-white border-4 border-black mx-auto mb-6 flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-[#2F3BBD]" strokeWidth={2.5} />
+              </div>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-white mb-4">
+                See Policies Through Your Values
+              </h2>
+              <p className="font-body text-xl text-white/90 font-medium mb-8">
+                Get personalized impact scores for every policy based on what matters most to you—whether that's economic scale, helping the vulnerable, or long-term change.
+              </p>
+              <Link
+                href="/values"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-black hover:bg-gray-100 transition-colors font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>Take the Values Pulse</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Policies Section with Scroll */}
       <section id="policies-section" className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center mb-16">
           <h2 className="font-display text-5xl font-black text-black dark:text-white mb-4">Top 10 Policies</h2>
           <p className="font-body text-xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto">
-            Scroll through to explore each policy in detail. They'll automatically expand as you scroll.
+            {hasCompletedOnboarding
+              ? 'Scroll through to explore each policy with your personalized impact scores.'
+              : "Scroll through to explore each policy in detail. They'll automatically expand as you scroll."}
           </p>
         </div>
 
