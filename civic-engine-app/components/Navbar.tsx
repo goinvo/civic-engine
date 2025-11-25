@@ -3,12 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { User, Globe, Menu, X } from 'lucide-react';
-import LoginModal from './LoginModal';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   return (
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
@@ -55,15 +53,15 @@ export default function Navbar() {
               <span>EN</span>
             </button>
 
-            {/* Login Button */}
-            <button
-              onClick={() => setLoginModalOpen(true)}
+            {/* My Profile Button */}
+            <Link
+              href="/profile"
               className="flex items-center space-x-1 px-4 py-2 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity text-sm font-bold border-2 border-black dark:border-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)]"
-              aria-label="Login"
+              aria-label="My Profile"
             >
               <User className="w-4 h-4" />
-              <span>Login</span>
-            </button>
+              <span>My Profile</span>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -129,24 +127,19 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* Mobile Login Button */}
-              <button
-                onClick={() => {
-                  setLoginModalOpen(true);
-                  setMobileMenuOpen(false);
-                }}
-                className="mx-4 mt-2 flex items-center justify-center space-x-2 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors shadow-sm"
+              {/* Mobile My Profile Button */}
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mx-4 mt-2 flex items-center justify-center space-x-2 px-4 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:opacity-90 transition-opacity font-bold"
               >
                 <User className="w-5 h-5" />
-                <span className="font-medium">Login to Vote</span>
-              </button>
+                <span className="font-medium">My Profile</span>
+              </Link>
             </div>
           </div>
         )}
       </div>
-
-      {/* Login Modal */}
-      <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
     </nav>
   );
 }

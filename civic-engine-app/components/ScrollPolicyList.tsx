@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowUpRight, ThumbsUp, ThumbsDown, Sparkles, TrendingUp, TrendingDown } from 'lucide-react';
 import { Policy } from '@/types/policy';
 import { useVoting } from '@/contexts/VotingContext';
+import { useImpactScore } from '@/hooks/useImpactScore';
 
 interface ScrollPolicyListProps {
   policies: Policy[];
@@ -449,7 +451,8 @@ function PolicyWindow({
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
   const { addVote, getVote } = useVoting();
-  const currentVote = getVote(Number(policy.id));
+  const currentVote = getVote(policy.id);
+  const { personalizedScore, baseScore, difference, insight, hasPersonalization } = useImpactScore(policy.id);
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
@@ -506,6 +509,56 @@ function PolicyWindow({
               </>
             )}
           </div>
+
+          {/* Impact Score Section */}
+          {baseScore && (
+            <div className="mb-6">
+              {hasPersonalization ? (
+                <Link
+                  href="/profile"
+                  className="block border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] transition-all cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <Sparkles className="w-4 h-4 text-white" strokeWidth={2.5} />
+                      <h3 className="font-display text-base font-black text-white">Your Impact Score</h3>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="text-3xl font-display font-black text-white">{personalizedScore}</div>
+                      <ArrowUpRight className="w-5 h-5 text-white/70" strokeWidth={2.5} />
+                    </div>
+                  </div>
+                  {insight && (
+                    <div className="flex items-start space-x-2 bg-white/10 p-2 border-2 border-white/20">
+                      {difference && difference > 0 ? (
+                        <TrendingUp className="w-4 h-4 text-white mt-0.5 flex-shrink-0" strokeWidth={2.5} />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-white mt-0.5 flex-shrink-0" strokeWidth={2.5} />
+                      )}
+                      <p className="font-body text-xs text-white font-medium">{insight}</p>
+                    </div>
+                  )}
+                </Link>
+              ) : (
+                <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-display text-base font-black text-black dark:text-white">Base Impact Score</h3>
+                    <div className="text-3xl font-display font-black text-black dark:text-white">{baseScore.totalScore}</div>
+                  </div>
+                  <p className="font-body text-xs text-gray-700 dark:text-gray-300 font-medium mb-3">
+                    {baseScore.rationale}
+                  </p>
+                  <Link
+                    href="/values"
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-[#2F3BBD] text-white border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] font-bold text-sm hover:opacity-90 transition-opacity"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>Get Your Personalized Score</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="mb-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>

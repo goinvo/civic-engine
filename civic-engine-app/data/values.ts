@@ -7,6 +7,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Optimizer',
     description: 'I want policies that help the most people possible with maximum efficiency.',
     shortDescription: 'Maximum aggregate good',
+    philosopher: 'Jeremy Bentham & John Stuart Mill',
+    philosophyName: 'Classical Utilitarianism',
+    philosophyDescription: 'You prioritize maximizing total welfare across the population. Like Bentham and Mill, you believe the best policy is one that creates "the greatest good for the greatest number." You focus on aggregate outcomes and efficient resource allocation.',
     weights: {
       population: 0.25,      // High
       economic: 0.25,        // High
@@ -22,6 +25,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Advocate',
     description: 'I prioritize policies that protect the most vulnerable and address life-or-death issues.',
     shortDescription: 'Prioritize the vulnerable',
+    philosopher: 'John Rawls',
+    philosophyName: 'Rawlsian Justice',
+    philosophyDescription: 'You align with Rawls\' "veil of ignorance" principle: evaluate policies by how they affect the worst-off. You prioritize equity and individual impact over aggregate efficiency, believing a just society measures success by how it treats those with the least.',
     weights: {
       population: 0.08,
       economic: 0.08,
@@ -37,6 +43,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Realist',
     description: 'I want practical policies that can actually get implemented without getting stuck in bureaucracy.',
     shortDescription: 'Practical and feasible',
+    philosopher: 'James Buchanan & Public Choice Theory',
+    philosophyName: 'Pragmatic Institutionalism',
+    philosophyDescription: 'You share Buchanan\'s skepticism about ambitious reforms. You value policies that account for real-world constraints: political feasibility, administrative capacity, and implementation costs. Perfect on paper means nothing if it can\'t survive the messy reality of governance.',
     weights: {
       population: 0.12,
       economic: 0.20,        // High
@@ -52,6 +61,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Futurist',
     description: 'I care about long-term structural change and managing systemic side effects.',
     shortDescription: 'Long-term thinking',
+    philosopher: 'Ronald Coase & Elinor Ostrom',
+    philosophyName: 'Systems Thinking & Externalities',
+    philosophyDescription: 'Like Coase and Ostrom, you think in terms of spillover effects, unintended consequences, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
     weights: {
       population: 0.10,
       economic: 0.10,
@@ -67,6 +79,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Balanced',
     description: 'I weigh all factors equally without strong preferences.',
     shortDescription: 'Equal consideration',
+    philosopher: 'Amartya Sen',
+    philosophyName: 'Capability Approach',
+    philosophyDescription: 'You align with Sen\'s holistic framework: good policy isn\'t about maximizing one metric, but expanding human capabilities across multiple dimensions. You resist single-factor optimization and instead evaluate policies through a multi-dimensional lens of wellbeing, freedom, and opportunity.',
     weights: {
       population: 0.143,
       economic: 0.143,
@@ -166,3 +181,14 @@ export const FACTOR_DESCRIPTIONS: Record<string, string> = {
   externalities: 'Unintended consequences',
   implementation: 'Likelihood of successful execution',
 };
+
+// Value factors combined
+export const VALUE_FACTORS = [
+  { id: 'population', name: 'Population Reach', description: 'How many people are affected' },
+  { id: 'economic', name: 'Economic Scale', description: 'Volume of resources moved' },
+  { id: 'intensity', name: 'Individual Impact', description: 'Depth of impact on individuals' },
+  { id: 'duration', name: 'Time Horizon', description: 'How long the effects last' },
+  { id: 'equity', name: 'Equity & Justice', description: 'How fairly benefits are distributed' },
+  { id: 'externalities', name: 'Side Effects', description: 'Unintended consequences' },
+  { id: 'implementation', name: 'Feasibility', description: 'Likelihood of successful execution' },
+];

@@ -15,8 +15,8 @@ export default function ValuesOnboardingPage() {
   const router = useRouter();
 
   const handleComplete = () => {
-    // Redirect to home page after completion
-    router.push('/');
+    // Redirect to profile page after completion
+    router.push('/profile');
   };
 
   return (

@@ -73,6 +73,23 @@ export interface CommonQuestion {
 }
 
 /**
+ * Impact score breakdown based on 7 factors
+ */
+export interface ImpactScore {
+  totalScore: number; // Base score (0-100)
+  breakdown: {
+    population: number; // 0.0-1.0: How many people are affected
+    economic: number; // 0.0-1.0: Economic scale/volume
+    intensity: number; // 0.0-1.0: Depth of impact per person
+    duration: number; // 0.0-1.0: How long effects last
+    equity: number; // 0.0-1.0: Benefits to vulnerable populations
+    externalities: number; // 0.0-1.0: Spillover effects
+    implementation: number; // 0.0-1.0: Difficulty to implement (higher = harder)
+  };
+  rationale: string; // Explanation of the scores
+}
+
+/**
  * Main Policy interface
  */
 export interface Policy {

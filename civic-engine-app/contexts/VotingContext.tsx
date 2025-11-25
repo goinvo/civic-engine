@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 export type VoteType = 'support' | 'oppose';
 
 export interface Vote {
-  policyId: number;
+  policyId: string;
   policyTitle: string;
   averageSupport: number;
   vote: VoteType;
@@ -13,17 +13,17 @@ export interface Vote {
 }
 
 interface VotingContextType {
-  votes: Record<number, Vote>;
-  addVote: (policyId: number, policyTitle: string, averageSupport: number, vote: VoteType) => void;
-  removeVote: (policyId: number) => void;
-  getVote: (policyId: number) => Vote | undefined;
-  hasVoted: (policyId: number) => boolean;
+  votes: Record<string, Vote>;
+  addVote: (policyId: string, policyTitle: string, averageSupport: number, vote: VoteType) => void;
+  removeVote: (policyId: string) => void;
+  getVote: (policyId: string) => Vote | undefined;
+  hasVoted: (policyId: string) => boolean;
 }
 
 const VotingContext = createContext<VotingContextType | undefined>(undefined);
 
 export function VotingProvider({ children }: { children: ReactNode }) {
-  const [votes, setVotes] = useState<Record<number, Vote>>({});
+  const [votes, setVotes] = useState<Record<string, Vote>>({});
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load votes from localStorage on mount
@@ -46,7 +46,7 @@ export function VotingProvider({ children }: { children: ReactNode }) {
     }
   }, [votes, isLoaded]);
 
-  const addVote = (policyId: number, policyTitle: string, averageSupport: number, vote: VoteType) => {
+  const addVote = (policyId: string, policyTitle: string, averageSupport: number, vote: VoteType) => {
     setVotes(prev => ({
       ...prev,
       [policyId]: {
@@ -59,7 +59,7 @@ export function VotingProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const removeVote = (policyId: number) => {
+  const removeVote = (policyId: string) => {
     setVotes(prev => {
       const newVotes = { ...prev };
       delete newVotes[policyId];
@@ -67,11 +67,11 @@ export function VotingProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const getVote = (policyId: number) => {
+  const getVote = (policyId: string) => {
     return votes[policyId];
   };
 
-  const hasVoted = (policyId: number) => {
+  const hasVoted = (policyId: string) => {
     return policyId in votes;
   };
 

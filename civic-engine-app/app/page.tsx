@@ -47,10 +47,13 @@ export default function Home() {
 
           {/* Personalized Badge for users who completed onboarding */}
           {hasCompletedOnboarding && (
-            <div className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-12">
+            <Link
+              href="/profile"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all mb-12"
+            >
               <Sparkles className="w-5 h-5" strokeWidth={2.5} />
               <span className="font-display font-bold text-sm">Personalized scores active</span>
-            </div>
+            </Link>
           )}
 
           {/* Stats - Neobrutalist Cards - Patriotic Colors */}
