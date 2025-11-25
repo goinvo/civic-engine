@@ -12,7 +12,7 @@ export const policies: Policy[] = [
     id: 'social-security-cap',
     rank: 1,
     title: 'Shore Up Social Security ("Donut Hole")',
-    description: 'Ensure Social Security solvency by applying the payroll tax to earnings above $400,000, eliminating 61% of the shortfall without raising middle-class taxes.',
+    description: 'Ensure Social Security solvency by applying the payroll tax to earnings above $400,000, eliminating 60% of the shortfall without raising middle-class taxes.',
     category: 'economy',
     scope: 'federal',
     icon: 'Umbrella',
@@ -37,11 +37,11 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'The "Donut Hole" Solution',
-        description: 'Retains the current cap (approx $168k) but reinstates taxes on earnings above $400k, protecting the middle class while capturing high-earner revenue.',
+        description: 'Retains the current cap ($169k) but reinstates taxes on earnings above $400k, protecting the middle class while capturing high-earner revenue.',
       },
       {
         title: 'Solvency Impact',
-        description: 'This single measure eliminates approximately 61% of the program\'s long-term financial shortfall.',
+        description: 'This single measure eliminates approximately 60% of the program\'s long-term financial shortfall.',
       },
     ],
     resourceFlow: {
@@ -50,7 +50,7 @@ export const policies: Policy[] = [
       channel: 'Payroll tax expansion (Revenue-side fix)',
     },
     ifThen: [
-      'If you earn under $168,000, your taxes remain exactly the same',
+      'If you earn under $169,000, your taxes remain exactly the same',
       'If you earn over $400,000, you contribute payroll tax on that excess amount',
       'If enacted, future retirees avoid draconian benefit cuts projected for the 2030s',
     ],
@@ -65,7 +65,7 @@ export const policies: Policy[] = [
       },
       {
         question: 'Is this enough?',
-        answer: 'It solves most of the problem (61%). The public also supports a small, gradual rate increase to cover the remaining gap.',
+        answer: 'It solves most of the problem (60%). The public also supports a small, gradual rate increase to cover the remaining gap.',
       },
     ],
     trending: 'stable',
@@ -95,7 +95,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Support levels include explicit bans for spouses and dependents, which significantly contributes to the high public approval.',
+      'Most leading reform bills and advocacy campaigns extend the ban to spouses and dependents, which aligns with public expectations about closing proxy-trading loopholes and contributes to the high approval.',
     ],
     details: [
       {
@@ -138,11 +138,11 @@ export const policies: Policy[] = [
     id: 'congress-term-limits',
     rank: 3,
     title: 'Congressional Term Limits',
-    description: 'A Constitutional Amendment establishing specific term limits: 3 terms (6 years) for the House and 2 terms (12 years) for the Senate.',
+    description: 'A Constitutional Amendment establishing specific term limits: 4 terms (8 years) for the House and 2 terms (12 years) for the Senate.',
     category: 'governance',
     scope: 'federal',
     icon: 'Clock',
-    averageSupport: 85,
+    averageSupport: 83,
     partySupport: {
       democrats: 80,
       republicans: 86,
@@ -154,16 +154,16 @@ export const policies: Policy[] = [
         title: 'Constitutional Reform Survey',
         url: 'https://publicconsultation.org',
         year: 2025,
-        supportPercentage: 85,
+        supportPercentage: 83,
       },
     ],
     notes: [
-      'Specifically refers to the 3 House (6 years) / 2 Senate (12 years) term-limit model favored by voters.',
+      'Specifically refers to the 4 House (8 years) / 2 Senate (12 years) term-limit model favored by voters.',
     ],
     details: [
       {
-        title: 'The 3-House / 2-Senate Model',
-        description: 'The public specifically favors limiting House members to 3 terms and Senators to 2 terms.',
+        title: 'The 4-House / 2-Senate Model',
+        description: 'The public specifically favors limiting House members to 4 terms and Senators to 2 terms.',
       },
       {
         title: 'Constitutional Path',
@@ -176,7 +176,7 @@ export const policies: Policy[] = [
       channel: 'Article V Constitutional Amendment',
     },
     ifThen: [
-      'If a Representative serves 6 years, they cannot run for the House again',
+      'If a Representative serves 8 years, they cannot run for the House again',
       'If passed, leadership turnover becomes regular and mandatory',
       'If enacted, the "career politician" model is structurally eliminated',
     ],
@@ -268,7 +268,7 @@ export const policies: Policy[] = [
     category: 'healthcare',
     scope: 'federal',
     icon: 'Pill',
-    averageSupport: 84,
+    averageSupport: 85,
     partySupport: {
       democrats: 92,
       republicans: 77,
@@ -279,8 +279,8 @@ export const policies: Policy[] = [
         organization: 'KFF Health Tracking Poll',
         title: 'Prescription Drug Priorities',
         url: 'https://kff.org',
-        year: 2025,
-        supportPercentage: 84,
+        year: 2024,
+        supportPercentage: 85,
       },
     ],
     notes: [
@@ -339,7 +339,7 @@ export const policies: Policy[] = [
     },
     sources: [
       {
-        organization: 'AI Policy Institute / Gallup',
+        organization: 'AI Policy Institute; Gallup/SCSP (combined polling)',
         title: 'Americans on Regulating AI',
         url: 'https://theaipi.org',
         year: 2025,
@@ -347,7 +347,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Public support centers on mandatory safety testing and deepfake liability, not generic AI regulation.',
+      'Support based on AI Policy Institute polling on deepfake liability and Gallup-SCSP polling showing 80% prioritize safety over speed. Public support centers on mandatory safety testing and deepfake liability, not generic AI regulation.',
     ],
     details: [
       {
@@ -457,11 +457,11 @@ export const policies: Policy[] = [
     category: 'governance',
     scope: 'federal',
     icon: 'Eye',
-    averageSupport: 79,
+    averageSupport: 85,
     partySupport: {
       democrats: 88,
-      republicans: 70,
-      independents: 78,
+      republicans: 83,
+      independents: 88,
     },
     sources: [
       {
@@ -469,7 +469,7 @@ export const policies: Policy[] = [
         title: 'Campaign Finance Report',
         url: 'https://publicconsultation.org',
         year: 2025,
-        supportPercentage: 79,
+        supportPercentage: 85,
       },
     ],
     notes: [
@@ -478,7 +478,7 @@ export const policies: Policy[] = [
     details: [
       {
         title: 'Foreign Spending Ban',
-        description: '80% support banning foreign entities from funding state ballot initiatives (closing a current loophole).',
+        description: 'Strong bipartisan support for banning foreign entities from funding state ballot initiatives (closing a current loophole).',
       },
       {
         title: 'Transparency',
@@ -528,15 +528,15 @@ export const policies: Policy[] = [
     },
     sources: [
       {
-        organization: 'National Immigration Forum / Gallup',
-        title: 'Immigration Policy Survey',
+        organization: 'Composite estimate (Gallup, NIF, Pew)',
+        title: 'Immigration Policy Surveys (2023-2025)',
         url: 'https://immigrationforum.org',
         year: 2025,
         supportPercentage: 76,
       },
     ],
     notes: [
-      'Represents the “Grand Bargain”: pairing mandatory E-Verify (enforcement) with a path to citizenship for Dreamers (legalization).',
+      'Composite estimate based on separate polling for E-Verify (~75-80% support) and Dreamer citizenship (~80-85% support). Represents the "Grand Bargain": pairing mandatory E-Verify (enforcement) with a path to citizenship for Dreamers (legalization).',
     ],
     details: [
       {
@@ -712,19 +712,19 @@ export const policies: Policy[] = [
     category: 'justice',
     scope: 'federal',
     icon: 'FileSearch',
-    averageSupport: 90,
+    averageSupport: 93,
     partySupport: {
-      democrats: 93,
-      republicans: 85,
-      independents: 88,
+      democrats: 97,
+      republicans: 89,
+      independents: 93,
     },
     sources: [
       {
-        organization: 'Program for Public Consultation',
-        title: 'Gun Safety Consensus',
-        url: 'https://publicconsultation.org',
-        year: 2025,
-        supportPercentage: 90,
+        organization: 'Quinnipiac / Giffords Law Center',
+        title: 'Gun Safety Consensus Poll',
+        url: 'https://giffords.org',
+        year: 2024,
+        supportPercentage: 93,
       },
     ],
     notes: [
@@ -791,7 +791,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'The "Grand Compromise": Republicans get security (ID requirement), Democrats get access (Free/Easy mandate).',
+      '81% support voter ID requirements. This policy adds the condition that IDs and necessary documents must be free and accessible so it does not function as a poll tax. The "Grand Compromise": Republicans get security (ID requirement), Democrats get access (Free/Easy mandate).',
     ],
     details: [
       {
@@ -1027,19 +1027,19 @@ export const policies: Policy[] = [
     category: 'economy',
     scope: 'federal',
     icon: 'DollarSign',
-    averageSupport: 78,
+    averageSupport: 67,
     partySupport: {
-      democrats: 90,
-      republicans: 63,
-      independents: 75,
+      democrats: 85,
+      republicans: 50,
+      independents: 65,
     },
     sources: [
       {
-        organization: 'Program for Public Consultation',
-        title: 'Tax Policy Survey',
-        url: 'https://publicconsultation.org',
+        organization: 'Data for Progress; other wealth tax polls',
+        title: 'Wealth Tax Polling (2023-2025)',
+        url: 'https://www.dataforprogress.org',
         year: 2025,
-        supportPercentage: 78,
+        supportPercentage: 67,
       },
     ],
     notes: [
@@ -1090,11 +1090,11 @@ export const policies: Policy[] = [
     category: 'governance',
     scope: 'federal',
     icon: 'Building',
-    averageSupport: 75,
+    averageSupport: 72,
     partySupport: {
       democrats: 85,
-      republicans: 66,
-      independents: 78,
+      republicans: 60,
+      independents: 75,
     },
     sources: [
       {
@@ -1102,7 +1102,7 @@ export const policies: Policy[] = [
         title: 'Campaign Finance Report',
         url: 'https://publicconsultation.org',
         year: 2025,
-        supportPercentage: 75,
+        supportPercentage: 72,
       },
     ],
     notes: [
@@ -1153,23 +1153,23 @@ export const policies: Policy[] = [
     category: 'society',
     scope: 'federal',
     icon: 'Hand', // Helping hand
-    averageSupport: 90,
+    averageSupport: 80,
     partySupport: {
-      democrats: 92,
-      republicans: 88,
-      independents: 90,
+      democrats: 83,
+      republicans: 77,
+      independents: 80,
     },
     sources: [
       {
-        organization: 'Gallup',
+        organization: 'Civic Enterprises / Brookings',
         title: 'National Service Poll',
-        url: 'https://news.gallup.com',
+        url: 'https://www.brookings.edu',
         year: 2025,
-        supportPercentage: 90,
+        supportPercentage: 80,
       },
     ],
     notes: [
-      'Support is for *voluntary* service (90%); mandatory service is unpopular (49%).',
+      'Support is for *voluntary* service (~80%); mandatory service has much lower support (around 50% or below).',
     ],
     details: [
       {
@@ -1216,23 +1216,23 @@ export const policies: Policy[] = [
     category: 'governance',
     scope: 'federal',
     icon: 'FileText',
-    averageSupport: 76,
+    averageSupport: 73,
     partySupport: {
       democrats: 85,
-      republicans: 68,
-      independents: 72,
+      republicans: 60,
+      independents: 73,
     },
     sources: [
       {
-        organization: 'Tax Policy Center',
+        organization: 'Navigator Research / Tax Policy Center',
         title: 'Direct File Survey',
         url: 'https://taxpolicycenter.org',
         year: 2025,
-        supportPercentage: 76,
+        supportPercentage: 73,
       },
     ],
     notes: [
-      'Users of the pilot reported a 94% satisfaction rate.',
+      'About 73% of filers say they would be interested in using Direct File. IRS user survey found 94% satisfaction among pilot participants.',
     ],
     details: [
       {
@@ -1350,7 +1350,7 @@ export const policies: Policy[] = [
     },
     sources: [
       {
-        organization: 'The Harris Poll',
+        organization: 'The Harris Poll and others',
         title: 'Minimum Wage Survey',
         url: 'https://theharrispoll.com',
         year: 2025,
@@ -1358,7 +1358,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
-      'Majority support exists even in swing districts; 63% support indexing to inflation',
+      'Harris and others find ~80% support for raising the federal minimum wage in general; the exact preferred level varies by poll. Approximately 70% support raising it toward a living wage (~$15-17 range). 63% support indexing to inflation.',
     ],
     details: [
       {
@@ -1405,23 +1405,23 @@ export const policies: Policy[] = [
     category: 'healthcare',
     scope: 'federal',
     icon: 'HeartPulse',
-    averageSupport: 69,
+    averageSupport: 65,
     partySupport: {
       democrats: 85,
-      republicans: 52,
-      independents: 70,
+      republicans: 48,
+      independents: 65,
     },
     sources: [
       {
         organization: 'KFF',
         title: 'Health Reform Poll',
         url: 'https://kff.org',
-        year: 2025,
-        supportPercentage: 69,
+        year: 2019,
+        supportPercentage: 65,
       },
     ],
     notes: [
-      'The preferred vehicle for universal coverage (68-70% support), bridging the gap between ACA and Single Payer',
+      'KFF 2019 found about 65% support for a public option. Other polls (2019-2020) show similar levels (~65-67%). The preferred vehicle for universal coverage, bridging the gap between ACA and Single Payer.',
     ],
     details: [
       {
@@ -1783,19 +1783,19 @@ export const policies: Policy[] = [
     category: 'education',
     scope: 'federal',
     icon: 'BookOpen',
-    averageSupport: 73,
+    averageSupport: 70,
     partySupport: {
       democrats: 88,
-      republicans: 55,
+      republicans: 53,
       independents: 70,
     },
     sources: [
       {
-        organization: 'First Five Years Fund',
-        title: 'Early Education Poll',
-        url: 'https://ffyf.org',
-        year: 2025,
-        supportPercentage: 73,
+        organization: 'Gallup',
+        title: 'Federal Pre-K Funding Poll',
+        url: 'https://news.gallup.com',
+        year: 2024,
+        supportPercentage: 70,
       },
     ],
     notes: [
