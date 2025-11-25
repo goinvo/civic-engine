@@ -403,14 +403,14 @@ export default function ProfilePage() {
       </div>
 
       {/* Reset Profile Section */}
-      <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-8">
+      <div className="border-t-4 border-black dark:border-gray-600 pt-8">
         <div className="text-center">
           <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4">
             Want to start fresh with the default balanced profile?
           </p>
           <button
             onClick={handleResetToDefault}
-            className="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-bold text-sm"
+            className="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] transition-all font-bold text-sm"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Reset to Default Profile</span>
