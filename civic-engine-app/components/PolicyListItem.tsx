@@ -12,9 +12,10 @@ interface PolicyListItemProps {
   policy: Policy;
   isActive?: boolean;
   displayRank?: number;
+  showPersonalizedScore?: boolean;
 }
 
-export default function PolicyListItem({ policy, isActive = false, displayRank }: PolicyListItemProps) {
+export default function PolicyListItem({ policy, isActive = false, displayRank, showPersonalizedScore = false }: PolicyListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const rankToShow = displayRank ?? policy.rank;
   const { addVote, getVote } = useVoting();
@@ -36,18 +37,27 @@ export default function PolicyListItem({ policy, isActive = false, displayRank }
           ${isExpanded ? 'bg-gray-100 dark:bg-gray-700' : ''}
         `}
       >
-        <div className="flex items-center space-x-3 flex-1">
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
           <motion.div
             animate={{ rotate: isExpanded ? 45 : 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="flex-shrink-0"
           >
-            <Plus className="w-5 h-5 text-black dark:text-white flex-shrink-0" strokeWidth={3} />
+            <Plus className="w-5 h-5 text-black dark:text-white" strokeWidth={3} />
           </motion.div>
-          <span className="font-display font-black text-base text-black dark:text-white">
+          <span className="font-display font-black text-base text-black dark:text-white truncate">
             {rankToShow}. {policy.title}
           </span>
         </div>
-        <div className="text-right flex-shrink-0 ml-4">
+        <div className="text-right flex-shrink-0 ml-4 flex items-center space-x-3">
+          {showPersonalizedScore && personalizedScore && (
+            <div className="flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] rounded">
+              <Sparkles className="w-3 h-3 text-white" strokeWidth={2.5} />
+              <span className="font-display font-black text-sm text-white">
+                {personalizedScore}
+              </span>
+            </div>
+          )}
           <span className="font-display font-black text-base text-black dark:text-white">
             {policy.averageSupport}%
           </span>

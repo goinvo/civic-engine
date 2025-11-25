@@ -252,7 +252,12 @@ export default function Top20Page() {
 
         <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
           {sortedPolicies.map((policy, index) => (
-            <PolicyListItem key={policy.id} policy={policy} displayRank={index + 1} />
+            <PolicyListItem
+              key={policy.id}
+              policy={policy}
+              displayRank={index + 1}
+              showPersonalizedScore={sortBy === 'personalized'}
+            />
           ))}
         </div>
       </section>
