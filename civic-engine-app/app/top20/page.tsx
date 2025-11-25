@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ArrowLeft, ArrowUpDown } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowUpDown, List, Table } from 'lucide-react';
 import PolicyListItem from '@/components/PolicyListItem';
+import PolicyTable from '@/components/PolicyTable';
 import { getAllPoliciesSorted } from '@/data/policies';
 import { useValues } from '@/contexts/ValuesContext';
 import { calculatePersonalizedScore } from '@/utils/impactScore';
@@ -67,20 +68,23 @@ const getSortLabel = (sortBy: SortOption): string => {
   return 'Bipartisan Average';
 };
 
+type ViewMode = 'list' | 'table';
+
 export default function Top20Page() {
   const allPolicies = getAllPoliciesSorted();
   const { profile } = useValues();
   const [sortBy, setSortBy] = useState<SortOption>('support');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
-  // Default weights (average American values based on research)
+  // Default weights - adjusted to reflect average American priorities
   const defaultWeights = {
-    population: 1,
-    economic: 1,
-    intensity: 1,
-    duration: 1,
-    equity: 1,
-    externalities: 1,
-    implementation: 1,
+    population: 0.12,
+    economic: 0.12,
+    intensity: 0.20,
+    duration: 0.16,
+    equity: 0.20,
+    externalities: 0.10,
+    implementation: 0.10,
   };
 
   const sortedPolicies = useMemo(() => {
@@ -201,9 +205,10 @@ export default function Top20Page() {
             {!['support', 'personalized', 'democrat', 'republican', 'independent'].includes(sortBy) && `Ranked by ${getSortLabel(sortBy)}.`}
           </p>
 
-          {/* Sort Dropdown - simple on mobile, boxed on desktop */}
-          <div className="sm:ml-auto relative z-10">
-            <div className="relative inline-block w-full sm:w-auto">
+          {/* Controls: Sort + View Toggle */}
+          <div className="sm:ml-auto relative z-10 flex items-end sm:items-center gap-3">
+            {/* Sort Dropdown */}
+            <div className="relative inline-block flex-1 sm:flex-none">
               <label htmlFor="sort-select" className="block sm:hidden font-display font-bold text-xs text-gray-600 dark:text-gray-400 mb-1">
                 Sort by
               </label>
@@ -247,19 +252,62 @@ export default function Top20Page() {
                 </select>
               </div>
             </div>
+
+            {/* View Toggle */}
+            <div className="flex">
+              {/* Mobile: Simple buttons */}
+              <div className="sm:hidden flex border-2 border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 ${viewMode === 'list' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white'}`}
+                  aria-label="List view"
+                >
+                  <List className="w-4 h-4" strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`p-2 ${viewMode === 'table' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white'}`}
+                  aria-label="Table view"
+                >
+                  <Table className="w-4 h-4" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {/* Desktop: Neobrutalist buttons */}
+              <div className="hidden sm:flex border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 ${viewMode === 'list' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'} transition-colors`}
+                  aria-label="List view"
+                >
+                  <List className="w-5 h-5" strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`p-2 border-l-4 border-black dark:border-gray-600 ${viewMode === 'table' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'} transition-colors`}
+                  aria-label="Table view"
+                >
+                  <Table className="w-5 h-5" strokeWidth={2.5} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
-          {sortedPolicies.map((policy, index) => (
-            <PolicyListItem
-              key={policy.id}
-              policy={policy}
-              displayRank={index + 1}
-              showPersonalizedScore={sortBy === 'personalized'}
-            />
-          ))}
-        </div>
+        {viewMode === 'list' ? (
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+            {sortedPolicies.map((policy, index) => (
+              <PolicyListItem
+                key={policy.id}
+                policy={policy}
+                displayRank={index + 1}
+                showPersonalizedScore={sortBy === 'personalized'}
+              />
+            ))}
+          </div>
+        ) : (
+          <PolicyTable policies={sortedPolicies} />
+        )}
       </section>
 
       {/* Compare CTA removed */}

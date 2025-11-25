@@ -66,15 +66,15 @@ export default function Home() {
   const { hasCompletedOnboarding, profile } = useValues();
   const [sortBy, setSortBy] = useState<SortOption>('support');
 
-  // Default weights (balanced values)
+  // Default weights - adjusted to reflect average American priorities
   const defaultWeights = {
-    population: 1,
-    economic: 1,
-    intensity: 1,
-    duration: 1,
-    equity: 1,
-    externalities: 1,
-    implementation: 1,
+    population: 0.12,
+    economic: 0.12,
+    intensity: 0.20,
+    duration: 0.16,
+    equity: 0.20,
+    externalities: 0.10,
+    implementation: 0.10,
   };
 
   const topTenPolicies = useMemo(() => {

@@ -11,13 +11,13 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Classical Utilitarianism',
     philosophyDescription: 'You prioritize maximizing total welfare across the population. Like Bentham and Mill, you believe the best policy is one that creates "the greatest good for the greatest number." You focus on aggregate outcomes and efficient resource allocation.',
     weights: {
-      population: 0.25,      // High
-      economic: 0.25,        // High
-      intensity: 0.10,
-      duration: 0.10,
-      equity: 0.10,
-      externalities: 0.10,
-      implementation: 0.10,
+      population: 0.28,      // High - breadth of impact
+      economic: 0.25,        // High - resource efficiency
+      intensity: 0.12,
+      duration: 0.12,
+      equity: 0.08,
+      externalities: 0.08,
+      implementation: 0.07,
     },
   },
   {
@@ -29,12 +29,12 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Rawlsian Justice',
     philosophyDescription: 'You align with Rawls\' "veil of ignorance" principle: evaluate policies by how they affect the worst-off. You prioritize equity and individual impact over aggregate efficiency, believing a just society measures success by how it treats those with the least.',
     weights: {
-      population: 0.08,
-      economic: 0.08,
-      intensity: 0.30,       // High
-      duration: 0.12,
-      equity: 0.30,          // High
-      externalities: 0.08,
+      population: 0.06,
+      economic: 0.06,
+      intensity: 0.32,       // High - depth of individual impact
+      duration: 0.14,
+      equity: 0.32,          // High - fairness for vulnerable
+      externalities: 0.06,
       implementation: 0.04,
     },
   },
@@ -47,13 +47,13 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Pragmatic Institutionalism',
     philosophyDescription: 'You share Buchanan\'s skepticism about ambitious reforms. You value policies that account for real-world constraints: political feasibility, administrative capacity, and implementation costs. Perfect on paper means nothing if it can\'t survive the messy reality of governance.',
     weights: {
-      population: 0.12,
-      economic: 0.20,        // High
+      population: 0.10,
+      economic: 0.18,        // High - tangible results
       intensity: 0.10,
       duration: 0.10,
       equity: 0.10,
-      externalities: 0.10,
-      implementation: 0.28,  // High
+      externalities: 0.12,
+      implementation: 0.30,  // High - can it actually happen?
     },
   },
   {
@@ -65,31 +65,31 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Systems Thinking & Externalities',
     philosophyDescription: 'Like Coase and Ostrom, you think in terms of spillover effects, unintended consequences, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
     weights: {
-      population: 0.10,
-      economic: 0.10,
+      population: 0.08,
+      economic: 0.08,
       intensity: 0.10,
-      duration: 0.30,        // High
-      equity: 0.12,
-      externalities: 0.28,   // High
-      implementation: 0.10,
+      duration: 0.32,        // High - lasting change
+      equity: 0.10,
+      externalities: 0.26,   // High - ripple effects
+      implementation: 0.06,
     },
   },
   {
     id: 'balanced',
     name: 'The Balanced',
-    description: 'I weigh all factors equally without strong preferences.',
-    shortDescription: 'Equal consideration',
+    description: 'I weigh human impact factors more heavily while considering all dimensions.',
+    shortDescription: 'Human-centered balance',
     philosopher: 'Amartya Sen',
     philosophyName: 'Capability Approach',
     philosophyDescription: 'You align with Sen\'s holistic framework: good policy isn\'t about maximizing one metric, but expanding human capabilities across multiple dimensions. You resist single-factor optimization and instead evaluate policies through a multi-dimensional lens of wellbeing, freedom, and opportunity.',
     weights: {
-      population: 0.143,
-      economic: 0.143,
-      intensity: 0.143,
-      duration: 0.143,
-      equity: 0.143,
-      externalities: 0.143,
-      implementation: 0.142, // Slightly less to sum to 1.0
+      population: 0.12,
+      economic: 0.12,
+      intensity: 0.20,       // Slightly higher - human impact matters
+      duration: 0.16,
+      equity: 0.20,          // Slightly higher - fairness matters
+      externalities: 0.10,
+      implementation: 0.10,
     },
   },
 ];
@@ -140,15 +140,19 @@ export const QUESTIONS: Question[] = [
   },
 ];
 
-// Default balanced weights
+// Default weights - adjusted to reflect average American priorities
+// Boost intensity/equity (life-changing impacts matter most)
+// Reduce population/economic (don't over-favor big-tent policies)
+// Lower externalities (side effects matter less to average person)
+// Lower implementation (don't penalize ambitious policies)
 export const DEFAULT_WEIGHTS: WeightProfile = {
-  population: 0.143,
-  economic: 0.143,
-  intensity: 0.143,
-  duration: 0.143,
-  equity: 0.143,
-  externalities: 0.143,
-  implementation: 0.142,
+  population: 0.12,
+  economic: 0.12,
+  intensity: 0.20,
+  duration: 0.16,
+  equity: 0.20,
+  externalities: 0.10,
+  implementation: 0.10,
 };
 
 // Likert scale labels
