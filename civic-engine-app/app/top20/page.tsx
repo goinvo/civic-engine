@@ -1,10 +1,137 @@
+'use client';
+
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowUpDown } from 'lucide-react';
 import PolicyListItem from '@/components/PolicyListItem';
 import { getAllPoliciesSorted } from '@/data/policies';
+import { useValues } from '@/contexts/ValuesContext';
+import { calculatePersonalizedScore } from '@/utils/impactScore';
+import { policyImpactScores } from '@/data/policyScores';
+
+type SortOption =
+  | 'support'
+  | 'personalized'
+  | 'democrat'
+  | 'republican'
+  | 'independent'
+  | 'population'
+  | 'economic'
+  | 'intensity'
+  | 'duration'
+  | 'equity'
+  | 'externalities'
+  | 'implementation';
+
+type SortOptionGroup = {
+  label: string;
+  options: { value: SortOption; label: string }[];
+};
+
+const SORT_OPTION_GROUPS: SortOptionGroup[] = [
+  {
+    label: 'Support',
+    options: [
+      { value: 'support', label: 'Bipartisan Average' },
+      { value: 'personalized', label: 'Your Score' },
+    ],
+  },
+  {
+    label: 'By Party',
+    options: [
+      { value: 'democrat', label: 'Democrat Support' },
+      { value: 'republican', label: 'Republican Support' },
+      { value: 'independent', label: 'Independent Support' },
+    ],
+  },
+  {
+    label: 'Impact Factors',
+    options: [
+      { value: 'population', label: 'Population Reach' },
+      { value: 'economic', label: 'Economic Scale' },
+      { value: 'intensity', label: 'Individual Impact' },
+      { value: 'duration', label: 'Time Horizon' },
+      { value: 'equity', label: 'Equity & Justice' },
+      { value: 'externalities', label: 'Side Effects' },
+      { value: 'implementation', label: 'Feasibility' },
+    ],
+  },
+];
+
+// Get the current sort option label for display
+const getSortLabel = (sortBy: SortOption): string => {
+  for (const group of SORT_OPTION_GROUPS) {
+    const option = group.options.find(o => o.value === sortBy);
+    if (option) return option.label;
+  }
+  return 'Bipartisan Average';
+};
 
 export default function Top20Page() {
   const allPolicies = getAllPoliciesSorted();
+  const { profile } = useValues();
+  const [sortBy, setSortBy] = useState<SortOption>('support');
+
+  // Default weights (average American values based on research)
+  const defaultWeights = {
+    population: 1,
+    economic: 1,
+    intensity: 1,
+    duration: 1,
+    equity: 1,
+    externalities: 1,
+    implementation: 1,
+  };
+
+  const sortedPolicies = useMemo(() => {
+    const policies = [...allPolicies];
+
+    if (sortBy === 'support') {
+      return policies; // Already sorted by support
+    }
+
+    if (sortBy === 'personalized') {
+      // Use profile weights if available, otherwise use default weights
+      const weights = profile?.weights || defaultWeights;
+      return policies.sort((a, b) => {
+        const scoreA = calculatePersonalizedScore(a.id, weights) || 0;
+        const scoreB = calculatePersonalizedScore(b.id, weights) || 0;
+        return scoreB - scoreA;
+      });
+    }
+
+    // Sort by party support
+    if (sortBy === 'democrat') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.democrats || 0;
+        const supportB = b.partySupport?.democrats || 0;
+        return supportB - supportA;
+      });
+    }
+
+    if (sortBy === 'republican') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.republicans || 0;
+        const supportB = b.partySupport?.republicans || 0;
+        return supportB - supportA;
+      });
+    }
+
+    if (sortBy === 'independent') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.independents || 0;
+        const supportB = b.partySupport?.independents || 0;
+        return supportB - supportA;
+      });
+    }
+
+    // Sort by impact factor
+    return policies.sort((a, b) => {
+      const impactA = policyImpactScores[a.id]?.breakdown[sortBy] || 0;
+      const impactB = policyImpactScores[b.id]?.breakdown[sortBy] || 0;
+      return impactB - impactA;
+    });
+  }, [allPolicies, sortBy, profile]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -51,12 +178,80 @@ export default function Top20Page() {
 
       {/* All Policies List */}
       <section className="mb-16">
-        <h2 className="font-display text-4xl font-black text-black dark:text-white mb-4">Complete List</h2>
-        <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-8">
-          Ranked by average bipartisan support across recent polling data.
+        <h2 className="font-display text-4xl font-black text-black dark:text-white mb-2">Complete List</h2>
+
+        {/* Description - desktop only */}
+        <p className="hidden sm:block font-body text-gray-700 dark:text-gray-300 font-medium mb-6">
+          {sortBy === 'support' && 'Ranked by average bipartisan support across recent polling data.'}
+          {sortBy === 'personalized' && (profile ? 'Ranked by your personalized impact scores.' : 'Ranked by balanced impact scores (take the Values Pulse for personalized ranking).')}
+          {sortBy === 'democrat' && 'Ranked by Democratic voter support.'}
+          {sortBy === 'republican' && 'Ranked by Republican voter support.'}
+          {sortBy === 'independent' && 'Ranked by Independent voter support.'}
+          {!['support', 'personalized', 'democrat', 'republican', 'independent'].includes(sortBy) && `Ranked by ${getSortLabel(sortBy)}.`}
         </p>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          {/* Description - mobile, appears above dropdown */}
+          <p className="sm:hidden font-body text-gray-700 dark:text-gray-300 font-medium mb-3">
+            {sortBy === 'support' && 'Ranked by average bipartisan support across recent polling data.'}
+            {sortBy === 'personalized' && (profile ? 'Ranked by your personalized impact scores.' : 'Ranked by balanced impact scores.')}
+            {sortBy === 'democrat' && 'Ranked by Democratic voter support.'}
+            {sortBy === 'republican' && 'Ranked by Republican voter support.'}
+            {sortBy === 'independent' && 'Ranked by Independent voter support.'}
+            {!['support', 'personalized', 'democrat', 'republican', 'independent'].includes(sortBy) && `Ranked by ${getSortLabel(sortBy)}.`}
+          </p>
+
+          {/* Sort Dropdown - simple on mobile, boxed on desktop */}
+          <div className="sm:ml-auto relative z-10">
+            <div className="relative inline-block w-full sm:w-auto">
+              <label htmlFor="sort-select" className="block sm:hidden font-display font-bold text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Sort by
+              </label>
+              <label htmlFor="sort-select" className="hidden sm:block sr-only">Sort policies by</label>
+
+              {/* Mobile: Simple dropdown */}
+              <select
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="sm:hidden w-full font-display font-bold text-sm text-black dark:text-white bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 rounded outline-none cursor-pointer"
+              >
+                {SORT_OPTION_GROUPS.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+
+              {/* Desktop: Neobrutalist box */}
+              <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                <ArrowUpDown className="w-4 h-4 text-black dark:text-white" strokeWidth={2.5} />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  className="font-display font-bold text-sm text-black dark:text-white bg-transparent border-none outline-none cursor-pointer pr-8"
+                >
+                  {SORT_OPTION_GROUPS.map((group) => (
+                    <optgroup key={group.label} label={group.label}>
+                      {group.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
-          {allPolicies.map((policy, index) => (
+          {sortedPolicies.map((policy, index) => (
             <PolicyListItem key={policy.id} policy={policy} displayRank={index + 1} />
           ))}
         </div>

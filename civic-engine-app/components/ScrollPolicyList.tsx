@@ -8,11 +8,20 @@ import { Policy } from '@/types/policy';
 import { useVoting } from '@/contexts/VotingContext';
 import { useImpactScore } from '@/hooks/useImpactScore';
 
+type SortOptionGroup = {
+  label: string;
+  options: { value: string; label: string; requiresProfile?: boolean }[];
+};
+
 interface ScrollPolicyListProps {
   policies: Policy[];
+  sortBy?: string;
+  setSortBy?: (value: any) => void;
+  sortOptionGroups?: SortOptionGroup[];
+  hasProfile?: boolean;
 }
 
-export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
+export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOptionGroups, hasProfile }: ScrollPolicyListProps) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isAtBottom, setIsAtBottom] = useState<boolean>(false);
@@ -99,8 +108,8 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
             }
           });
         },
-        // FIX 3: Adjusted margins to prevent skipping
-        { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-45% 0px -45% 0px' }
+        // FIX 3: Adjusted margins to prevent skipping - increased top margin for taller content
+        { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-30% 0px -60% 0px' }
       );
       observer.observe(ref);
       return observer;
@@ -297,20 +306,50 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
               transition={{ duration: 0.3 }}
               className="overflow-hidden bg-white dark:bg-gray-800 border-4 border-t-0 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] -mt-1 pointer-events-auto"
             >
-              <div className="p-2 space-y-2 max-h-[60vh] overflow-y-auto">
-                {policies.map((policy, index) => (
-                  <button
-                    key={policy.id}
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      // FIX 1: Ensure scrollToPolicy is called directly
-                      scrollToPolicy(index);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 pointer-events-auto ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
-                  >
-                    {index + 1}. {policy.title}
-                  </button>
-                ))}
+              <div className="p-2 max-h-[60vh] overflow-y-auto">
+                {/* Sort Dropdown - Mobile */}
+                {sortBy && setSortBy && sortOptionGroups && (
+                  <div className="mb-3 px-1">
+                    <label htmlFor="mobile-sort-select" className="block font-display font-bold text-xs text-gray-600 dark:text-gray-400 mb-1">
+                      Sort by
+                    </label>
+                    <select
+                      id="mobile-sort-select"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="w-full font-display font-bold text-sm text-black dark:text-white bg-gray-50 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 rounded outline-none cursor-pointer"
+                    >
+                      {sortOptionGroups.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.options.map((option) => {
+                            if (option.requiresProfile && !hasProfile) return null;
+                            return (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  {policies.map((policy, index) => (
+                    <button
+                      key={policy.id}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        // FIX 1: Ensure scrollToPolicy is called directly
+                        scrollToPolicy(index);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 pointer-events-auto ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
+                    >
+                      {index + 1}. {policy.title}
+                    </button>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}
@@ -319,37 +358,69 @@ export default function ScrollPolicyList({ policies }: ScrollPolicyListProps) {
 
       {/* Desktop Sidebar */}
       <div className="hidden lg:block w-64 flex-shrink-0">
-        <div className="sticky top-24 bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
-          <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
-          {(() => {
-            const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
-            const rectTop = shouldRender ? headerHeight + buttonPositions[activeIndex].top + 18 : 0;
-            const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
-              ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
-              : shouldRender ? buttonPositions[activeIndex].height : 0;
-            const rectHeight = Math.max(0, rectHeightRaw - 2);
+        <div className="sticky top-24">
+          <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
+            <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
+            {(() => {
+              const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
+              const rectTop = shouldRender ? headerHeight + buttonPositions[activeIndex].top + 18 : 0;
+              const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
+                ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
+                : shouldRender ? buttonPositions[activeIndex].height : 0;
+              const rectHeight = Math.max(0, rectHeightRaw - 2);
 
-            return shouldRender ? (
-              <motion.div
-                className="absolute left-4 right-4 bg-[#C91A2B] pointer-events-none z-0"
-                initial={false}
-                animate={{ top: rectTop, height: rectHeight }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              />
-            ) : null;
-          })()}
-          <div className="space-y-2 relative z-10">
-            {policies.map((policy, index) => (
-              <button
-                key={policy.id}
-                ref={(el) => { desktopButtonRefs.current[index] = el; }}
-                onClick={() => scrollToPolicy(index)}
-                className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'text-white' : 'text-black dark:text-white'}`}
-              >
-                {index + 1}. {policy.title}
-              </button>
-            ))}
+              return shouldRender ? (
+                <motion.div
+                  className="absolute left-4 right-4 bg-[#C91A2B] pointer-events-none z-0"
+                  initial={false}
+                  animate={{ top: rectTop, height: rectHeight }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                />
+              ) : null;
+            })()}
+            <div className="space-y-2 relative z-10">
+              {policies.map((policy, index) => (
+                <button
+                  key={policy.id}
+                  ref={(el) => { desktopButtonRefs.current[index] = el; }}
+                  onClick={() => scrollToPolicy(index)}
+                  className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'text-white' : 'text-black dark:text-white'}`}
+                >
+                  {index + 1}. {policy.title}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Sort Dropdown - Desktop (below Policies box, inside sticky container) */}
+          {sortBy && setSortBy && sortOptionGroups && (
+            <div className="mt-4">
+              <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+                <label htmlFor="desktop-sort-select" className="block font-display font-black text-xs text-gray-600 dark:text-gray-400 mb-2">
+                  SORT BY
+                </label>
+                <select
+                  id="desktop-sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full font-display font-bold text-sm text-black dark:text-white bg-transparent border-2 border-black dark:border-gray-600 px-3 py-2 outline-none cursor-pointer"
+                >
+                  {sortOptionGroups.map((group) => (
+                    <optgroup key={group.label} label={group.label}>
+                      {group.options.map((option) => {
+                        if (option.requiresProfile && !hasProfile) return null;
+                        return (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

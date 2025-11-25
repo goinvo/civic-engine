@@ -1,18 +1,131 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollPolicyList from '@/components/ScrollPolicyList';
 import { getTopPolicies, getPoliciesCount } from '@/data/policies';
 import { useValues } from '@/contexts/ValuesContext';
+import { calculatePersonalizedScore } from '@/utils/impactScore';
+import { policyImpactScores } from '@/data/policyScores';
+
+type SortOption =
+  | 'support'
+  | 'personalized'
+  | 'democrat'
+  | 'republican'
+  | 'independent'
+  | 'population'
+  | 'economic'
+  | 'intensity'
+  | 'duration'
+  | 'equity'
+  | 'externalities'
+  | 'implementation';
+
+type SortOptionGroup = {
+  label: string;
+  options: { value: SortOption; label: string; requiresProfile?: boolean }[];
+};
+
+const SORT_OPTION_GROUPS: SortOptionGroup[] = [
+  {
+    label: 'Support',
+    options: [
+      { value: 'support', label: 'Bipartisan Average' },
+      { value: 'personalized', label: 'Your Score' },
+    ],
+  },
+  {
+    label: 'By Party',
+    options: [
+      { value: 'democrat', label: 'Democrat Support' },
+      { value: 'republican', label: 'Republican Support' },
+      { value: 'independent', label: 'Independent Support' },
+    ],
+  },
+  {
+    label: 'Impact Factors',
+    options: [
+      { value: 'population', label: 'Population Reach' },
+      { value: 'economic', label: 'Economic Scale' },
+      { value: 'intensity', label: 'Individual Impact' },
+      { value: 'duration', label: 'Time Horizon' },
+      { value: 'equity', label: 'Equity & Justice' },
+      { value: 'externalities', label: 'Side Effects' },
+      { value: 'implementation', label: 'Feasibility' },
+    ],
+  },
+];
 
 export default function Home() {
-  const topTenPolicies = getTopPolicies(10);
+  const allTopPolicies = getTopPolicies(10);
   const totalPolicies = getPoliciesCount();
   const [navbarHeight, setNavbarHeight] = useState(0);
-  const { hasCompletedOnboarding } = useValues();
+  const { hasCompletedOnboarding, profile } = useValues();
+  const [sortBy, setSortBy] = useState<SortOption>('support');
+
+  // Default weights (balanced values)
+  const defaultWeights = {
+    population: 1,
+    economic: 1,
+    intensity: 1,
+    duration: 1,
+    equity: 1,
+    externalities: 1,
+    implementation: 1,
+  };
+
+  const topTenPolicies = useMemo(() => {
+    const policies = [...allTopPolicies];
+
+    if (sortBy === 'support') {
+      return policies; // Already sorted by support
+    }
+
+    if (sortBy === 'personalized') {
+      // Use profile weights if available, otherwise use default weights
+      const weights = profile?.weights || defaultWeights;
+      return policies.sort((a, b) => {
+        const scoreA = calculatePersonalizedScore(a.id, weights) || 0;
+        const scoreB = calculatePersonalizedScore(b.id, weights) || 0;
+        return scoreB - scoreA;
+      });
+    }
+
+    // Sort by party support
+    if (sortBy === 'democrat') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.democrats || 0;
+        const supportB = b.partySupport?.democrats || 0;
+        return supportB - supportA;
+      });
+    }
+
+    if (sortBy === 'republican') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.republicans || 0;
+        const supportB = b.partySupport?.republicans || 0;
+        return supportB - supportA;
+      });
+    }
+
+    if (sortBy === 'independent') {
+      return policies.sort((a, b) => {
+        const supportA = a.partySupport?.independents || 0;
+        const supportB = b.partySupport?.independents || 0;
+        return supportB - supportA;
+      });
+    }
+
+    // Sort by impact factor
+    return policies.sort((a, b) => {
+      const impactA = policyImpactScores[a.id]?.breakdown[sortBy] || 0;
+      const impactB = policyImpactScores[b.id]?.breakdown[sortBy] || 0;
+      return impactB - impactA;
+    });
+  }, [allTopPolicies, sortBy, profile]);
 
   useEffect(() => {
     // Calculate navbar height
@@ -147,7 +260,13 @@ export default function Home() {
           </p>
         </div>
 
-        <ScrollPolicyList policies={topTenPolicies} />
+        <ScrollPolicyList
+          policies={topTenPolicies}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          sortOptionGroups={SORT_OPTION_GROUPS}
+          hasProfile={!!profile}
+        />
 
         <div className="mt-16 text-center">
           <Link
