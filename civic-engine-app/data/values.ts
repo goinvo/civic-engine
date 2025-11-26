@@ -61,9 +61,9 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Futurist',
     description: 'I care about long-term structural change and managing systemic side effects.',
     shortDescription: 'Long-term thinking',
-    philosopher: 'Ronald Coase & Elinor Ostrom',
-    philosophyName: 'Systems Thinking & Externalities',
-    philosophyDescription: 'Like Coase and Ostrom, you think in terms of spillover effects, unintended consequences, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
+    philosopher: 'Ronald Coase & Mancur Olson',
+    philosophyName: 'Systems Thinking & Collective Action',
+    philosophyDescription: 'Like Coase and Olson, you think in terms of transaction costs, collective action problems, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
     weights: {
       population: 0.08,
       economic: 0.08,

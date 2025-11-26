@@ -263,73 +263,221 @@ export default function ProfilePage() {
         <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
           Our Methodology
         </h2>
+
+        <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-6">
+          Our 7-Factor Policy Impact Score (PIS) framework mirrors how think tanks and non-partisan bodies like the CBO evaluate policy.
+          Each factor uses concrete anchors—not subjective feelings—to ensure consistent, defensible scoring.
+        </p>
+
         <div className="space-y-6">
-          {/* How We Score Policies */}
+          {/* Factor 1: Population Impact */}
           <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-[#2F3BBD] border-2 border-black flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-white" strokeWidth={2.5} />
-              </div>
-              <h3 className="font-display text-xl font-black text-black dark:text-white">
-                How We Score Policies
-              </h3>
-            </div>
-            <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-4">
-              Each policy is evaluated across seven impact factors on a scale of 0-100%:
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              1. Population Impact (Scope)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              Who is effectively touched by this?
             </p>
-            <ul className="space-y-2 font-body text-sm text-gray-700 dark:text-gray-300">
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Population Reach:</strong> How many people are directly affected</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Economic Scale:</strong> Volume of resources or money moved</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Individual Impact:</strong> Depth of change for affected individuals (life-or-death vs. convenience)</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Time Horizon:</strong> How long the effects last (temporary fix vs. generational change)</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Equity & Justice:</strong> How fairly benefits are distributed, especially to vulnerable groups</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Side Effects:</strong> Unintended consequences, both positive and negative</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <span className="font-black text-black dark:text-white">•</span>
-                <span><strong>Feasibility:</strong> Likelihood of successful implementation given political/practical realities</span>
-              </li>
-            </ul>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Niche:</strong> &lt;0.1% of population (specific professional licensing)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.2</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Community:</strong> Specific town, small industry, or rare demographic (1-5%)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.5</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Demographic Slice:</strong> Major subgroup (parents of K-12 kids, seniors over 75)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.8</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Broad Base:</strong> Majority of workforce or households (income tax, gas prices)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Universal:</strong> &gt;90% of residents (Social Security, currency/inflation)</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          {/* How We Calculate Your Score */}
+          {/* Factor 2: Economic Magnitude */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              2. Economic Magnitude (Volume)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              Relative to US GDP (~$28T) or Federal Budget (~$6T). Uses logarithmic brackets to prevent massive programs from drowning out everything else.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Nominal:</strong> &lt;$100 Million (administrative tweaks)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.2</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Minor:</strong> $100M – $10 Billion (specific program funding)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.5</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Major:</strong> $10B – $200 Billion (major agency budgets, corporate subsidies)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.8</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Systemic:</strong> $200B – $1 Trillion (Medicare/Medicaid scale)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Macro-Structural:</strong> &gt;$1 Trillion (tax code overhauls, banking regulations)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Factor 3: Intensity of Impact */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              3. Intensity of Impact (Depth)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              For the person affected, how much does their life change?
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Procedural:</strong> Change in paperwork, mild reporting requirements</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.3</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Financial (Manageable):</strong> Noticeable cost/savings (&lt;5% of income), convenience changes</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.6</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Lifestyle:</strong> Changes daily habits, commute, significant income (&gt;10%), employment eligibility</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.9</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Existential:</strong> Life/death, incarceration, deportation, housing stability, fundamental civil rights</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Factor 4: Duration */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              4. Duration (Time Horizon)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              How long does the change last?
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.1</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>One-Off:</strong> Single stimulus check or one-time grant</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.4</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Term-Limited:</strong> Pilot program or policy with 1-5 year sunset clause</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.7</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Indefinite:</strong> Standard legislation (law of the land until repealed)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Intergenerational:</strong> Constitutional amendments, major infrastructure, ecological preservation</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Factor 5: Distributional Weight */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              5. Distributional Weight (Equity)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              Does this impact vulnerable populations where $1 matters more?
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Regressive:</strong> Primarily benefits the wealthy or high-leverage corporations</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.2</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Neutral:</strong> Impacts everyone equally regardless of status</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.5</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Mixed:</strong> Impacts a mix of classes, or specific middle-income bracket</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.8</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Progressive:</strong> Specifically targets low-income, disabled, or marginalized groups</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Critical Safety Net:</strong> Impacts populations with zero leverage (foster children, homeless veterans)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Factor 6: Externalities */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              6. Externalities (Spillover)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              How many other systems break or change because of this?
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.1</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Siloed:</strong> Effects contained within specific department (park signage rules)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.5</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Adjacent:</strong> Affects 1-2 related sectors (EV mandates → auto + grid)</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Cascading:</strong> Affects &gt;3 unrelated sectors (immigration → labor, housing, schools, tax revenue)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Factor 7: Implementation Complexity */}
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
+              7. Implementation Complexity (Friction)
+            </h3>
+            <p className="font-body text-sm text-gray-600 dark:text-gray-400 mb-4 italic">
+              How hard is the machine working to do this? Higher = bigger undertaking.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody className="divide-y-2 divide-black dark:divide-gray-600">
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white w-16">0.1</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>"Stroke of a Pen":</strong> Executive order or simple rule change, no new infrastructure</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">0.5</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Bureaucratic:</strong> New staff, IT systems, or coordination between 2-3 agencies</td></tr>
+                  <tr><td className="py-2 pr-4 font-display font-black text-black dark:text-white">1.0</td><td className="py-2 font-body text-gray-700 dark:text-gray-300"><strong>Herculean:</strong> Coordination of 50 states, new federal agency, or inevitable Supreme Court challenges</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* The Calculation */}
           <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-[#C91A2B] border-2 border-black flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
               <h3 className="font-display text-xl font-black text-black dark:text-white">
-                How We Calculate Your Score
+                The Calculation
               </h3>
             </div>
             <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-4">
-              Your personalized score is a weighted average of each policy's factor scores, using your value weights:
+              Your personalized score is a weighted sum of each factor. We use a weighting that favors Intensity and Equity, as those drive "real world" impact:
             </p>
-            <div className="bg-gray-100 dark:bg-gray-700 p-4 border-2 border-black dark:border-gray-600 mb-4">
-              <code className="font-mono text-sm text-black dark:text-white">
-                Your Score = Σ (Factor Score × Your Weight) × 100
-              </code>
+            <div className="bg-gray-100 dark:bg-gray-700 p-4 border-2 border-black dark:border-gray-600 mb-4 font-mono text-sm text-black dark:text-white">
+              <div>Score = 100 × (</div>
+              <div className="ml-4">0.20 × Intensity +</div>
+              <div className="ml-4">0.20 × Equity +</div>
+              <div className="ml-4">0.16 × Duration +</div>
+              <div className="ml-4">0.12 × Population +</div>
+              <div className="ml-4">0.12 × Economic +</div>
+              <div className="ml-4">0.10 × Externalities +</div>
+              <div className="ml-4">0.10 × Implementation</div>
+              <div>)</div>
             </div>
-            <p className="font-body text-sm text-gray-600 dark:text-gray-400">
-              For example, if a policy scores 90% on Equity and you weight Equity at 20%, that contributes 18 points to your total score.
-              All seven factors are combined this way to produce your final 0-100 score.
+          </div>
+
+          {/* Example Calculation */}
+          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+            <h3 className="font-display text-xl font-black text-white mb-4">
+              Example: Universal Pre-K
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.4</div>
+                <div className="font-body text-xs text-white/80">Population</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.5</div>
+                <div className="font-body text-xs text-white/80">Economic</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.8</div>
+                <div className="font-body text-xs text-white/80">Intensity</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.7</div>
+                <div className="font-body text-xs text-white/80">Duration</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.8</div>
+                <div className="font-body text-xs text-white/80">Equity</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.8</div>
+                <div className="font-body text-xs text-white/80">Externalities</div>
+              </div>
+              <div className="bg-white/20 p-3 border-2 border-white/30">
+                <div className="font-display font-black text-white text-lg">0.8</div>
+                <div className="font-body text-xs text-white/80">Implementation</div>
+              </div>
+              <div className="bg-white p-3 border-2 border-black">
+                <div className="font-display font-black text-black text-lg">70</div>
+                <div className="font-body text-xs text-gray-600">Final Score</div>
+              </div>
+            </div>
+            <p className="font-body text-sm text-white/90">
+              This feels right: a major, society-altering policy, but not as totalizing as a constitutional amendment or currency replacement.
             </p>
           </div>
 
@@ -340,24 +488,25 @@ export default function ProfilePage() {
                 <Scale className="w-5 h-5 text-white dark:text-black" strokeWidth={2.5} />
               </div>
               <h3 className="font-display text-xl font-black text-black dark:text-white">
-                Default Weights Philosophy
+                Why These Weights?
               </h3>
             </div>
             <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-4">
-              For users who haven't taken the questionnaire, we use default weights that prioritize human-centered impact:
+              Our default weighting emphasizes life-changing individual impact and fairness over raw scale or political feasibility—reflecting
+              that most people care more about whether a policy genuinely helps those who need it than whether it's easy to pass.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-              <div className="text-center p-3 bg-gray-100 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
-                <div className="font-display font-black text-lg text-black dark:text-white">20%</div>
-                <div className="font-body text-xs text-gray-600 dark:text-gray-400">Intensity</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="text-center p-3 bg-[#C91A2B] border-2 border-black">
+                <div className="font-display font-black text-lg text-white">20%</div>
+                <div className="font-body text-xs text-white/90">Intensity</div>
               </div>
-              <div className="text-center p-3 bg-gray-100 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
-                <div className="font-display font-black text-lg text-black dark:text-white">20%</div>
-                <div className="font-body text-xs text-gray-600 dark:text-gray-400">Equity</div>
+              <div className="text-center p-3 bg-[#C91A2B] border-2 border-black">
+                <div className="font-display font-black text-lg text-white">20%</div>
+                <div className="font-body text-xs text-white/90">Equity</div>
               </div>
-              <div className="text-center p-3 bg-gray-100 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
-                <div className="font-display font-black text-lg text-black dark:text-white">16%</div>
-                <div className="font-body text-xs text-gray-600 dark:text-gray-400">Duration</div>
+              <div className="text-center p-3 bg-[#2F3BBD] border-2 border-black">
+                <div className="font-display font-black text-lg text-white">16%</div>
+                <div className="font-body text-xs text-white/90">Duration</div>
               </div>
               <div className="text-center p-3 bg-gray-100 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
                 <div className="font-display font-black text-lg text-black dark:text-white">12%</div>
@@ -373,13 +522,9 @@ export default function ProfilePage() {
               </div>
               <div className="text-center p-3 bg-gray-100 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
                 <div className="font-display font-black text-lg text-black dark:text-white">10%</div>
-                <div className="font-body text-xs text-gray-600 dark:text-gray-400">Feasibility</div>
+                <div className="font-body text-xs text-gray-600 dark:text-gray-400">Implementation</div>
               </div>
             </div>
-            <p className="font-body text-sm text-gray-600 dark:text-gray-400">
-              This weighting emphasizes life-changing individual impact and fairness over raw scale or political feasibility—reflecting
-              that most people care more about whether a policy genuinely helps those who need it than whether it's easy to pass.
-            </p>
           </div>
         </div>
       </div>

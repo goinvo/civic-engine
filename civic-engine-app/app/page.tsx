@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollPolicyList from '@/components/ScrollPolicyList';
-import { getTopPolicies, getPoliciesCount } from '@/data/policies';
+import { getTopPolicies, getPoliciesCount, getAllPoliciesSorted } from '@/data/policies';
 import { useValues } from '@/contexts/ValuesContext';
 import { calculatePersonalizedScore } from '@/utils/impactScore';
 import { policyImpactScores } from '@/data/policyScores';
@@ -60,7 +60,8 @@ const SORT_OPTION_GROUPS: SortOptionGroup[] = [
 ];
 
 export default function Home() {
-  const allTopPolicies = getTopPolicies(10);
+  const topTenBySupport = getTopPolicies(10);
+  const allPolicies = getAllPoliciesSorted();
   const totalPolicies = getPoliciesCount();
   const [navbarHeight, setNavbarHeight] = useState(0);
   const { hasCompletedOnboarding, profile } = useValues();
@@ -78,54 +79,61 @@ export default function Home() {
   };
 
   const topTenPolicies = useMemo(() => {
-    const policies = [...allTopPolicies];
-
+    // When sorting by support, use the pre-sorted top 10
     if (sortBy === 'support') {
-      return policies; // Already sorted by support
+      return topTenBySupport;
     }
+
+    // For other sorts, pull from all policies and take top 10
+    const policies = [...allPolicies];
 
     if (sortBy === 'personalized') {
       // Use profile weights if available, otherwise use default weights
       const weights = profile?.weights || defaultWeights;
-      return policies.sort((a, b) => {
+      policies.sort((a, b) => {
         const scoreA = calculatePersonalizedScore(a.id, weights) || 0;
         const scoreB = calculatePersonalizedScore(b.id, weights) || 0;
         return scoreB - scoreA;
       });
+      return policies.slice(0, 10);
     }
 
     // Sort by party support
     if (sortBy === 'democrat') {
-      return policies.sort((a, b) => {
+      policies.sort((a, b) => {
         const supportA = a.partySupport?.democrats || 0;
         const supportB = b.partySupport?.democrats || 0;
         return supportB - supportA;
       });
+      return policies.slice(0, 10);
     }
 
     if (sortBy === 'republican') {
-      return policies.sort((a, b) => {
+      policies.sort((a, b) => {
         const supportA = a.partySupport?.republicans || 0;
         const supportB = b.partySupport?.republicans || 0;
         return supportB - supportA;
       });
+      return policies.slice(0, 10);
     }
 
     if (sortBy === 'independent') {
-      return policies.sort((a, b) => {
+      policies.sort((a, b) => {
         const supportA = a.partySupport?.independents || 0;
         const supportB = b.partySupport?.independents || 0;
         return supportB - supportA;
       });
+      return policies.slice(0, 10);
     }
 
     // Sort by impact factor
-    return policies.sort((a, b) => {
+    policies.sort((a, b) => {
       const impactA = policyImpactScores[a.id]?.breakdown[sortBy] || 0;
       const impactB = policyImpactScores[b.id]?.breakdown[sortBy] || 0;
       return impactB - impactA;
     });
-  }, [allTopPolicies, sortBy, profile]);
+    return policies.slice(0, 10);
+  }, [topTenBySupport, allPolicies, sortBy, profile]);
 
   useEffect(() => {
     // Calculate navbar height
