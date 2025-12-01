@@ -44,17 +44,17 @@ export default function VotesPage() {
 
         {votesArray.length > 0 ? (
           <>
-            {/* Stats */}
+            {/* Stats (static - no shadows) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
-                <div className="text-4xl font-display font-black text-black dark:text-white mb-2">{votesArray.length}</div>
-                <div className="text-sm font-body text-gray-700 dark:text-gray-300 font-bold">Total Votes</div>
+              <div className="bg-black border-4 border-black dark:border-gray-600 p-6">
+                <div className="text-4xl font-display font-black text-white mb-2">{votesArray.length}</div>
+                <div className="text-sm font-body text-white/90 font-bold">Total Votes</div>
               </div>
-              <div className="bg-[#2F3BBD] border-4 border-black dark:border-gray-600 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+              <div className="bg-[#2F3BBD] border-4 border-black dark:border-gray-600 p-6">
                 <div className="text-4xl font-display font-black text-white mb-2">{supportCount}</div>
                 <div className="text-sm font-body text-white font-bold">Support</div>
               </div>
-              <div className="bg-[#C91A2B] border-4 border-black dark:border-gray-600 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+              <div className="bg-[#C91A2B] border-4 border-black dark:border-gray-600 p-6">
                 <div className="text-4xl font-display font-black text-white mb-2">{opposeCount}</div>
                 <div className="text-sm font-body text-white font-bold">Oppose</div>
               </div>
@@ -62,11 +62,11 @@ export default function VotesPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 mt-6">
-              <button className="inline-flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:opacity-90 transition-opacity">
+              <button className="inline-flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150">
                 <Download className="w-5 h-5" />
                 <span>Export Votes</span>
               </button>
-              <button className="inline-flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:opacity-90 transition-opacity">
+              <button className="inline-flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150">
                 <Share2 className="w-5 h-5" />
                 <span>Share Results</span>
               </button>
@@ -106,12 +106,12 @@ export default function VotesPage() {
               </button>
             </div>
 
-            {/* Voted Policies List */}
+            {/* Voted Policies List (static cards - no shadows) */}
             <div className="space-y-4">
               {filteredPolicies.map((vote) => (
                 <div
                   key={vote.policyId}
-                  className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] overflow-hidden"
+                  className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 overflow-hidden"
                 >
                   <div className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -132,20 +132,22 @@ export default function VotesPage() {
                       </div>
 
                       <div className="flex items-center gap-3">
+                        {/* Vote badge (static - no shadow) */}
                         {vote.vote === 'support' ? (
-                          <div className="flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-2 border-black dark:border-gray-600 font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
+                          <div className="flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-2 border-black dark:border-gray-600 font-bold">
                             <ThumbsUp className="w-5 h-5" />
                             <span>Support</span>
                           </div>
                         ) : (
-                          <div className="flex items-center space-x-2 px-6 py-3 bg-[#C91A2B] text-white border-2 border-black dark:border-gray-600 font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
+                          <div className="flex items-center space-x-2 px-6 py-3 bg-[#C91A2B] text-white border-2 border-black dark:border-gray-600 font-bold">
                             <ThumbsDown className="w-5 h-5" />
                             <span>Oppose</span>
                           </div>
                         )}
+                        {/* Remove button (interactive - has press effect) */}
                         <button
                           onClick={() => removeVote(vote.policyId)}
-                          className="p-3 bg-white dark:bg-gray-700 text-black dark:text-white border-2 border-black dark:border-gray-600 font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)] hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                          className="p-3 bg-white dark:bg-gray-700 text-black dark:text-white border-2 border-black dark:border-gray-600 font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all duration-150"
                           aria-label="Remove vote"
                         >
                           <X className="w-5 h-5" />
@@ -171,8 +173,8 @@ export default function VotesPage() {
             )}
           </>
         ) : (
-          // Empty state when no votes at all
-          <div className="text-center py-16 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          // Empty state when no votes at all (static container - no shadow)
+          <div className="text-center py-16 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800">
             <Circle className="w-20 h-20 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
             <h3 className="font-display font-black text-3xl text-gray-600 dark:text-gray-400 mb-4">
               No votes yet
@@ -182,7 +184,7 @@ export default function VotesPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] text-lg"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
             >
               <span>Explore Top 10 Policies</span>
             </Link>
@@ -195,7 +197,7 @@ export default function VotesPage() {
         <div className="mt-16 text-center">
           <Link
             href="/top20"
-            className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] text-lg"
+            className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
           >
             <span>Vote on More Policies</span>
           </Link>

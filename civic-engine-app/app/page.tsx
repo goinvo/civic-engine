@@ -170,35 +170,35 @@ export default function Home() {
           {hasCompletedOnboarding && (
             <Link
               href="/profile"
-              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all mb-12"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 mb-12"
             >
               <Sparkles className="w-5 h-5" strokeWidth={2.5} />
               <span className="font-display font-bold text-sm">Personalized scores active</span>
             </Link>
           )}
 
-          {/* Stats - Neobrutalist Cards - Patriotic Colors */}
+          {/* Stats - Neobrutalist Cards (static - no shadows) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <div className="bg-[#C91A2B] border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="bg-black border-4 border-black p-8">
               <div className="text-6xl font-display font-black text-white">{totalPolicies}</div>
-              <div className="text-base font-body text-white font-bold">Consensus Policies</div>
+              <div className="text-base font-body text-white/80 font-bold">Consensus Policies</div>
             </div>
-            <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="bg-white border-4 border-black p-8">
               <div className="text-6xl font-display font-black text-black">70%+</div>
-              <div className="text-base font-body text-black font-bold">Average Support</div>
+              <div className="text-base font-body text-gray-600 font-bold">Average Support</div>
             </div>
-            <div className="bg-[#2F3BBD] border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black p-8">
               <div className="text-6xl font-display font-black text-white">2025</div>
-              <div className="text-base font-body text-white font-bold">Latest Data</div>
+              <div className="text-base font-body text-white/80 font-bold">Latest Data</div>
             </div>
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons - with press effect */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             {!hasCompletedOnboarding && (
               <Link
                 href="/values"
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>Get Personalized Scores</span>
@@ -206,7 +206,7 @@ export default function Home() {
             )}
             <Link
               href="/top20"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
             >
               <span>View All {totalPolicies} Policies</span>
               <ArrowRight className="w-5 h-5" />
@@ -246,7 +246,7 @@ export default function Home() {
               </p>
               <Link
                 href="/values"
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-black hover:bg-gray-100 transition-colors font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-black font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>Take the Values Pulse</span>
@@ -279,7 +279,7 @@ export default function Home() {
         <div className="mt-16 text-center">
           <Link
             href="/top20"
-            className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white hover:opacity-90 transition-opacity font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-lg"
+            className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
           >
             <span>See All {totalPolicies} Policies</span>
             <ArrowRight className="w-5 h-5" />

@@ -27,7 +27,7 @@ export default function PolicyTable({ policies }: PolicyTableProps) {
   const weights = profile?.weights || defaultWeights;
 
   return (
-    <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-x-auto">
+    <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 overflow-x-auto">
       <table className="w-full min-w-[800px]">
         <thead>
           <tr className="border-b-4 border-black dark:border-gray-600 bg-gray-100 dark:bg-gray-700">
@@ -52,7 +52,7 @@ export default function PolicyTable({ policies }: PolicyTableProps) {
             return (
               <tr
                 key={policy.id}
-                className="border-b-2 border-black dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="border-b-2 border-black dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer"
               >
                 <td className="p-4 font-display font-black text-sm text-black dark:text-white">
                   {index + 1}

@@ -75,6 +75,11 @@ export default function Top20Page() {
   const { profile } = useValues();
   const [sortBy, setSortBy] = useState<SortOption>('support');
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [expandedPolicyId, setExpandedPolicyId] = useState<string | null>(null);
+
+  const handleToggleExpand = (policyId: string) => {
+    setExpandedPolicyId(expandedPolicyId === policyId ? null : policyId);
+  };
 
   // Default weights - adjusted to reflect average American priorities
   const defaultWeights = {
@@ -159,21 +164,21 @@ export default function Top20Page() {
           Every policy shown has majority support from Democrats, Republicans, and Independents. These are the issues that unite Americans across party lines.
         </p>
 
-        {/* Stats - Neobrutalist Cards */}
+        {/* Stats - Neobrutalist Cards (static - no shadows) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-[#C91A2B] border-4 border-black dark:border-gray-600 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="bg-black dark:bg-gray-900 border-4 border-black dark:border-gray-600 p-6">
             <div className="text-4xl font-display font-black text-white">{allPolicies.length}</div>
-            <div className="text-sm font-body text-white font-bold">Total Policies</div>
+            <div className="text-sm font-body text-white/80 font-bold">Total Policies</div>
           </div>
-          <div className="bg-white dark:bg-gray-700 border-4 border-black dark:border-gray-600 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="bg-white dark:bg-gray-700 border-4 border-black dark:border-gray-600 p-6">
             <div className="text-4xl font-display font-black text-black dark:text-white">76%</div>
             <div className="text-sm font-body text-black dark:text-gray-300 font-bold">Avg Support</div>
           </div>
-          <div className="bg-[#2F3BBD] border-4 border-black dark:border-gray-600 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black dark:border-gray-600 p-6">
             <div className="text-4xl font-display font-black text-white">55%+</div>
-            <div className="text-sm font-body text-white font-bold">Min Bipartisan</div>
+            <div className="text-sm font-body text-white/80 font-bold">Min Bipartisan</div>
           </div>
-          <div className="bg-white dark:bg-gray-700 border-4 border-black dark:border-gray-600 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="bg-white dark:bg-gray-700 border-4 border-black dark:border-gray-600 p-6">
             <div className="text-4xl font-display font-black text-black dark:text-white">2025</div>
             <div className="text-sm font-body text-black dark:text-gray-300 font-bold">Latest Data</div>
           </div>
@@ -302,6 +307,8 @@ export default function Top20Page() {
                 policy={policy}
                 displayRank={index + 1}
                 showPersonalizedScore={sortBy === 'personalized'}
+                isExpanded={expandedPolicyId === policy.id}
+                onToggleExpand={() => handleToggleExpand(policy.id)}
               />
             ))}
           </div>

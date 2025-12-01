@@ -87,7 +87,7 @@ export default function ProfilePage() {
 
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="w-16 h-16 bg-[#2F3BBD] border-4 border-black dark:border-gray-600 mx-auto mb-6 flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] border-4 border-black dark:border-gray-600 mx-auto mb-6 flex items-center justify-center">
           <Sparkles className="w-8 h-8 text-white" strokeWidth={2.5} />
         </div>
         <h1 className="font-display text-5xl sm:text-6xl font-black text-black dark:text-white mb-4">
@@ -100,9 +100,9 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      {/* Archetype Card */}
+      {/* Archetype Card (static - no shadow) */}
       <div className="mb-12">
-        <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+        <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-8">
           <h2 className="font-display text-3xl font-black text-black dark:text-white mb-4">
             {isCustomProfile ? `Custom Profile (closest to ${closestArchetype?.name})` : archetype?.name}
           </h2>
@@ -121,10 +121,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Philosopher Alignment */}
+      {/* Philosopher Alignment (static - no shadow) */}
       {(archetype?.philosopher || closestArchetype?.philosopher) && (
         <div className="mb-12">
-          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8">
             <h2 className="font-display text-2xl font-black text-white mb-3">
               Your Economic Philosophy
             </h2>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             return (
               <div
                 key={factorKey}
-                className={`border-4 ${colors[index]} p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]`}
+                className={`border-4 ${colors[index]} p-6`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
@@ -197,7 +197,7 @@ export default function ProfilePage() {
           <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
             Your Responses
           </h2>
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <div className="space-y-6">
               {QUESTIONS.map((question) => {
                 const response = responses[question.id as keyof typeof responses];
@@ -231,9 +231,9 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* What This Means */}
+      {/* What This Means (static - no shadow) */}
       <div className="mb-12">
-        <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+        <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8">
           <h2 className="font-display text-3xl font-black text-white mb-4">
             How This Affects Your Scores
           </h2>
@@ -271,7 +271,7 @@ export default function ProfilePage() {
 
         <div className="space-y-6">
           {/* Factor 1: Population Impact */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               1. Population Impact (Scope)
             </h3>
@@ -292,7 +292,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 2: Economic Magnitude */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               2. Economic Magnitude (Volume)
             </h3>
@@ -313,7 +313,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 3: Intensity of Impact */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               3. Intensity of Impact (Depth)
             </h3>
@@ -333,7 +333,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 4: Duration */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               4. Duration (Time Horizon)
             </h3>
@@ -353,7 +353,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 5: Distributional Weight */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               5. Distributional Weight (Equity)
             </h3>
@@ -374,7 +374,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 6: Externalities */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               6. Externalities (Spillover)
             </h3>
@@ -393,7 +393,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Factor 7: Implementation Complexity */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-2">
               7. Implementation Complexity (Friction)
             </h3>
@@ -412,7 +412,7 @@ export default function ProfilePage() {
           </div>
 
           {/* The Calculation */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-[#C91A2B] border-2 border-black flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-white" strokeWidth={2.5} />
@@ -438,7 +438,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Example Calculation */}
-          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-6">
             <h3 className="font-display text-xl font-black text-white mb-4">
               Example: Universal Pre-K
             </h3>
@@ -482,7 +482,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Default Weights Philosophy */}
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-black dark:bg-white border-2 border-black dark:border-gray-600 flex items-center justify-center">
                 <Scale className="w-5 h-5 text-white dark:text-black" strokeWidth={2.5} />
@@ -533,14 +533,14 @@ export default function ProfilePage() {
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
         <Link
           href="/"
-          className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all font-bold text-lg"
+          className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 font-bold text-lg"
         >
           <Sparkles className="w-5 h-5" />
           <span>View Personalized Policies</span>
         </Link>
         <button
           onClick={handleRetake}
-          className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] transition-all font-bold text-lg"
+          className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 font-bold text-lg"
         >
           <RefreshCw className="w-5 h-5" />
           <span>Retake Questionnaire</span>
@@ -555,7 +555,7 @@ export default function ProfilePage() {
           </p>
           <button
             onClick={handleResetToDefault}
-            className="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] transition-all font-bold text-sm"
+            className="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 font-bold text-sm"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Reset to Default Profile</span>

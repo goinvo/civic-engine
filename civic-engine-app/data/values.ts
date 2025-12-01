@@ -1,5 +1,87 @@
 import { Archetype, Question, WeightProfile } from '@/types/values';
 
+// Bibliography for archetype philosophical foundations
+export const BIBLIOGRAPHY = [
+  {
+    key: 'bentham1789',
+    citation: 'Bentham, Jeremy. *An Introduction to the Principles of Morals and Legislation*. 1789. Clarendon Press, 1907.',
+    url: 'https://oll.libertyfund.org/titles/bentham-an-introduction-to-the-principles-of-morals-and-legislation',
+    archetypes: ['optimizer'],
+  },
+  {
+    key: 'mill1863',
+    citation: 'Mill, John Stuart. *Utilitarianism*. 2nd ed., Hackett Publishing, 2001.',
+    url: 'https://cmc.marmot.org/Record/.b31098083',
+    archetypes: ['optimizer'],
+  },
+  {
+    key: 'driver2009',
+    citation: 'Driver, Julia. "The History of Utilitarianism." *The Stanford Encyclopedia of Philosophy*, 2009.',
+    url: 'https://plato.stanford.edu/entries/utilitarianism-history/',
+    archetypes: ['optimizer'],
+  },
+  {
+    key: 'rawls1971',
+    citation: 'Rawls, John. *A Theory of Justice*. Revised ed., Harvard University Press, 1999.',
+    url: 'https://www.hup.harvard.edu/file/feeds/PDF/9780674000780_sample.pdf',
+    archetypes: ['advocate'],
+  },
+  {
+    key: 'buchanan1984',
+    citation: 'Buchanan, James M. "Politics Without Romance." *The Logical Foundations of Constitutional Liberty*. Vol. 1, The Collected Works of James M. Buchanan, Liberty Fund, 1999.',
+    url: 'https://micros22.classes.ryansafner.com/readings/Buchanan-1984.pdf',
+    archetypes: ['realist'],
+  },
+  {
+    key: 'pressman1984',
+    citation: 'Pressman, Jeffrey L., and Aaron B. Wildavsky. *Implementation: How Great Expectations in Washington Are Dashed in Oakland*. University of California Press, 1984.',
+    url: 'https://archive.org/details/implementationho00pres',
+    archetypes: ['realist'],
+  },
+  {
+    key: 'coase1960',
+    citation: 'Coase, R. H. "The Problem of Social Cost." *Journal of Law and Economics*, vol. 3, 1960, pp. 1–44.',
+    url: 'https://www.sfu.ca/~wainwrig/Econ400/coase-socialcost.pdf',
+    archetypes: ['futurist'],
+  },
+  {
+    key: 'olson1965',
+    citation: 'Olson, Mancur. *The Logic of Collective Action: Public Goods and the Theory of Groups*. Harvard University Press, 1965.',
+    url: 'https://en.wikipedia.org/wiki/The_Logic_of_Collective_Action',
+    archetypes: ['futurist'],
+  },
+  {
+    key: 'meadows2008',
+    citation: 'Meadows, Donella H. *Thinking in Systems: A Primer*. Chelsea Green Publishing, 2008.',
+    url: 'https://en.wikipedia.org/wiki/Thinking_In_Systems:_A_Primer',
+    archetypes: ['futurist'],
+  },
+  {
+    key: 'stern2007',
+    citation: 'Stern, Nicholas. *The Economics of Climate Change: The Stern Review*. Cambridge University Press, 2007.',
+    url: 'https://assets.cambridge.org/97805217/00801/frontmatter/9780521700801_frontmatter.pdf',
+    archetypes: ['futurist'],
+  },
+  {
+    key: 'sen1999',
+    citation: 'Sen, Amartya. *Development as Freedom*. Alfred A. Knopf, 1999.',
+    url: 'https://en.wikipedia.org/wiki/Development_as_Freedom',
+    archetypes: ['balanced'],
+  },
+  {
+    key: 'nussbaum1993',
+    citation: 'The Quality of Life. Edited by Martha Nussbaum and Amartya Sen, Clarendon Press / Oxford University Press, 1993.',
+    url: 'https://chicagounbound.uchicago.edu/books/521/',
+    archetypes: ['balanced'],
+  },
+  {
+    key: 'parfit1984',
+    citation: 'Parfit, Derek. *Reasons and Persons*. Oxford University Press, 1984.',
+    url: 'https://en.wikipedia.org/wiki/Reasons_and_Persons',
+    archetypes: ['balanced'],
+  },
+];
+
 // The 5 Archetype Presets
 export const ARCHETYPES: Archetype[] = [
   {
@@ -11,13 +93,13 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Classical Utilitarianism',
     philosophyDescription: 'You prioritize maximizing total welfare across the population. Like Bentham and Mill, you believe the best policy is one that creates "the greatest good for the greatest number." You focus on aggregate outcomes and efficient resource allocation.',
     weights: {
-      population: 0.28,      // High - breadth of impact
-      economic: 0.25,        // High - resource efficiency
-      intensity: 0.12,
-      duration: 0.12,
-      equity: 0.08,
+      population: 0.32,      // Very high - breadth of impact is primary
+      economic: 0.28,        // Very high - resource efficiency
+      intensity: 0.08,       // Low - individual depth less important
+      duration: 0.10,
+      equity: 0.06,          // Low - aggregate > distribution
       externalities: 0.08,
-      implementation: 0.07,
+      implementation: 0.08,
     },
   },
   {
@@ -29,12 +111,12 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Rawlsian Justice',
     philosophyDescription: 'You align with Rawls\' "veil of ignorance" principle: evaluate policies by how they affect the worst-off. You prioritize equity and individual impact over aggregate efficiency, believing a just society measures success by how it treats those with the least.',
     weights: {
-      population: 0.06,
-      economic: 0.06,
-      intensity: 0.32,       // High - depth of individual impact
-      duration: 0.14,
-      equity: 0.32,          // High - fairness for vulnerable
-      externalities: 0.06,
+      population: 0.04,      // Very low - breadth doesn't matter
+      economic: 0.04,        // Very low - money isn't the metric
+      intensity: 0.36,       // Very high - depth of individual impact
+      duration: 0.10,
+      equity: 0.38,          // Very high - fairness for vulnerable
+      externalities: 0.04,
       implementation: 0.04,
     },
   },
@@ -47,13 +129,13 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Pragmatic Institutionalism',
     philosophyDescription: 'You share Buchanan\'s skepticism about ambitious reforms. You value policies that account for real-world constraints: political feasibility, administrative capacity, and implementation costs. Perfect on paper means nothing if it can\'t survive the messy reality of governance.',
     weights: {
-      population: 0.10,
-      economic: 0.18,        // High - tangible results
-      intensity: 0.10,
-      duration: 0.10,
-      equity: 0.10,
-      externalities: 0.12,
-      implementation: 0.30,  // High - can it actually happen?
+      population: 0.08,
+      economic: 0.20,        // High - tangible economic results
+      intensity: 0.08,
+      duration: 0.08,
+      equity: 0.08,
+      externalities: 0.10,
+      implementation: 0.38,  // Very high - can it actually happen?
     },
   },
   {
@@ -65,31 +147,31 @@ export const ARCHETYPES: Archetype[] = [
     philosophyName: 'Systems Thinking & Collective Action',
     philosophyDescription: 'Like Coase and Olson, you think in terms of transaction costs, collective action problems, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
     weights: {
-      population: 0.08,
-      economic: 0.08,
-      intensity: 0.10,
-      duration: 0.32,        // High - lasting change
-      equity: 0.10,
-      externalities: 0.26,   // High - ripple effects
-      implementation: 0.06,
+      population: 0.06,
+      economic: 0.06,
+      intensity: 0.08,
+      duration: 0.38,        // Very high - lasting change
+      equity: 0.08,
+      externalities: 0.30,   // Very high - ripple effects
+      implementation: 0.04,
     },
   },
   {
     id: 'balanced',
     name: 'The Balanced',
-    description: 'I weigh human impact factors more heavily while considering all dimensions.',
-    shortDescription: 'Human-centered balance',
+    description: 'I weigh all dimensions equally, refusing to prioritize any single factor.',
+    shortDescription: 'True multi-dimensional balance',
     philosopher: 'Amartya Sen',
     philosophyName: 'Capability Approach',
     philosophyDescription: 'You align with Sen\'s holistic framework: good policy isn\'t about maximizing one metric, but expanding human capabilities across multiple dimensions. You resist single-factor optimization and instead evaluate policies through a multi-dimensional lens of wellbeing, freedom, and opportunity.',
     weights: {
-      population: 0.12,
-      economic: 0.12,
-      intensity: 0.20,       // Slightly higher - human impact matters
-      duration: 0.16,
-      equity: 0.20,          // Slightly higher - fairness matters
-      externalities: 0.10,
-      implementation: 0.10,
+      population: 0.143,     // Equal weight across all 7 factors
+      economic: 0.143,
+      intensity: 0.143,
+      duration: 0.143,
+      equity: 0.143,
+      externalities: 0.143,
+      implementation: 0.142, // Slightly less to sum to 1.0
     },
   },
 ];

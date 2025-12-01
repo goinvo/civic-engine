@@ -58,9 +58,7 @@ export default function ValuesOnboardingPage() {
               {/* Take Questionnaire */}
               <motion.button
                 onClick={() => setMode('questionnaire')}
-                className="text-left p-8 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[12px_12px_0px_0px_rgba(75,85,99,1)] transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="text-left p-8 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[5px] hover:translate-y-[5px] active:shadow-none active:translate-x-2 active:translate-y-2 transition-all duration-150"
               >
                 <div className="flex items-start mb-4">
                   <div className="w-16 h-16 bg-[#2F3BBD] border-4 border-black dark:border-gray-600 flex items-center justify-center">
@@ -82,9 +80,7 @@ export default function ValuesOnboardingPage() {
               {/* Choose Archetype */}
               <motion.button
                 onClick={() => setMode('archetype')}
-                className="text-left p-8 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[12px_12px_0px_0px_rgba(75,85,99,1)] transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="text-left p-8 border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[5px] hover:translate-y-[5px] active:shadow-none active:translate-x-2 active:translate-y-2 transition-all duration-150"
               >
                 <div className="flex items-start mb-4">
                   <div className="w-16 h-16 bg-[#C91A2B] border-4 border-black dark:border-gray-600 flex items-center justify-center">

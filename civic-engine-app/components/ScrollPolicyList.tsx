@@ -108,8 +108,10 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
             }
           });
         },
-        // FIX 3: Adjusted margins to prevent skipping - increased top margin for taller content
-        { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-30% 0px -60% 0px' }
+        // Adjusted margins: Desktop uses a smaller detection zone near the top of viewport
+        // to prevent early triggering. The -45% top margin means we only detect
+        // when the section is well into the viewport.
+        { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-45% 0px -45% 0px' }
       );
       observer.observe(ref);
       return observer;
@@ -190,21 +192,21 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
         });
       }
 
-      // FIX 2: Mobile Pull-to-next Logic
+      // Pull-to-next Logic (both mobile and desktop)
       // Only trigger if we are strictly at the bottom AND scrolling down
       const isMobileView = window.innerWidth < 1024;
-      if (isMobileView && isAtBottom && activeIndex < policies.length - 1) {
+      if (isAtBottom && activeIndex < policies.length - 1) {
         // We define a "Pull Zone" at the end of the scroll section
-        // 0.85 to 1.0 is the zone where the card is finished, but the window is still scrolling
-        const pullStart = 0.85;
-        const pullLength = 0.15;
+        // Desktop needs a later start since content is shorter relative to scroll height
+        const pullStart = isMobileView ? 0.85 : 0.90;
+        const pullLength = isMobileView ? 0.15 : 0.10;
 
         const deadZoneProgress = Math.max(0, Math.min(1, (progress - pullStart) / pullLength));
         setTransitionProgress(deadZoneProgress);
 
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = setTimeout(() => setTransitionProgress(0), 150);
-      } else if (isMobileView) {
+      } else {
         setTransitionProgress(0);
       }
     };
@@ -216,8 +218,10 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
       scrollEndTimeout = setTimeout(() => {
         const isMobileView = window.innerWidth < 1024;
 
-        // FIX 2: Lowered threshold to 0.3 (30% pull) to make it feel more responsive
-        if (isMobileView && transitionProgress > 0.3 && activeIndex < policies.length - 1) {
+        // Trigger scroll to next policy when user has scrolled past the threshold
+        // Mobile: 30% pull, Desktop: 50% pull (requires more deliberate scrolling)
+        const threshold = isMobileView ? 0.3 : 0.5;
+        if (transitionProgress > threshold && activeIndex < policies.length - 1) {
           scrollToPolicy(activeIndex + 1);
         }
       }, 100); // Fast reaction
@@ -558,24 +562,25 @@ function PolicyWindow({
             {policy.description}
           </p>
 
+          {/* Support stats (static - no shadows) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+            <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3">
               <div className="text-3xl font-display font-black text-black dark:text-white">{policy.averageSupport}%</div>
               <div className="text-xs font-body text-black dark:text-gray-300 font-bold">Avg Support</div>
             </div>
             {policy.partySupport && (
               <>
-                <div className="bg-[#2F3BBD] border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                <div className="bg-[#2F3BBD] border-2 border-black dark:border-gray-600 p-3">
                   <div className="text-2xl font-display font-black text-white">{policy.partySupport.democrats}%</div>
                   <div className="text-xs font-body text-white font-bold">Democrats</div>
                 </div>
-                <div className="bg-[#C91A2B] border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                <div className="bg-[#C91A2B] border-2 border-black dark:border-gray-600 p-3">
                   <div className="text-2xl font-display font-black text-white">{policy.partySupport.republicans}%</div>
                   <div className="text-xs font-body text-white font-bold">Republicans</div>
                 </div>
-                <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
-                  <div className="text-2xl font-display font-black text-black dark:text-white">{policy.partySupport.independents}%</div>
-                  <div className="text-xs font-body text-black dark:text-gray-300 font-bold">Independents</div>
+                <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-2 border-black dark:border-gray-600 p-3">
+                  <div className="text-2xl font-display font-black text-white">{policy.partySupport.independents}%</div>
+                  <div className="text-xs font-body text-white/90 font-bold">Independents</div>
                 </div>
               </>
             )}
@@ -587,7 +592,7 @@ function PolicyWindow({
               {hasPersonalization ? (
                 <Link
                   href="/profile"
-                  className="block border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] transition-all cursor-pointer"
+                  className="block border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
@@ -611,7 +616,7 @@ function PolicyWindow({
                   )}
                 </Link>
               ) : (
-                <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+                <div className="border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-display text-base font-black text-black dark:text-white">Base Impact Score</h3>
                     <div className="text-3xl font-display font-black text-black dark:text-white">{baseScore.totalScore}</div>
@@ -621,7 +626,7 @@ function PolicyWindow({
                   </p>
                   <Link
                     href="/values"
-                    className="inline-flex items-center space-x-2 px-4 py-2 bg-[#2F3BBD] text-white border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] font-bold text-sm hover:opacity-90 transition-opacity"
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 font-bold text-sm"
                   >
                     <Sparkles className="w-4 h-4" />
                     <span>Get Your Personalized Score</span>
@@ -646,7 +651,7 @@ function PolicyWindow({
           {policy.resourceFlow && (
             <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">How It Works</h3>
-              <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+              <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <div className="text-xs font-display font-black text-white uppercase mb-1">From</div>
@@ -682,7 +687,7 @@ function PolicyWindow({
           {policy.causalChain && (
             <div className="mb-6">
               <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Policy Goal</h3>
-              <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+              <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4">
                 <div className="space-y-3">
                   <div>
                     <div className="text-xs font-display font-black text-white uppercase mb-1">Immediate Action</div>
@@ -759,9 +764,9 @@ function PolicyWindow({
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'support')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${currentVote?.vote === 'support'
-                    ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
-                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all duration-150 ${currentVote?.vote === 'support'
+                    ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]'
+                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1'
                   }`}
               >
                 <ThumbsUp className="w-6 h-6" strokeWidth={3} />
@@ -769,9 +774,9 @@ function PolicyWindow({
               </button>
               <button
                 onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'oppose')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all ${currentVote?.vote === 'oppose'
-                    ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
-                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]'
+                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all duration-150 ${currentVote?.vote === 'oppose'
+                    ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]'
+                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1'
                   }`}
               >
                 <ThumbsDown className="w-6 h-6" strokeWidth={3} />
@@ -804,7 +809,7 @@ function PolicyWindow({
               <span className="font-display font-bold text-sm text-center text-gray-600 dark:text-gray-400 mb-2 whitespace-nowrap">
                 Continue scrolling for next policy
               </span>
-              <div className="w-10 h-10 border-3 border-black dark:border-gray-600 bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
+              <div className="w-10 h-10 border-2 border-black dark:border-gray-600 bg-[#C91A2B] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(75,85,99,1)]">
                 <svg className="w-5 h-5 text-white" fill="none" strokeWidth="3" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
