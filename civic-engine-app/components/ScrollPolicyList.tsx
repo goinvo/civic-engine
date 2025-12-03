@@ -34,8 +34,11 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [entryDirectionState, setEntryDirectionState] = useState<'UP' | 'DOWN'>('DOWN');
+  const [isV2Expanded, setIsV2Expanded] = useState<boolean>(false);
+  const [sidebarPeekProgress, setSidebarPeekProgress] = useState<number>(0); // 0 = hidden, 1 = fully visible
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const mainContainerRef = useRef<HTMLDivElement>(null);
   const scrollSectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
   const policyWindowRef = useRef<HTMLDivElement>(null);
@@ -267,8 +270,82 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
     }, 800);
   };
 
+  // --- SIDEBAR PEEK ON HOVER (when V2 expanded) ---
+  useEffect(() => {
+    if (!isV2Expanded || isMobile) {
+      setSidebarPeekProgress(0);
+      return;
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const policyWindow = policyWindowRef.current;
+      if (!policyWindow) return;
+
+      // Get the policy window's left edge position
+      const windowRect = policyWindow.getBoundingClientRect();
+      const windowLeftEdge = windowRect.left;
+
+      // Mouse X position relative to viewport
+      const mouseX = e.clientX;
+
+      // Calculate how far left of the content the mouse is
+      // Only trigger when mouse is in the empty margin (left of content)
+      const distanceFromContent = windowLeftEdge - mouseX;
+
+      // Define zones based on distance from content edge:
+      // We use a buffer for CLOSING (going back to content) but not for the actual position calculation
+      // This prevents the sidebar from collapsing while trying to click buttons
+
+      const CLOSE_BUFFER = -50; // Allow mouse to be 50px INTO content before closing (for clicking sidebar)
+      const PEEK_START = 20; // Start peeking when 20px into margin
+      const GRADIENT_START = 80;
+      const FULL_REVEAL = 160;
+
+      let progress = 0;
+
+      if (distanceFromContent <= CLOSE_BUFFER) {
+        // Mouse is well into the content - close the sidebar
+        progress = 0;
+      } else if (distanceFromContent >= FULL_REVEAL) {
+        // Far left - full reveal
+        progress = 1;
+      } else if (distanceFromContent >= GRADIENT_START) {
+        // Gradient zone: map GRADIENT_START-FULL_REVEAL to 0.3-1
+        progress = 0.3 + ((distanceFromContent - GRADIENT_START) / (FULL_REVEAL - GRADIENT_START)) * 0.7;
+      } else if (distanceFromContent >= PEEK_START) {
+        // Peek zone: map PEEK_START-GRADIENT_START to 0-0.3
+        progress = ((distanceFromContent - PEEK_START) / (GRADIENT_START - PEEK_START)) * 0.3;
+      } else if (distanceFromContent > CLOSE_BUFFER) {
+        // In the buffer zone between content and peek start - maintain minimal visibility if already peeking
+        // This allows clicking on the revealed sidebar without it collapsing
+        progress = 0.1;
+      }
+
+      setSidebarPeekProgress(progress);
+    };
+
+    const handleMouseLeave = () => {
+      setSidebarPeekProgress(0);
+    };
+
+    // Listen on document to catch mouse in the margin area
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isV2Expanded, isMobile]);
+
+  // Calculate sidebar visibility based on expansion state and peek progress
+  const sidebarWidth = isV2Expanded ? sidebarPeekProgress * 256 : 256;
+  const sidebarOpacity = isV2Expanded ? sidebarPeekProgress : 1;
+  // Gradient mask: more opaque on left when peeking partially
+  const showGradientMask = isV2Expanded && sidebarPeekProgress > 0 && sidebarPeekProgress < 0.8;
+
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div ref={mainContainerRef} className="flex flex-col lg:flex-row gap-8">
       {/* Mobile Nav */}
       <div className="lg:hidden sticky top-20 z-50 mb-4 pointer-events-auto">
         <button
@@ -362,8 +439,28 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
       </div>
 
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-64 flex-shrink-0">
-        <div className="sticky top-24">
+      <motion.div
+        className="hidden lg:block flex-shrink-0 overflow-hidden sticky top-24 self-start z-20"
+        initial={false}
+        animate={{
+          width: sidebarWidth,
+          opacity: sidebarOpacity,
+        }}
+        transition={{
+          duration: isV2Expanded ? 0.1 : 0.3, // Faster response when peeking
+          ease: [0.4, 0, 0.2, 1]
+        }}
+      >
+        <div className="w-64 relative">
+          {/* Gradient fade mask overlay - fades left side when peeking */}
+          {showGradientMask && (
+            <div
+              className="absolute inset-0 z-50 pointer-events-none"
+              style={{
+                background: `linear-gradient(to right, rgba(255,255,255,${1 - sidebarPeekProgress}) 0%, transparent 60%)`,
+              }}
+            />
+          )}
           <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
             <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
             {(() => {
@@ -427,10 +524,19 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Scroll Container */}
-      <div className="flex-1 relative pb-48 lg:pb-32" ref={containerRef}>
+      <motion.div
+        className="relative pb-48 lg:pb-32"
+        ref={containerRef}
+        initial={false}
+        animate={{
+          flex: isV2Expanded ? '1 1 100%' : '1 1 0%',
+        }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        style={{ minWidth: 0 }}
+      >
         <div ref={policyWindowRef} className="sticky top-[180px] lg:top-24 z-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -459,6 +565,8 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
                 }}
                 displayRank={activeIndex + 1}
                 isMobile={isMobile}
+                isV2Expanded={isV2Expanded}
+                onV2ExpandedChange={setIsV2Expanded}
               />
 
               {/* Next Policy Preview */}
@@ -497,7 +605,7 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
             />
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -513,6 +621,8 @@ function PolicyWindow({
   onContentRefChange,
   displayRank,
   isMobile,
+  onV2ExpandedChange,
+  isV2Expanded,
 }: {
   policy: Policy;
   isAtBottom: boolean;
@@ -524,6 +634,8 @@ function PolicyWindow({
   onContentRefChange: (el: HTMLDivElement | null) => void;
   displayRank: number;
   isMobile: boolean;
+  onV2ExpandedChange?: (expanded: boolean) => void;
+  isV2Expanded?: boolean;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
   const { addVote, getVote } = useVoting();
@@ -560,6 +672,8 @@ function PolicyWindow({
       <div
         ref={setRefs}
         className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)] overflow-hidden overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        id="content-container"
+        aria-label={`Policy ${displayRank}: ${policy.title}`}
         style={{ maxHeight: maxHeight }}
       >
         <div className="px-6 pt-12 pb-6">
@@ -663,14 +777,15 @@ function PolicyWindow({
             </div>
           )}
 
-          {/* V2 Factor Scores Display (collapsible) */}
+          {/* V2 Factor Scores Display (tabbed) */}
           {baseV2Score && baseV2Score.factors && (
             <div className="mb-6">
               <V2ScoreDisplay
                 policyId={policy.id}
                 factorScores={baseV2Score.factors}
-                defaultMode="collapsed"
+                defaultMode="table"
                 showMethodologyLink={true}
+                onExpandedChange={onV2ExpandedChange}
               />
             </div>
           )}

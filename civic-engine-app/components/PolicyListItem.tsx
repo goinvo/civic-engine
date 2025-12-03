@@ -164,13 +164,13 @@ export default function PolicyListItem({ policy, isActive = false, displayRank, 
                 </div>
               )}
 
-              {/* V2 Factor Scores Display (collapsible) */}
+              {/* V2 Factor Scores Display (tabbed) */}
               {baseV2Score && baseV2Score.factors && (
                 <div className="mb-6">
                   <V2ScoreDisplay
                     policyId={policy.id}
                     factorScores={baseV2Score.factors}
-                    defaultMode="collapsed"
+                    defaultMode="table"
                     showMethodologyLink={true}
                   />
                 </div>
