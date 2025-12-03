@@ -7,7 +7,7 @@ import { ArrowUpRight, ThumbsUp, ThumbsDown, Sparkles, TrendingUp, TrendingDown 
 import { Policy } from '@/types/policy';
 import { useVoting } from '@/contexts/VotingContext';
 import { useImpactScore } from '@/hooks/useImpactScore';
-import { ConsensusBadge } from '@/components/v2';
+import { ConsensusBadge, V2ScoreDisplay } from '@/components/v2';
 
 type SortOptionGroup = {
   label: string;
@@ -536,6 +536,7 @@ function PolicyWindow({
     hasPersonalization,
     scoringModel,
     consensusState,
+    baseV2Score,
   } = useImpactScore(policy.id);
   const isV2 = scoringModel === 'v2';
 
@@ -659,6 +660,18 @@ function PolicyWindow({
                   </Link>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* V2 Factor Scores Display (collapsible) */}
+          {baseV2Score && baseV2Score.factors && (
+            <div className="mb-6">
+              <V2ScoreDisplay
+                policyId={policy.id}
+                factorScores={baseV2Score.factors}
+                defaultMode="collapsed"
+                showMethodologyLink={true}
+              />
             </div>
           )}
 
