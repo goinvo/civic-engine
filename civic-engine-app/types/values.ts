@@ -1,3 +1,6 @@
+// V2 type imports
+import { V2ArchetypeId, V2WeightProfile } from './consensus';
+
 // The 7 Impact Factors
 export type ImpactFactor =
   | 'population'
@@ -74,11 +77,31 @@ export interface QuestionnaireResponses {
   [key: string]: LikertScale;
 }
 
-// User's complete values profile
+// Scoring model version
+export type ScoringModelVersion = 'v1' | 'v2';
+
+// V2 Questionnaire responses (13 questions)
+export interface V2QuestionnaireResponses {
+  [key: string]: LikertScale;
+}
+
+// User's complete values profile (supports both v1 and v2)
 export interface UserValuesProfile {
+  // V1 fields (always present for backwards compatibility)
   archetypeId: ArchetypeId;
   weights: WeightProfile;
   responses?: QuestionnaireResponses;
+
+  // Model version selector
+  scoringModel: ScoringModelVersion;
+
+  // V2 fields (optional, present when user has used v2)
+  v2ArchetypeId?: V2ArchetypeId;
+  v2Weights?: V2WeightProfile;
+  v2Responses?: V2QuestionnaireResponses;
+  v2AutoMapped?: boolean; // True if profile was auto-mapped from v1
+
+  // Timestamps
   createdAt: string;
   updatedAt: string;
 }

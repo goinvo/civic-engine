@@ -120,6 +120,9 @@ export interface Policy {
   // For future features
   trending?: 'up' | 'down' | 'stable';
 
+  // V2 Methodology
+  hasV2Methodology?: boolean; // Has detailed 13-factor evidence-based scoring
+
   // Metadata
   lastUpdated: string; // ISO date string
 }

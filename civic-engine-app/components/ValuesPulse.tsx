@@ -34,6 +34,7 @@ export default function ValuesPulse({ onComplete }: { onComplete?: () => void })
         archetypeId: 'custom',
         weights,
         responses,
+        scoringModel: 'v1',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });

@@ -7,6 +7,7 @@ import { ArrowUpRight, ThumbsUp, ThumbsDown, Sparkles, TrendingUp, TrendingDown 
 import { Policy } from '@/types/policy';
 import { useVoting } from '@/contexts/VotingContext';
 import { useImpactScore } from '@/hooks/useImpactScore';
+import { ConsensusBadge } from '@/components/v2';
 
 type SortOptionGroup = {
   label: string;
@@ -527,7 +528,16 @@ function PolicyWindow({
   const localRef = useRef<HTMLDivElement | null>(null);
   const { addVote, getVote } = useVoting();
   const currentVote = getVote(policy.id);
-  const { personalizedScore, baseScore, difference, insight, hasPersonalization } = useImpactScore(policy.id);
+  const {
+    personalizedScore,
+    baseScore,
+    difference,
+    insight,
+    hasPersonalization,
+    scoringModel,
+    consensusState,
+  } = useImpactScore(policy.id);
+  const isV2 = scoringModel === 'v2';
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
@@ -587,7 +597,7 @@ function PolicyWindow({
           </div>
 
           {/* Impact Score Section */}
-          {baseScore && (
+          {(baseScore || isV2) && (
             <div className="mb-6">
               {hasPersonalization ? (
                 <Link
@@ -597,7 +607,12 @@ function PolicyWindow({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <Sparkles className="w-4 h-4 text-white" strokeWidth={2.5} />
-                      <h3 className="font-display text-base font-black text-white">Your Impact Score</h3>
+                      <h3 className="font-display text-base font-black text-white">
+                        {isV2 ? 'Your V2 Score' : 'Your Impact Score'}
+                      </h3>
+                      {isV2 && consensusState && (
+                        <ConsensusBadge state={consensusState} showTooltip={false} />
+                      )}
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="text-3xl font-display font-black text-white">{personalizedScore}</div>
@@ -618,12 +633,23 @@ function PolicyWindow({
               ) : (
                 <div className="border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-display text-base font-black text-black dark:text-white">Base Impact Score</h3>
-                    <div className="text-3xl font-display font-black text-black dark:text-white">{baseScore.totalScore}</div>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-display text-base font-black text-black dark:text-white">
+                        {isV2 ? 'V2 Score' : 'Base Impact Score'}
+                      </h3>
+                      {isV2 && consensusState && (
+                        <ConsensusBadge state={consensusState} />
+                      )}
+                    </div>
+                    <div className="text-3xl font-display font-black text-black dark:text-white">
+                      {isV2 ? personalizedScore : baseScore?.totalScore}
+                    </div>
                   </div>
-                  <p className="font-body text-xs text-gray-700 dark:text-gray-300 font-medium mb-3">
-                    {baseScore.rationale}
-                  </p>
+                  {!isV2 && baseScore && (
+                    <p className="font-body text-xs text-gray-700 dark:text-gray-300 font-medium mb-3">
+                      {baseScore.rationale}
+                    </p>
+                  )}
                   <Link
                     href="/values"
                     className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 font-bold text-sm"
