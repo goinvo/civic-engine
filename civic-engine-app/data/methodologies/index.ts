@@ -178,6 +178,13 @@ import { foreignFarmlandOwnershipBan } from './foreign-farmland-ownership-ban';
 import { ruralBroadbandAccess } from './rural-broadband-access';
 import { campaignFinanceDisclosure } from './campaign-finance-disclosure';
 import { immigrationGrandBargain } from './immigration-grand-bargain';
+import { investVocationalTraining } from './invest-vocational-training';
+import { raiseMinimumWage } from './raise-minimum-wage';
+import { healthcarePublicOption } from './healthcare-public-option';
+import { expandNuclearEnergy } from './expand-nuclear-energy';
+import { cannabisBanking } from './cannabis-banking';
+import { universalPreK } from './universal-pre-k';
+import { buyAmericanMandates } from './buy-american-mandates';
 
 // ============================================
 // COMBINED METHODOLOGIES
@@ -210,6 +217,13 @@ export const policyMethodologies: Record<string, PolicyMethodology> = {
   'rural-broadband-access': ruralBroadbandAccess,
   'campaign-finance-disclosure': campaignFinanceDisclosure,
   'immigration-grand-bargain': immigrationGrandBargain,
+  'invest-vocational-training': investVocationalTraining,
+  'raise-minimum-wage': raiseMinimumWage,
+  'healthcare-public-option': healthcarePublicOption,
+  'expand-nuclear-energy': expandNuclearEnergy,
+  'cannabis-banking': cannabisBanking,
+  'universal-pre-k': universalPreK,
+  'buy-american-mandates': buyAmericanMandates,
 };
 
 // ============================================

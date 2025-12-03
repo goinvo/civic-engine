@@ -31,7 +31,10 @@
       "WebFetch(domain:www.nngroup.com)",
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:larainfo.com)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(cmd /c \"dir C:\\Users\\quest\\Downloads\\*.pdf /B\")",
+      "Bash(ls:*)",
+      "Bash(npx ts-node:*)"
     ],
     "deny": [],
     "ask": []

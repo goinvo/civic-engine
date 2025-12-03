@@ -67,7 +67,7 @@ export const expandedChildTaxCredit: PolicyMethodology = {
     },
     keynes: {
       score: 0.9,
-      reasoning: 'As a direct transfer to families, the Expanded CTC is an excellent automatic stabilizer. If expanded permanently, in a recession, it would continue to put money in families\' hands (many of whom will spend it quickly, supporting demand). Low-income families have high marginal propensity to consume, so dollars out go back into the economy. Unlike unemployment insurance (which activates only on job loss), the CTC would be ongoing support regardless of employment status – buffering any shock. The 2021 CTC had measurable impact on stabilizing child poverty during the pandemic recovery. We rate this policy very high on counter-cyclical effect, as it\\'s essentially automatic cash support that stabilizes household consumption.',
+      reasoning: "As a direct transfer to families, the Expanded CTC is an excellent automatic stabilizer. If expanded permanently, in a recession, it would continue to put money in families' hands (many of whom will spend it quickly, supporting demand). Low-income families have high marginal propensity to consume, so dollars out go back into the economy. Unlike unemployment insurance (which activates only on job loss), the CTC would be ongoing support regardless of employment status – buffering any shock. The 2021 CTC had measurable impact on stabilizing child poverty during the pandemic recovery. We rate this policy very high on counter-cyclical effect, as it's essentially automatic cash support that stabilizes household consumption.",
       keyPoints: [
         'Excellent automatic stabilizer for families',
         'Continues in recessions without legislative action needed',

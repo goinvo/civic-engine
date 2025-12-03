@@ -79,7 +79,7 @@ export const overturnCitizensUnited: PolicyMethodology = {
     },
     pettit: {
       score: 1.0,
-      reasoning: 'This amendment is fundamentally about preventing domination. When corporations or billionaires can spend unlimited sums to influence elections, ordinary citizens are dominated – their political voice can be drowned out and their representatives effectively beholden to those with deep pockets. This is a form of arbitrary power: the ability of the wealthy to shape the political arena at will. By allowing limits on such spending, the amendment restores a measure of equal political voice, meaning citizens\\' choices are not at the mercy of who has the most money. It directly advances freedom as non-domination by checking an enormous source of power imbalance.',
+      reasoning: "This amendment is fundamentally about preventing domination. When corporations or billionaires can spend unlimited sums to influence elections, ordinary citizens are dominated – their political voice can be drowned out and their representatives effectively beholden to those with deep pockets. This is a form of arbitrary power: the ability of the wealthy to shape the political arena at will. By allowing limits on such spending, the amendment restores a measure of equal political voice, meaning citizens' choices are not at the mercy of who has the most money. It directly advances freedom as non-domination by checking an enormous source of power imbalance.",
       keyPoints: [
         'Prevents domination by unlimited wealthy spending',
         'Ordinary citizens not drowned out by deep pockets',
@@ -94,7 +94,7 @@ export const overturnCitizensUnited: PolicyMethodology = {
     },
     hirschman: {
       score: 0.8,
-      reasoning: 'Voice: This reform amplifies the political voice of ordinary citizens relative to wealthy interests. When big money is unchecked, the voice of average voters is drowned out. By permitting regulation of political spending, the amendment restores the relative weight of small donors, grassroots advocacy, and sheer voter numbers. Exit: Not directly relevant – citizens cannot \"exit\" their country easily, but the reform could reduce the sense of hopelessness that makes citizens disengage (a form of internal \"exit\" from political participation). We score this quite high on the voice dimension, as it is explicitly about making the political system more responsive to citizens\\' voices rather than dollars.',
+      reasoning: "Voice: This reform amplifies the political voice of ordinary citizens relative to wealthy interests. When big money is unchecked, the voice of average voters is drowned out. By permitting regulation of political spending, the amendment restores the relative weight of small donors, grassroots advocacy, and sheer voter numbers. Exit: Not directly relevant – citizens cannot \"exit\" their country easily, but the reform could reduce the sense of hopelessness that makes citizens disengage (a form of internal \"exit\" from political participation). We score this quite high on the voice dimension, as it is explicitly about making the political system more responsive to citizens' voices rather than dollars.",
       keyPoints: [
         'Amplifies political voice of ordinary citizens',
         'Restores relative weight of small donors and grassroots',
