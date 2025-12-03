@@ -138,8 +138,8 @@ export const federalJobGuarantee: PolicyMethodology = {
       ],
     },
     george: {
-      score: 0.3,
-      reasoning: 'FJG is a spending program, not a tax policy. Likely funded by general revenue including income taxes, not specifically rent taxes.',
+      score: 0.5,
+      reasoning: 'FJG is a spending program, not a tax policy. Likely funded by general revenue including income taxes, not specifically rent taxes. Neutral score reflects no direct effect on rent-targeting – the policy itself neither captures nor ignores rent.',
       keyPoints: [
         'Indirectly reduces monopsony "rent" by forcing fair wages',
         'Gross cost (~3% GDP) offset by reduced welfare, higher output',

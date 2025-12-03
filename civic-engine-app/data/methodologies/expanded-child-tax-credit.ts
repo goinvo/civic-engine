@@ -158,8 +158,8 @@ export const expandedChildTaxCredit: PolicyMethodology = {
       ],
     },
     george: {
-      score: 0.3,
-      reasoning: 'The CTC is a spending program, not a tax on rent. It does not specifically target unearned income or land values. One could fund it via taxing rent or wealth (which would align it with Georgist finance), but the policy itself is agnostic to funding source. Typically it\'s funded through general revenue, which may include income taxes (taxing earned income – counter to Georgist preference). Because there\'s no explicit rent capture or land value mechanism, we score it low on this factor. It neither encourages nor discourages rent-seeking directly; it just redistributes through a general program.',
+      score: 0.5,
+      reasoning: 'The CTC is a spending program, not a tax on rent. It does not specifically target unearned income or land values. One could fund it via taxing rent or wealth (which would align it with Georgist finance), but the policy itself is agnostic to funding source. Typically it\'s funded through general revenue, which may include income taxes (taxing earned income – counter to Georgist preference). Because there\'s no explicit rent capture or land value mechanism, we score it neutral on this factor. It neither encourages nor discourages rent-seeking directly; it just redistributes through a general program.',
       keyPoints: [
         'Spending program, not tax on rent',
         'Does not target unearned income or land values',

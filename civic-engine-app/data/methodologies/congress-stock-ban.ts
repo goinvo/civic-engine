@@ -124,14 +124,14 @@ export const congressStockBan: PolicyMethodology = {
       ],
     },
     polanyi: {
-      score: 0.3,
-      reasoning: 'This reform isn\'t about shielding citizens from market forces in terms of livelihood or essentials; it\'s about ethics in government. It doesn\'t decommodify any basic necessity or regulate the labor market, housing, etc. Indirectly, by purifying the political sphere, it could lead to better protections down the line, but those are speculative. In terms of Polanyi\'s focus (protecting humans from being mere market instruments), this has minimal direct effect.',
+      score: 0.5,
+      reasoning: 'This reform isn\'t about shielding citizens from market forces in terms of livelihood or essentials; it\'s about ethics in government. It doesn\'t decommodify any basic necessity or regulate the labor market, housing, etc. Indirectly, by purifying the political sphere, it could lead to better protections down the line, but those are speculative. In terms of Polanyi\'s focus (protecting humans from being mere market instruments), this has no direct effect.',
       keyPoints: [
         'Not about shielding citizens from market forces',
         'About ethics in government, not essentials',
         'Does not decommodify basic necessities',
         'Indirect effects on protection speculative',
-        'Minimal direct effect on Polanyi\'s concerns',
+        'Neutral: no direct effect on Polanyi\'s concerns',
       ],
       sources: [],
     },

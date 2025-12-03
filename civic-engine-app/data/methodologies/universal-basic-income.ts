@@ -133,8 +133,8 @@ export const universalBasicIncome: PolicyMethodology = {
       ],
     },
     george: {
-      score: 0.2,
-      reasoning: 'By itself, UBI does not target unearned income; its funding determines the George factor. Most proposals use income tax or VAT, not land or rent taxes.',
+      score: 0.5,
+      reasoning: 'By itself, UBI does not target unearned income; its funding determines the George factor. Most proposals use income tax or VAT, not land or rent taxes. Neutral score reflects that the policy itself neither targets nor ignores rent – it depends entirely on funding mechanism.',
       keyPoints: [
         'Alaska\'s UBI (oil royalties) would score high',
         'Most proposals use income/VAT – not rent-targeted',

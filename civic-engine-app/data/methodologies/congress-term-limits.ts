@@ -124,8 +124,8 @@ export const congressTermLimits: PolicyMethodology = {
       ],
     },
     polanyi: {
-      score: 0.2,
-      reasoning: 'Congressional term limits are about political structure, not about insulating people from the free market\'s downsides. This reform doesn\'t provide any new social safety net, labor protection, or decommodification of basic needs. It neither commodifies nor decommodifies anything related to livelihood – it\'s largely irrelevant to Polanyi\'s concern of protecting humans from market ruthlessness. Thus, it scores very low here (essentially no direct protective effect on citizens\' economic security).',
+      score: 0.5,
+      reasoning: 'Congressional term limits are about political structure, not about insulating people from the free market\'s downsides. This reform doesn\'t provide any new social safety net, labor protection, or decommodification of basic needs. It neither commodifies nor decommodifies anything related to livelihood – it\'s largely irrelevant to Polanyi\'s concern of protecting humans from market ruthlessness. Thus, it scores neutral here (no direct effect on citizens\' economic security).',
       keyPoints: [
         'About political structure, not market protection',
         'No new social safety net provided',

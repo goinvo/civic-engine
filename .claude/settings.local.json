@@ -30,7 +30,8 @@
       "WebSearch",
       "WebFetch(domain:www.nngroup.com)",
       "WebFetch(domain:medium.com)",
-      "WebFetch(domain:larainfo.com)"
+      "WebFetch(domain:larainfo.com)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

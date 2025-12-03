@@ -171,6 +171,13 @@ import { congressTermLimits } from './congress-term-limits';
 import { rightToRepair } from './right-to-repair';
 import { medicareDrugNegotiation } from './medicare-drug-negotiation';
 import { aiSafetyRegulation } from './ai-safety-regulation';
+import { policeAccountabilityStandards } from './police-accountability-standards';
+import { affordableHousingSupply } from './affordable-housing-supply';
+import { mentalHealthLifeline988 } from './mental-health-lifeline-988';
+import { foreignFarmlandOwnershipBan } from './foreign-farmland-ownership-ban';
+import { ruralBroadbandAccess } from './rural-broadband-access';
+import { campaignFinanceDisclosure } from './campaign-finance-disclosure';
+import { immigrationGrandBargain } from './immigration-grand-bargain';
 
 // ============================================
 // COMBINED METHODOLOGIES
@@ -196,6 +203,13 @@ export const policyMethodologies: Record<string, PolicyMethodology> = {
   'right-to-repair': rightToRepair,
   'medicare-drug-negotiation': medicareDrugNegotiation,
   'ai-safety-regulation': aiSafetyRegulation,
+  'police-accountability-standards': policeAccountabilityStandards,
+  'affordable-housing-supply': affordableHousingSupply,
+  'mental-health-lifeline-988': mentalHealthLifeline988,
+  'foreign-farmland-ownership-ban': foreignFarmlandOwnershipBan,
+  'rural-broadband-access': ruralBroadbandAccess,
+  'campaign-finance-disclosure': campaignFinanceDisclosure,
+  'immigration-grand-bargain': immigrationGrandBargain,
 };
 
 // ============================================

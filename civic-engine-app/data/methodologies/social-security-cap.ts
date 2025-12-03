@@ -153,14 +153,14 @@ export const socialSecurityCap: PolicyMethodology = {
       ],
     },
     george: {
-      score: 0.2,
-      reasoning: 'The revenue comes from taxing labor earnings (even if very high earnings), not from land value or economic rents. Georgist philosophy prefers tapping unearned income (like land rent, monopoly gains) over taxing work. Here, productive income of high earners is being taxed more, which is closer to penalizing labor/talent than capturing a pure rent. While one could argue extremely high salaries sometimes include rents (e.g. monopoly profits or positional advantages), this policy isn\'t designed around that distinction.',
+      score: 0.5,
+      reasoning: 'The revenue comes from taxing labor earnings (even if very high earnings), not from land value or economic rents. Georgist philosophy prefers tapping unearned income (like land rent, monopoly gains) over taxing work. Here, productive income of high earners is being taxed more. While one could argue extremely high salaries sometimes include rents (e.g. monopoly profits or positional advantages), this policy isn\'t designed around that distinction. Neutral score reflects no direct rent-targeting effect.',
       keyPoints: [
         'Taxes labor earnings, not land or economic rents',
         'Georgist philosophy prefers taxing unearned income',
-        'Closer to penalizing labor/talent than capturing rent',
         'Policy not designed around rent distinction',
         'High salaries may include some rents but not targeted',
+        'Neutral: neither captures rent nor penalizes productive labor excessively',
       ],
       sources: [],
     },
