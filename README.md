@@ -61,3 +61,6 @@ Lead Team: A collaboration of public-interest designers, civic technologists, an
 Fiscal Sponsor / Funder Fit: TBD but possible paths are RWJF (Civic Health), Rockefeller (Democracy), Omidyar (Digital Identity), Knight Foundation (Public Trust)
 
 Project Lead Contact: Juhan Sonin, GoInvo, juhan@goinvo.com, 617.504.3390
+
+URL as of 3.Dec.25: https://civic-engine.vercel.app/
+Possible future URL: WhatThePeopleWant.org
