@@ -17,17 +17,17 @@ export function AutoMapBanner({ className = '' }: AutoMapBannerProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <p className="font-semibold text-gray-900">
-            Your V2 profile was auto-mapped from your V1 preferences
+            Your Economics Lens profile was auto-mapped from your Impact Lens preferences
           </p>
           <p className="text-sm text-gray-600 mt-1">
-            For more accurate results with the new 13-factor political economy model,
+            For more accurate results with the 13-factor economics model,
             consider retaking the questionnaire.
           </p>
           <Link
             href="/profile/questionnaire-v2"
             className="inline-block mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 underline"
           >
-            Take V2 Questionnaire
+            Take Economics Lens Questionnaire
           </Link>
         </div>
         <button

@@ -9,6 +9,8 @@ import {
   LikertScale,
   ScoringModelVersion,
   V2QuestionnaireResponses,
+  V3ArchetypeId,
+  V3NeedWeights,
 } from '@/types/values';
 import {
   V2ArchetypeId,
@@ -22,6 +24,10 @@ import {
   V2_FACTORS,
   V1_TO_V2_ARCHETYPE_MAP,
 } from '@/data/archetypesV2';
+import {
+  V3_ARCHETYPES,
+  DEFAULT_V3_WEIGHTS,
+} from '@/data/archetypesV3';
 
 interface ValuesContextType {
   profile: UserValuesProfile | null;
@@ -39,6 +45,9 @@ interface ValuesContextType {
   calculateV2WeightsFromResponses: (responses: V2QuestionnaireResponses) => V2WeightProfile;
   dismissAutoMapBanner: () => void;
   showAutoMapBanner: boolean;
+
+  // V3 scoring model support
+  setV3Archetype: (archetypeId: V3ArchetypeId) => void;
 }
 
 const ValuesContext = createContext<ValuesContextType | undefined>(undefined);
@@ -184,8 +193,9 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
   // ===========================================
 
   /**
-   * Switch between scoring models (v1 or v2)
+   * Switch between scoring models (v1, v2, or v3)
    * When switching to v2 without existing v2 profile, auto-map from v1
+   * When switching to v3 without existing v3 profile, set default archetype
    */
   const setScoringModel = (version: ScoringModelVersion) => {
     if (!profile) return;
@@ -208,6 +218,17 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
 
       setProfile(newProfile);
       setShowAutoMapBanner(true);
+    } else if (version === 'v3' && !profile.v3ArchetypeId) {
+      // If switching to v3 and no v3 profile exists, set default balanced archetype
+      const newProfile: UserValuesProfile = {
+        ...profile,
+        scoringModel: 'v3',
+        v3ArchetypeId: 'balanced',
+        v3NeedWeights: DEFAULT_V3_WEIGHTS,
+        updatedAt: now,
+      };
+
+      setProfile(newProfile);
     } else {
       // Just switch the model
       setProfile({
@@ -350,6 +371,42 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
     setShowAutoMapBanner(false);
   };
 
+  // ===========================================
+  // V3 SCORING MODEL FUNCTIONS
+  // ===========================================
+
+  /**
+   * Set V3 archetype directly
+   */
+  const setV3Archetype = (archetypeId: V3ArchetypeId) => {
+    const archetype = V3_ARCHETYPES.find((a) => a.id === archetypeId);
+    if (!archetype && archetypeId !== 'custom_v3') return;
+
+    const now = new Date().toISOString();
+    const weights = archetype?.weights || DEFAULT_V3_WEIGHTS;
+
+    const newProfile: UserValuesProfile = {
+      // Preserve V1 fields
+      archetypeId: profile?.archetypeId || 'balanced',
+      weights: profile?.weights || DEFAULT_WEIGHTS,
+      responses: profile?.responses,
+      // Preserve V2 fields
+      v2ArchetypeId: profile?.v2ArchetypeId,
+      v2Weights: profile?.v2Weights,
+      v2Responses: profile?.v2Responses,
+      v2AutoMapped: profile?.v2AutoMapped,
+      // Update V3 fields
+      scoringModel: 'v3',
+      v3ArchetypeId: archetypeId,
+      v3NeedWeights: weights,
+      createdAt: profile?.createdAt || now,
+      updatedAt: now,
+    };
+
+    setProfile(newProfile);
+    setHasCompletedOnboarding(true);
+  };
+
   return (
     <ValuesContext.Provider
       value={{
@@ -367,6 +424,8 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
         calculateV2WeightsFromResponses,
         dismissAutoMapBanner,
         showAutoMapBanner,
+        // V3 functions
+        setV3Archetype,
       }}
     >
       {children}

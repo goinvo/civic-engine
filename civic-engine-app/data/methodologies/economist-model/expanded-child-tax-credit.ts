@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const expandedChildTaxCredit: PolicyMethodology = {
   policyId: 'expanded-child-tax-credit',

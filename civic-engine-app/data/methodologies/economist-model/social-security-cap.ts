@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const socialSecurityCap: PolicyMethodology = {
   policyId: 'social-security-cap',

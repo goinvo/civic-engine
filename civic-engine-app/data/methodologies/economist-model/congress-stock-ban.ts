@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const congressStockBan: PolicyMethodology = {
   policyId: 'congress-stock-ban',

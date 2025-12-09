@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const foreignFarmlandOwnershipBan: PolicyMethodology = {
   policyId: 'foreign-farmland-ownership-ban',

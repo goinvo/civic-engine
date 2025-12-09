@@ -7,9 +7,12 @@ import { useValues } from '@/contexts/ValuesContext';
 import { ARCHETYPES, VALUE_FACTORS, QUESTIONS, LIKERT_LABELS } from '@/data/values';
 import { WeightProfile } from '@/types/values';
 import { V2_ARCHETYPES } from '@/data/archetypesV2';
+import { V3_ARCHETYPES, V3_NEED_INFO, NEED_CATEGORY_ORDER } from '@/data/archetypesV3';
 import { ModelSelector, AutoMapBanner, V2ArchetypeCard } from '@/components/v2';
+import { V3ArchetypeCard } from '@/components/v3';
 import {
   V1MethodologySection,
+  V3MethodologySection,
   TopValuesSection,
   PhilosophyCard,
   HowScoresWork,
@@ -43,10 +46,11 @@ function findClosestArchetype(weights: WeightProfile) {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, clearProfile, setArchetype, setV2Archetype } = useValues();
+  const { profile, clearProfile, setArchetype, setV2Archetype, setV3Archetype } = useValues();
 
   const scoringModel = profile?.scoringModel || 'v1';
   const isV2 = scoringModel === 'v2';
+  const isV3 = scoringModel === 'v3';
 
   // If no profile, redirect to values page
   if (!profile) {
@@ -67,6 +71,10 @@ export default function ProfilePage() {
   const v2Archetype = V2_ARCHETYPES.find((a) => a.id === profile.v2ArchetypeId);
   const isCustomV2Profile = profile.v2ArchetypeId === 'custom_v2';
 
+  // V3 archetype info
+  const v3Archetype = V3_ARCHETYPES.find((a) => a.id === profile.v3ArchetypeId);
+  const isCustomV3Profile = profile.v3ArchetypeId === 'custom_v3';
+
   // Find closest archetype for custom profiles
   const closestArchetype = isCustomProfile ? findClosestArchetype(profile.weights) : null;
 
@@ -78,6 +86,13 @@ export default function ProfilePage() {
   // Get top 3 V2 factors by weight
   const rankedV2Factors = profile.v2Weights
     ? (Object.entries(profile.v2Weights)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3) as [string, number][])
+    : [];
+
+  // Get top 3 V3 need categories by weight
+  const rankedV3Needs = profile.v3NeedWeights
+    ? (Object.entries(profile.v3NeedWeights)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 3) as [string, number][])
     : [];
@@ -95,7 +110,16 @@ export default function ProfilePage() {
   };
 
   // Get philosophy info based on model
-  const philosophyInfo = isV2
+  const philosophyInfo = isV3
+    ? v3Archetype
+      ? {
+          title: 'Your Needs-Based Philosophy',
+          philosophyName: v3Archetype.philosophyName || '',
+          philosopher: v3Archetype.philosopher || '',
+          philosophyDescription: v3Archetype.philosophyDescription || '',
+        }
+      : null
+    : isV2
     ? v2Archetype
       ? {
           title: 'Your Political Economy Philosophy',
@@ -135,10 +159,14 @@ export default function ProfilePage() {
           Your Values Profile
         </h1>
         <p className="font-body text-xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto">
-          {isV2
+          {isV3
+            ? (isCustomV3Profile
+                ? 'Your custom Needs Lens profile'
+                : `Your ${v3Archetype?.name || 'Balanced'} profile`)
+            : isV2
             ? (isCustomV2Profile
-                ? 'Your custom V2 profile based on questionnaire responses'
-                : `Your ${v2Archetype?.name || 'V2'} profile`)
+                ? 'Your custom Economics Lens profile based on questionnaire responses'
+                : `Your ${v2Archetype?.name || 'Economics'} profile`)
             : (isCustomProfile
                 ? `Based on your answers to the Values Pulse questionnaire (closest to ${closestArchetype?.name})`
                 : `Your ${archetype?.name} profile`)}
@@ -153,8 +181,34 @@ export default function ProfilePage() {
       {/* Auto-Map Banner */}
       <AutoMapBanner className="mb-8" />
 
-      {/* Archetype Card - V2 version shows archetype selection */}
-      {isV2 ? (
+      {/* Archetype Card - V3 version shows archetype selection */}
+      {isV3 ? (
+        <div className="mb-12">
+          <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
+            Select Your Needs Lens Profile
+          </h2>
+          <p className="font-body text-gray-600 dark:text-gray-400 mb-4">
+            Choose a profile that reflects how you prioritize different human needs when evaluating policies.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {V3_ARCHETYPES.map((arch) => (
+              <V3ArchetypeCard
+                key={arch.id}
+                archetype={arch}
+                isSelected={profile.v3ArchetypeId === arch.id}
+                onSelect={() => setV3Archetype(arch.id)}
+              />
+            ))}
+          </div>
+          <div className="text-sm font-body text-gray-600 dark:text-gray-400 text-center">
+            Profile updated on {new Date(profile.updatedAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </div>
+        </div>
+      ) : isV2 ? (
         <div className="mb-12">
           <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
             Select Your V2 Archetype
@@ -210,10 +264,56 @@ export default function ProfilePage() {
       )}
 
       {/* Top Values */}
-      <TopValuesSection
-        rankedFactors={isV2 ? rankedV2Factors : rankedFactors}
-        isV2={isV2}
-      />
+      {isV3 ? (
+        <div className="mb-12">
+          <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
+            Your Need Priorities
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {rankedV3Needs.map(([needKey, weight], index) => {
+              const needInfo = V3_NEED_INFO[needKey as keyof typeof V3_NEED_INFO];
+              if (!needInfo) return null;
+
+              const percentage = Math.round(weight * 100);
+              const colors = [
+                'bg-[#501159] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]',
+                'bg-[#7B2D8E] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]',
+                'bg-white dark:bg-gray-800',
+              ];
+
+              return (
+                <div
+                  key={needKey}
+                  className={`border-4 border-black dark:border-gray-600 ${colors[index]} p-6`}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">{needInfo.icon}</span>
+                      <span className={`font-display text-sm font-black ${index < 2 ? 'text-white/80' : 'text-black dark:text-white'}`}>
+                        #{index + 1}
+                      </span>
+                    </div>
+                    <div className={`text-3xl font-display font-black ${index < 2 ? 'text-white' : 'text-[#501159] dark:text-[#B87FB3]'}`}>
+                      {percentage}%
+                    </div>
+                  </div>
+                  <h3 className={`font-display text-xl font-black mb-2 ${index < 2 ? 'text-white' : 'text-black dark:text-white'}`}>
+                    {needInfo.name}
+                  </h3>
+                  <p className={`font-body text-sm font-medium ${index < 2 ? 'text-white/90' : 'text-gray-700 dark:text-gray-300'}`}>
+                    {needInfo.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <TopValuesSection
+          rankedFactors={isV2 ? rankedV2Factors : rankedFactors}
+          isV2={isV2}
+        />
+      )}
 
       {/* Your Responses (if custom profile - V1 only) */}
       {!isV2 && isCustomProfile && responses && (
@@ -258,8 +358,8 @@ export default function ProfilePage() {
       {/* How Scores Work */}
       <HowScoresWork />
 
-      {/* Methodology Section - V1 only */}
-      {!isV2 && <V1MethodologySection />}
+      {/* Methodology Section */}
+      {isV3 ? <V3MethodologySection /> : !isV2 && <V1MethodologySection />}
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

@@ -1,5 +1,6 @@
 // V2 type imports
 import { V2ArchetypeId, V2WeightProfile } from './consensus';
+import { NeedCategory } from '@/data/v3Methodology';
 
 // The 7 Impact Factors
 export type ImpactFactor =
@@ -78,14 +79,26 @@ export interface QuestionnaireResponses {
 }
 
 // Scoring model version
-export type ScoringModelVersion = 'v1' | 'v2';
+export type ScoringModelVersion = 'v1' | 'v2' | 'v3';
 
 // V2 Questionnaire responses (13 questions)
 export interface V2QuestionnaireResponses {
   [key: string]: LikertScale;
 }
 
-// User's complete values profile (supports both v1 and v2)
+// V3 Need Category Weights (sum should = 1.0)
+export type V3NeedWeights = Record<NeedCategory, number>;
+
+// V3 Archetype IDs
+export type V3ArchetypeId =
+  | 'balanced'        // Default equal weights
+  | 'survivalist'     // Prioritizes physiological & safety
+  | 'communitarian'   // Prioritizes community & opportunity
+  | 'idealist'        // Prioritizes self-actualization & community
+  | 'pragmatist'      // Prioritizes safety & opportunity
+  | 'custom_v3';      // Custom weights
+
+// User's complete values profile (supports v1, v2, and v3)
 export interface UserValuesProfile {
   // V1 fields (always present for backwards compatibility)
   archetypeId: ArchetypeId;
@@ -100,6 +113,10 @@ export interface UserValuesProfile {
   v2Weights?: V2WeightProfile;
   v2Responses?: V2QuestionnaireResponses;
   v2AutoMapped?: boolean; // True if profile was auto-mapped from v1
+
+  // V3 fields (optional, present when user has used v3)
+  v3ArchetypeId?: V3ArchetypeId;
+  v3NeedWeights?: V3NeedWeights;
 
   // Timestamps
   createdAt: string;

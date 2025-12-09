@@ -723,7 +723,7 @@ function PolicyWindow({
                     <div className="flex items-center space-x-2">
                       <Sparkles className="w-4 h-4 text-white" strokeWidth={2.5} />
                       <h3 className="font-display text-base font-black text-white">
-                        {isV2 ? 'Your V2 Score' : 'Your Impact Score'}
+                        {isV2 ? 'Your Economics Score' : 'Your Impact Score'}
                       </h3>
                       {isV2 && consensusState && (
                         <ConsensusBadge state={consensusState} showTooltip={false} />
@@ -750,7 +750,7 @@ function PolicyWindow({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <h3 className="font-display text-base font-black text-black dark:text-white">
-                        {isV2 ? 'V2 Score' : 'Base Impact Score'}
+                        {isV2 ? 'Economics Score' : 'Base Impact Score'}
                       </h3>
                       {isV2 && consensusState && (
                         <ConsensusBadge state={consensusState} />

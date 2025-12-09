@@ -18,17 +18,18 @@ export function ModelSelector({ className = '' }: ModelSelectorProps) {
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <label htmlFor="scoring-model" className="text-sm font-medium text-gray-700">
-        Scoring Model:
+      <label htmlFor="scoring-lens" className="text-sm font-medium text-gray-700">
+        Scoring Lens:
       </label>
       <select
-        id="scoring-model"
+        id="scoring-lens"
         value={currentModel}
         onChange={handleChange}
         className="border-2 border-black px-3 py-1.5 text-sm font-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
-        <option value="v1">V1 - 7 Factor Impact</option>
-        <option value="v2">V2 - Political Economy (13 Factors)</option>
+        <option value="v1">Impact Lens</option>
+        <option value="v2">Economics Lens</option>
+        <option value="v3">Needs Lens</option>
       </select>
     </div>
   );

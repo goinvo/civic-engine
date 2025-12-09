@@ -641,7 +641,7 @@ export function V2ScoreDisplay({
       >
         <div className="flex items-center space-x-3">
           <span className="font-display font-black text-xs bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] bg-clip-text text-transparent">
-            V2 SCORES
+            ECONOMICS LENS
           </span>
           {/* Show mini preview when collapsed */}
           {isCollapsed && (

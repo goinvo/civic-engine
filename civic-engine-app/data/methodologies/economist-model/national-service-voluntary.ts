@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const nationalServiceVoluntary: PolicyMethodology = {
   policyId: 'national-service-voluntary',

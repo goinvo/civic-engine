@@ -16,6 +16,8 @@ import {
   getTopScoreDrivers,
 } from '@/utils/analysisV2';
 import { ConsensusAnalysis, ConsensusState, V2ImpactScore } from '@/types/consensus';
+import { getV3Scores, hasV3Scores } from '@/data/policyScoresV3';
+import { V3ImpactScore } from '@/data/v3Methodology';
 
 /**
  * Hook to get personalized impact score for a policy
@@ -29,6 +31,10 @@ export function useImpactScore(policyId: string) {
 
   const result = useMemo(() => {
     const scoringModel = profile?.scoringModel || 'v1';
+
+    // Always get V3 scores if available (shown alongside V2)
+    const v3Score = getV3Scores(policyId);
+    const hasV3 = hasV3Scores(policyId);
 
     if (scoringModel === 'v2') {
       // V2 scoring model
@@ -53,6 +59,9 @@ export function useImpactScore(policyId: string) {
         scoringModel: 'v2' as const,
         baseV2Score,
         consensusState,
+        // V3 fields (always available if data exists)
+        v3Score,
+        hasV3,
       };
     }
 
@@ -73,6 +82,9 @@ export function useImpactScore(policyId: string) {
       scoringModel: 'v1' as const,
       baseV2Score: null,
       consensusState: null,
+      // V3 fields (always available if data exists)
+      v3Score,
+      hasV3,
     };
   }, [policyId, profile]);
 

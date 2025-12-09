@@ -152,39 +152,41 @@ export const FACTOR_DEFINITIONS = {
 // IMPORT INDIVIDUAL POLICY METHODOLOGIES
 // ============================================
 
-import { universalBasicIncome } from './universal-basic-income';
-import { federalJobGuarantee } from './federal-job-guarantee';
-import { medicareForAll } from './medicare-for-all';
-import { kidsOnlineSafetyAct } from './kids-online-safety-act';
-import { universalBackgroundChecks } from './universal-background-checks';
-import { freeAndEasyVoterId } from './free-and-easy-voter-id';
-import { junkFeePrevention } from './junk-fee-prevention';
-import { expandedChildTaxCredit } from './expanded-child-tax-credit';
-import { supremeCourtTermLimits } from './supreme-court-term-limits';
-import { ultraMillionaireWealthTax } from './ultra-millionaire-wealth-tax';
-import { overturnCitizensUnited } from './overturn-citizens-united';
-import { nationalServiceVoluntary } from './national-service-voluntary';
-import { simplifiedTaxFiling } from './simplified-tax-filing';
-import { socialSecurityCap } from './social-security-cap';
-import { congressStockBan } from './congress-stock-ban';
-import { congressTermLimits } from './congress-term-limits';
-import { rightToRepair } from './right-to-repair';
-import { medicareDrugNegotiation } from './medicare-drug-negotiation';
-import { aiSafetyRegulation } from './ai-safety-regulation';
-import { policeAccountabilityStandards } from './police-accountability-standards';
-import { affordableHousingSupply } from './affordable-housing-supply';
-import { mentalHealthLifeline988 } from './mental-health-lifeline-988';
-import { foreignFarmlandOwnershipBan } from './foreign-farmland-ownership-ban';
-import { ruralBroadbandAccess } from './rural-broadband-access';
-import { campaignFinanceDisclosure } from './campaign-finance-disclosure';
-import { immigrationGrandBargain } from './immigration-grand-bargain';
-import { investVocationalTraining } from './invest-vocational-training';
-import { raiseMinimumWage } from './raise-minimum-wage';
-import { healthcarePublicOption } from './healthcare-public-option';
-import { expandNuclearEnergy } from './expand-nuclear-energy';
-import { cannabisBanking } from './cannabis-banking';
-import { universalPreK } from './universal-pre-k';
-import { buyAmericanMandates } from './buy-american-mandates';
+import {
+  universalBasicIncome,
+  federalJobGuarantee,
+  medicareForAll,
+  kidsOnlineSafetyAct,
+  universalBackgroundChecks,
+  freeAndEasyVoterId,
+  junkFeePrevention,
+  expandedChildTaxCredit,
+  supremeCourtTermLimits,
+  ultraMillionaireWealthTax,
+  overturnCitizensUnited,
+  nationalServiceVoluntary,
+  simplifiedTaxFiling,
+  socialSecurityCap,
+  congressStockBan,
+  congressTermLimits,
+  rightToRepair,
+  medicareDrugNegotiation,
+  aiSafetyRegulation,
+  policeAccountabilityStandards,
+  affordableHousingSupply,
+  mentalHealthLifeline988,
+  foreignFarmlandOwnershipBan,
+  ruralBroadbandAccess,
+  campaignFinanceDisclosure,
+  immigrationGrandBargain,
+  investVocationalTraining,
+  raiseMinimumWage,
+  healthcarePublicOption,
+  expandNuclearEnergy,
+  cannabisBanking,
+  universalPreK,
+  buyAmericanMandates,
+} from './economist-model';
 
 // ============================================
 // COMBINED METHODOLOGIES

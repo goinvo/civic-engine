@@ -1,4 +1,4 @@
-import { PolicyMethodology } from './index';
+import { PolicyMethodology } from '../index';
 
 export const mentalHealthLifeline988: PolicyMethodology = {
   policyId: 'mental-health-lifeline-988',

@@ -4,11 +4,11 @@ export function V1MethodologySection() {
   return (
     <div className="mb-12">
       <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
-        Our Methodology
+        Impact Lens Methodology
       </h2>
 
       <p className="font-body text-gray-700 dark:text-gray-300 font-medium mb-6">
-        Our 7-Factor Policy Impact Score (PIS) framework mirrors how think tanks and non-partisan bodies like the CBO evaluate policy.
+        The Impact Lens uses a 7-Factor Policy Impact Score (PIS) framework that mirrors how think tanks and non-partisan bodies like the CBO evaluate policy.
         Each factor uses concrete anchors—not subjective feelings—to ensure consistent, defensible scoring.
       </p>
 
