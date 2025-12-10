@@ -132,9 +132,9 @@ export const V4_QUESTIONS: V4Question[] = [
     id: 'v4_needs_growth',
     lens: 'needs',
     category: 'needs_growth',
-    text: 'Once basic needs are met, society should invest heavily in education, arts, and helping people reach their full potential.',
-    explanation: 'This measures how much you value human flourishing beyond survival.',
-    lowLabel: 'Focus on basics',
+    text: 'Society should invest in education, arts, and human potential even if it means fewer resources for safety nets and basic security programs.',
+    explanation: 'This measures how much you value human flourishing vs. maintaining robust basic protections.',
+    lowLabel: 'Protect the safety net',
     highLabel: 'Invest in potential',
     tier: 1,
     factors: ['opportunity', 'selfActualization'],
@@ -145,10 +145,10 @@ export const V4_QUESTIONS: V4Question[] = [
     id: 'v4_meta_lens',
     lens: 'impact', // Meta question, affects lens weights
     category: 'impact_reach', // Placeholder category
-    text: 'When evaluating a policy, I care most about: (1) practical outcomes, (2) economic/institutional design, or (3) human wellbeing.',
-    explanation: 'This helps calibrate how much weight to give each analytical lens.',
-    lowLabel: 'Practical outcomes',
-    highLabel: 'Human wellbeing',
+    text: 'Understanding how a policy affects institutions and incentives is more important than measuring its direct impact on people.',
+    explanation: 'This measures whether you prioritize systemic/institutional analysis vs. direct human outcomes.',
+    lowLabel: 'Direct impact matters more',
+    highLabel: 'Systemic effects matter more',
     tier: 1,
     factors: [], // Special: affects lens weights, not individual factors
   },

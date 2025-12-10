@@ -173,6 +173,7 @@ export const V2_ARCHETYPES: V2Archetype[] = [
     philosopher: 'F.A. Hayek & James Buchanan',
     philosophyName: 'Spontaneous Order',
     philosophyDescription: 'Markets coordinate through price signals better than central planning. Constitutional constraints protect individual liberty from majoritarian excess.',
+    thinkerBio: 'Friedrich Hayek (1899-1992) was an Austrian-British economist who won the Nobel Prize in 1974. His work emphasized that markets aggregate dispersed knowledge better than central planners ever could. James Buchanan (1919-2013) was an American economist who founded public choice theory, analyzing politics with the same self-interest assumptions used for markets. Together, they argued for constitutional limits on government power and skepticism toward centralized decision-making.',
     weights: {
       hayek: 0.20,
       buchanan: 0.15,
@@ -196,6 +197,7 @@ export const V2_ARCHETYPES: V2Archetype[] = [
     philosopher: 'John Rawls & Karl Polanyi',
     philosophyName: 'Democratic Welfare State',
     philosophyDescription: 'The economy should be embedded in society, not the reverse. A just society maximizes the welfare of its least advantaged members.',
+    thinkerBio: 'John Rawls (1921-2002) was an American political philosopher whose "A Theory of Justice" (1971) revived social contract theory. His "veil of ignorance" thought experiment asks what principles we would choose not knowing our place in society, leading to his "difference principle": inequalities are only justified if they benefit the worst-off. Karl Polanyi (1886-1964) was a Hungarian economic historian whose "The Great Transformation" argued that markets must be embedded in social institutions, not the reverse, to prevent social devastation.',
     weights: {
       rawls: 0.20,
       polanyi: 0.20,
@@ -219,6 +221,7 @@ export const V2_ARCHETYPES: V2Archetype[] = [
     philosopher: 'Philip Pettit & Daron Acemoglu',
     philosophyName: 'Freedom as Non-Domination',
     philosophyDescription: 'True freedom requires inclusive institutions that prevent any entity from wielding arbitrary power over citizens.',
+    thinkerBio: 'Philip Pettit (b. 1945) is an Irish political philosopher at Princeton who revived republican political theory. His concept of "freedom as non-domination" argues that true liberty means not being subject to the arbitrary will of others—even a benevolent master diminishes freedom. Daron Acemoglu (b. 1967) is a Turkish-American economist at MIT whose work on institutions shows how "inclusive" versus "extractive" institutions determine whether nations prosper or fail. Together, they emphasize that freedom requires institutional design, not just absence of interference.',
     weights: {
       pettit: 0.25,
       acemoglu: 0.20,
@@ -242,6 +245,7 @@ export const V2_ARCHETYPES: V2Archetype[] = [
     philosopher: 'Mancur Olson & Elinor Ostrom',
     philosophyName: 'Institutional Resilience',
     philosophyDescription: 'Long-term prosperity depends on institutions that resist capture, match problems to appropriate governance scales, and maintain legitimacy.',
+    thinkerBio: 'Mancur Olson (1932-1998) was an American economist who explained why small, concentrated interests often defeat the public good: organizing costs matter. His work on collective action shows why institutions need explicit safeguards against capture. Elinor Ostrom (1933-2012) was an American political economist who won the Nobel Prize in 2009 for showing how communities can successfully manage common resources without privatization or government control—if institutions match the scale of the problem. Together, they emphasize institutional design as the key to sustainable governance.',
     weights: {
       olson: 0.25,
       ostrom: 0.15,

@@ -51,6 +51,7 @@ export interface Archetype {
   philosopher?: string;
   philosophyName?: string;
   philosophyDescription?: string;
+  thinkerBio?: string;
   weights: WeightProfile;
   icon?: string;
 }

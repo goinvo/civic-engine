@@ -173,7 +173,7 @@ export default function QuestionnaireWidget({
               className="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-white dark:bg-gray-700 text-black dark:text-white border-4 border-black dark:border-gray-600 font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] transition-all"
             >
               <CheckCircle className="w-5 h-5" />
-              <span>Return to Profile</span>
+              <span>See Results</span>
             </button>
 
             <button

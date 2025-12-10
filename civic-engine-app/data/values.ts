@@ -89,9 +89,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Optimizer',
     description: 'I want policies that help the most people possible with maximum efficiency.',
     shortDescription: 'Maximum aggregate good',
-    philosopher: 'Jeremy Bentham & John Stuart Mill',
-    philosophyName: 'Classical Utilitarianism',
-    philosophyDescription: 'You prioritize maximizing total welfare across the population. Like Bentham and Mill, you believe the best policy is one that creates "the greatest good for the greatest number." You focus on aggregate outcomes and efficient resource allocation.',
+    philosopher: 'Peter Singer',
+    philosophyName: 'Effective Altruism',
+    philosophyDescription: 'You align with Singer\'s rigorous approach to doing good: use evidence and reason to determine how to benefit others as much as possible. Resources are finite, so we must prioritize interventions that help the greatest number with maximum efficiency.',
+    thinkerBio: 'Peter Singer (b. 1946) is an Australian moral philosopher and professor at Princeton University. His 1972 essay "Famine, Affluence, and Morality" argued that the affluent have a moral obligation to give much more to prevent suffering. He is considered a founder of the effective altruism movement, which uses evidence and reason to determine the most effective ways to benefit others. His utilitarian approach emphasizes impartial concern for all sentient beings and has influenced debates on global poverty, animal rights, and charitable giving.',
     weights: {
       population: 0.32,      // Very high - breadth of impact is primary
       economic: 0.28,        // Very high - resource efficiency
@@ -107,9 +108,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Advocate',
     description: 'I prioritize policies that protect the most vulnerable and address life-or-death issues.',
     shortDescription: 'Prioritize the vulnerable',
-    philosopher: 'John Rawls',
-    philosophyName: 'Rawlsian Justice',
-    philosophyDescription: 'You align with Rawls\' "veil of ignorance" principle: evaluate policies by how they affect the worst-off. You prioritize equity and individual impact over aggregate efficiency, believing a just society measures success by how it treats those with the least.',
+    philosopher: 'Judith Shklar',
+    philosophyName: 'Liberalism of Fear',
+    philosophyDescription: 'You share Shklar\'s conviction that the primary purpose of politics is to prevent cruelty and protect the vulnerable from abuse. The measure of a just society is how it shields those with the least power from suffering and domination.',
+    thinkerBio: 'Judith Shklar (1928-1992) was a Latvian-American political theorist at Harvard University. A refugee who fled the Nazis as a child, her work was shaped by the 20th century\'s political horrors. Her "liberalism of fear" argues that the primary aim of politics should be to prevent cruelty and protect the vulnerable from abuse by the powerful. Unlike liberalisms focused on rights or freedom, hers starts from the victims\' perspective, asking: what political arrangements best protect those most susceptible to suffering?',
     weights: {
       population: 0.04,      // Very low - breadth doesn't matter
       economic: 0.04,        // Very low - money isn't the metric
@@ -125,9 +127,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Realist',
     description: 'I want practical policies that can actually get implemented without getting stuck in bureaucracy.',
     shortDescription: 'Practical and feasible',
-    philosopher: 'James Buchanan & Public Choice Theory',
-    philosophyName: 'Pragmatic Institutionalism',
-    philosophyDescription: 'You share Buchanan\'s skepticism about ambitious reforms. You value policies that account for real-world constraints: political feasibility, administrative capacity, and implementation costs. Perfect on paper means nothing if it can\'t survive the messy reality of governance.',
+    philosopher: 'Lee Kuan Yew',
+    philosophyName: 'Pragmatic Governance',
+    philosophyDescription: 'You share Lee Kuan Yew\'s results-oriented approach: good intentions mean nothing without effective execution. Policy must account for real-world constraints, administrative capacity, and implementation costs. What matters is what works.',
+    thinkerBio: 'Lee Kuan Yew (1923-2015) was the founding Prime Minister of Singapore, serving from 1959 to 1990. He transformed Singapore from a developing nation into one of the world\'s most prosperous countries through pragmatic, results-oriented governance. His approach rejected ideology in favor of what works: efficient administration, anti-corruption measures, and policies judged by outcomes rather than intentions. While controversial for his authoritarian methods, his legacy demonstrates how implementation capacity and practical governance can achieve rapid development.',
     weights: {
       population: 0.08,
       economic: 0.20,        // High - tangible economic results
@@ -143,9 +146,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Futurist',
     description: 'I care about long-term structural change and managing systemic side effects.',
     shortDescription: 'Long-term thinking',
-    philosopher: 'Ronald Coase & Mancur Olson',
-    philosophyName: 'Systems Thinking & Collective Action',
-    philosophyDescription: 'Like Coase and Olson, you think in terms of transaction costs, collective action problems, and long-run equilibria. You ask: "What second-order effects will this create? How does this reshape incentives? What institutions will this build or destroy over time?"',
+    philosopher: 'Hans Jonas',
+    philosophyName: 'Ethics of Responsibility',
+    philosophyDescription: 'You embrace Jonas\'s imperative: "Act so that the effects of your action are compatible with the permanence of genuine human life." Policy must consider intergenerational consequences and systemic ripple effects, not just immediate outcomes.',
+    thinkerBio: 'Hans Jonas (1903-1993) was a German-born Jewish philosopher who fled Nazi Germany and later taught at the New School in New York. His 1979 work "The Imperative of Responsibility" argued that modern technology has so expanded humanity\'s power that we need a new ethics focused on long-term consequences. His famous imperative—"Act so that the effects of your action are compatible with the permanence of genuine human life"—demands we consider future generations and systemic effects, not just immediate outcomes.',
     weights: {
       population: 0.06,
       economic: 0.06,
@@ -161,9 +165,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Balanced',
     description: 'I weigh all dimensions equally, refusing to prioritize any single factor.',
     shortDescription: 'True multi-dimensional balance',
-    philosopher: 'Amartya Sen',
-    philosophyName: 'Capability Approach',
-    philosophyDescription: 'You align with Sen\'s holistic framework: good policy isn\'t about maximizing one metric, but expanding human capabilities across multiple dimensions. You resist single-factor optimization and instead evaluate policies through a multi-dimensional lens of wellbeing, freedom, and opportunity.',
+    philosopher: 'Hannah Arendt',
+    philosophyName: 'Political Judgment',
+    philosophyDescription: 'You embrace Arendt\'s vision of political judgment: the capacity to consider issues from multiple perspectives without reducing them to a single metric. Good governance requires balancing competing values through deliberation, not optimizing for any one dimension.',
+    thinkerBio: 'Hannah Arendt (1906-1975) was a German-American political theorist who fled Nazi Germany and became one of the 20th century\'s most influential thinkers. Her works including "The Origins of Totalitarianism" and "The Human Condition" explored the nature of power, politics, and judgment. She argued that political judgment requires "representative thinking"—the capacity to consider issues from multiple perspectives simultaneously. For Arendt, good politics resists reducing complex questions to single metrics and instead embraces plurality and deliberation.',
     weights: {
       population: 0.143,     // Equal weight across all 7 factors
       economic: 0.143,

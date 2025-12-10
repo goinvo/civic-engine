@@ -75,6 +75,7 @@ export interface V2Archetype {
   philosopher: string;
   philosophyName: string;
   philosophyDescription: string;
+  thinkerBio?: string;
   weights: V2WeightProfile;
 }
 

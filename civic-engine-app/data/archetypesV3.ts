@@ -16,6 +16,7 @@ export interface V3Archetype {
   philosopher?: string;
   philosophyName?: string;
   philosophyDescription?: string;
+  thinkerBio?: string;
   weights: V3NeedWeights;
 }
 
@@ -37,6 +38,7 @@ export const V3_ARCHETYPES: V3Archetype[] = [
     philosopher: 'Abraham Maslow',
     philosophyName: 'Hierarchy of Needs',
     philosophyDescription: 'Human needs form a hierarchy where basic physiological and safety needs must be met before higher-level needs like belonging, esteem, and self-actualization can be pursued.',
+    thinkerBio: 'Abraham Maslow (1908-1970) was an American psychologist who founded humanistic psychology. His hierarchy of needs, first proposed in 1943, suggests that human motivation progresses through levels: physiological needs, safety, love/belonging, esteem, and finally self-actualization. While later research has complicated the strict hierarchy, Maslow\'s framework remains influential for understanding how policies affect human wellbeing across multiple dimensions.',
     weights: { ...DEFAULT_V3_WEIGHTS },
   },
   {
@@ -47,6 +49,7 @@ export const V3_ARCHETYPES: V3Archetype[] = [
     philosopher: 'Thomas Hobbes',
     philosophyName: 'Social Contract for Security',
     philosophyDescription: 'The primary purpose of government is to provide security and protect citizens from a "nasty, brutish, and short" existence in the state of nature.',
+    thinkerBio: 'Thomas Hobbes (1588-1679) was an English philosopher whose "Leviathan" (1651) argued that without government, human life would be "solitary, poor, nasty, brutish, and short." People form governments primarily for security—to escape the war of all against all. This vision places physical safety and basic survival at the foundation of legitimate government, with all other considerations secondary.',
     weights: {
       physiological: 0.40,
       safety: 0.35,
@@ -63,6 +66,7 @@ export const V3_ARCHETYPES: V3Archetype[] = [
     philosopher: 'Amitai Etzioni',
     philosophyName: 'Communitarianism',
     philosophyDescription: 'Individual rights must be balanced with social responsibilities. Strong communities provide the foundation for individual development and collective well-being.',
+    thinkerBio: 'Amitai Etzioni (b. 1929) is a German-Israeli-American sociologist who founded the communitarian movement in the 1990s. His work argues that Western societies have overemphasized individual rights at the expense of social responsibilities. For Etzioni, strong families, neighborhoods, and civic associations are essential for both individual flourishing and democratic governance. Policy should strengthen these mediating institutions, not just protect individual autonomy.',
     weights: {
       physiological: 0.15,
       safety: 0.20,
@@ -79,6 +83,7 @@ export const V3_ARCHETYPES: V3Archetype[] = [
     philosopher: 'John Stuart Mill',
     philosophyName: 'Higher Pleasures',
     philosophyDescription: 'Human happiness comes not just from satisfying basic needs but from developing our higher faculties - intellectual, aesthetic, and moral capacities.',
+    thinkerBio: 'John Stuart Mill (1806-1873) was an English philosopher and reformer who refined utilitarianism to distinguish between "higher" and "lower" pleasures. In "On Liberty" and "Utilitarianism," he argued that intellectual, aesthetic, and moral development matter more than mere physical satisfaction. Mill believed society should cultivate human potential through education and free expression, not just ensure material comfort.',
     weights: {
       physiological: 0.15,
       safety: 0.15,
@@ -95,6 +100,7 @@ export const V3_ARCHETYPES: V3Archetype[] = [
     philosopher: 'John Dewey',
     philosophyName: 'Pragmatic Democracy',
     philosophyDescription: 'Policy should be judged by its practical consequences. Focus on what works to improve security and expand opportunity rather than abstract principles.',
+    thinkerBio: 'John Dewey (1859-1952) was an American philosopher and educational reformer who helped found pragmatism. He rejected abstract ideological debates in favor of experimental problem-solving: test ideas by their practical consequences and revise based on results. For Dewey, democracy itself was a method of collective inquiry—policies should be judged not by ideological purity but by whether they actually improve people\'s lives and expand opportunity.',
     weights: {
       physiological: 0.20,
       safety: 0.35,

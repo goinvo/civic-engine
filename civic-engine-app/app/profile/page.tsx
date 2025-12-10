@@ -8,13 +8,14 @@ import { ARCHETYPES, VALUE_FACTORS, QUESTIONS, LIKERT_LABELS } from '@/data/valu
 import { WeightProfile } from '@/types/values';
 import { V2_ARCHETYPES } from '@/data/archetypesV2';
 import { V3_ARCHETYPES, V3_NEED_INFO, NEED_CATEGORY_ORDER } from '@/data/archetypesV3';
-import { V4_ARCHETYPES, V4_LENS_DEFINITIONS, V4Lens } from '@/data/v4Methodology';
+import { V4_ARCHETYPES, V4_LENS_DEFINITIONS, V4Lens, V4WeightProfile, V4Archetype } from '@/data/v4Methodology';
 import { ModelSelector, AutoMapBanner, V2ArchetypeCard, EconomicsWeightsRadar } from '@/components/v2';
 import { V3ArchetypeCard, NeedsWeightsRadar } from '@/components/v3';
 import { V4ArchetypeCard } from '@/components/v4';
 import {
   V1MethodologySection,
   V3MethodologySection,
+  V4MethodologySection,
   TopValuesSection,
   PhilosophyCard,
   HowScoresWork,
@@ -38,6 +39,61 @@ function findClosestArchetype(weights: WeightProfile) {
 
   for (const archetype of ARCHETYPES) {
     const distance = calculateWeightDistance(weights, archetype.weights);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestArchetype = archetype;
+    }
+  }
+
+  return closestArchetype;
+}
+
+// Find the closest V4 archetype based on lens weights
+function findClosestV4Archetype(weights: V4WeightProfile): V4Archetype {
+  const lensWeights = weights.lensWeights;
+
+  // First, check if user has a clear dominant lens (> 40%)
+  // If so, match to that archetype directly
+  const maxLens = Math.max(lensWeights.impact, lensWeights.economics, lensWeights.needs);
+  const dominanceThreshold = 0.40;
+
+  if (maxLens >= dominanceThreshold) {
+    if (lensWeights.impact === maxLens) {
+      return V4_ARCHETYPES.find(a => a.id === 'pragmatist')!;
+    }
+    if (lensWeights.economics === maxLens) {
+      return V4_ARCHETYPES.find(a => a.id === 'economist')!;
+    }
+    if (lensWeights.needs === maxLens) {
+      return V4_ARCHETYPES.find(a => a.id === 'humanist')!;
+    }
+  }
+
+  // Check if user is truly balanced (all lenses within 5% of each other)
+  const minLens = Math.min(lensWeights.impact, lensWeights.economics, lensWeights.needs);
+  const lensSpread = maxLens - minLens;
+  const balanceThreshold = 0.05; // Only balanced if spread is < 5%
+
+  if (lensSpread <= balanceThreshold) {
+    return V4_ARCHETYPES.find(a => a.id === 'balanced')!;
+  }
+
+  // Otherwise, find the archetype with the closest lens weights
+  // but exclude balanced from consideration (it requires truly equal weights)
+  const nonBalancedArchetypes = V4_ARCHETYPES.filter(a => a.id !== 'custom_v4' && a.id !== 'balanced');
+  let closestArchetype = nonBalancedArchetypes[0];
+  let minDistance = Infinity;
+
+  for (const archetype of nonBalancedArchetypes) {
+    const archLensWeights = archetype.weights.lensWeights;
+
+    // Calculate Euclidean distance for lens weights
+    const distance = Math.sqrt(
+      Math.pow(lensWeights.impact - archLensWeights.impact, 2) +
+      Math.pow(lensWeights.economics - archLensWeights.economics, 2) +
+      Math.pow(lensWeights.needs - archLensWeights.needs, 2)
+    );
+
     if (distance < minDistance) {
       minDistance = distance;
       closestArchetype = archetype;
@@ -125,6 +181,7 @@ export default function ProfilePage() {
           philosophyName: v3Archetype.philosophyName || '',
           philosopher: v3Archetype.philosopher || '',
           philosophyDescription: v3Archetype.philosophyDescription || '',
+          thinkerBio: v3Archetype.thinkerBio,
         }
       : null
     : isV2
@@ -134,14 +191,16 @@ export default function ProfilePage() {
           philosophyName: v2Archetype.philosophyName,
           philosopher: v2Archetype.philosopher,
           philosophyDescription: v2Archetype.philosophyDescription,
+          thinkerBio: v2Archetype.thinkerBio,
         }
       : null
     : (archetype || closestArchetype)
     ? {
-        title: 'Your Economic Philosophy',
+        title: 'Your Impact Philosophy',
         philosophyName: (isCustomProfile ? closestArchetype?.philosophyName : archetype?.philosophyName) || '',
         philosopher: (isCustomProfile ? closestArchetype?.philosopher : archetype?.philosopher) || '',
         philosophyDescription: (isCustomProfile ? closestArchetype?.philosophyDescription : archetype?.philosophyDescription) || '',
+        thinkerBio: (isCustomProfile ? closestArchetype?.thinkerBio : archetype?.thinkerBio),
       }
     : null;
 
@@ -196,31 +255,82 @@ export default function ProfilePage() {
       {/* Archetype Card - Version-specific display */}
       {isV4 ? (
         <div className="mb-12">
-          <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
-            Select Your Combined Lens Profile
-          </h2>
-          <p className="font-body text-gray-600 dark:text-gray-400 mb-4">
-            Choose a profile that balances Impact, Economics, and Needs lenses according to your priorities.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {V4_ARCHETYPES.map((arch) => (
-              <V4ArchetypeCard
-                key={arch.id}
-                archetype={arch}
-                isSelected={profile.v4ArchetypeId === arch.id}
-                onSelect={() => setV4Archetype(arch.id)}
-              />
-            ))}
-          </div>
-          <div className="flex justify-center mb-6">
-            <Link
-              href="/profile/questionnaire-v4"
-              className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#2F3BBD] via-[#7B2D8E] to-[#C91A2B] text-white border-4 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-            >
-              <Edit3 className="w-4 h-4" />
-              <span>Take Combined Lens Questionnaire</span>
-            </Link>
-          </div>
+          {/* Show results if user has completed questionnaire, otherwise show archetype picker */}
+          {profile.v4Responses && profile.v4Weights ? (
+            <>
+              {/* Results Card */}
+              {(() => {
+                const matchedArchetype = findClosestV4Archetype(profile.v4Weights);
+                return (
+                  <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-r from-[#2F3BBD] via-[#7B2D8E] to-[#C91A2B] p-8 mb-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                      <span className="font-display text-sm font-bold text-white/80">
+                        Based on your questionnaire responses
+                      </span>
+                    </div>
+                    <h2 className="font-display text-3xl font-black text-white mb-4">
+                      {matchedArchetype.name}
+                    </h2>
+                    <p className="font-body text-lg text-white/90 font-medium mb-6">
+                      {matchedArchetype.description}
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {(Object.entries(profile.v4Weights.lensWeights) as [V4Lens, number][])
+                        .sort(([, a], [, b]) => b - a)
+                        .map(([lens, weight]) => {
+                          const lensInfo = V4_LENS_DEFINITIONS[lens];
+                          return (
+                            <div key={lens} className="bg-white/10 border-2 border-white/20 px-4 py-2">
+                              <span className="font-display text-sm font-bold text-white">
+                                {lensInfo.name}: {Math.round(weight * 100)}%
+                              </span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                );
+              })()}
+              <div className="flex justify-center mb-6">
+                <Link
+                  href="/profile/questionnaire-v4"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-white text-black border-4 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Retake Questionnaire</span>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
+                Select Your Combined Lens Profile
+              </h2>
+              <p className="font-body text-gray-600 dark:text-gray-400 mb-4">
+                Choose a profile that balances Impact, Economics, and Needs lenses according to your priorities.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {V4_ARCHETYPES.map((arch) => (
+                  <V4ArchetypeCard
+                    key={arch.id}
+                    archetype={arch}
+                    isSelected={profile.v4ArchetypeId === arch.id}
+                    onSelect={() => setV4Archetype(arch.id)}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-center mb-6">
+                <Link
+                  href="/profile/questionnaire-v4"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#2F3BBD] via-[#7B2D8E] to-[#C91A2B] text-white border-4 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  <span>Take Combined Lens Questionnaire</span>
+                </Link>
+              </div>
+            </>
+          )}
           <div className="text-sm font-body text-gray-600 dark:text-gray-400 text-center">
             Profile updated on {new Date(profile.updatedAt).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -307,6 +417,7 @@ export default function ProfilePage() {
           philosophyName={philosophyInfo.philosophyName}
           philosopher={philosophyInfo.philosopher}
           philosophyDescription={philosophyInfo.philosophyDescription}
+          thinkerBio={philosophyInfo.thinkerBio}
         />
       )}
 
@@ -447,7 +558,7 @@ export default function ProfilePage() {
       <HowScoresWork />
 
       {/* Methodology Section */}
-      {isV3 ? <V3MethodologySection /> : !isV2 && <V1MethodologySection />}
+      {isV4 ? <V4MethodologySection /> : isV3 ? <V3MethodologySection /> : !isV2 && <V1MethodologySection />}
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
