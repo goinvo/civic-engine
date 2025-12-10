@@ -30,7 +30,19 @@
       "WebSearch",
       "WebFetch(domain:www.nngroup.com)",
       "WebFetch(domain:medium.com)",
-      "WebFetch(domain:larainfo.com)"
+      "WebFetch(domain:larainfo.com)",
+      "Bash(node:*)",
+      "Bash(cmd /c \"dir C:\\Users\\quest\\Downloads\\*.pdf /B\")",
+      "Bash(ls:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(for file in medicare-for-all.ts kids-online-safety-act.ts universal-background-checks.ts free-and-easy-voter-id.ts right-to-repair.ts medicare-drug-negotiation.ts ai-safety-regulation.ts junk-fee-prevention.ts congress-term-limits.ts universal-basic-income.ts federal-job-guarantee.ts social-security-cap.ts congress-stock-ban.ts supreme-court-term-limits.ts ultra-millionaire-wealth-tax.ts national-service-voluntary.ts simplified-tax-filing.ts foreign-farmland-ownership-ban.ts police-accountability-standards.ts affordable-housing-supply.ts mental-health-lifeline-988.ts rural-broadband-access.ts campaign-finance-disclosure.ts immigration-grand-bargain.ts invest-vocational-training.ts raise-minimum-wage.ts healthcare-public-option.ts overturn-citizens-united.ts expanded-child-tax-credit.ts expand-nuclear-energy.ts cannabis-banking.ts universal-pre-k.ts buy-american-mandates.ts)",
+      "Bash(do mv \"$file\" economist-model/)",
+      "Bash(done)",
+      "Bash(del \"C:\\Users\\quest\\Programming\\GoInvo\\civic-engine\\civic-engine-app\\data\\methodologies\\needs-model\\universal-drug-price-negotiation.ts\")",
+      "Bash(for file in *.ts)",
+      "Bash(do if [ \"$file\" != \"index.ts\" ])",
+      "Bash(then sed -i \"s|from ''./index''|from ''../index''|g\" \"$file\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []

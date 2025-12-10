@@ -62,5 +62,55 @@ Fiscal Sponsor / Funder Fit: TBD but possible paths are RWJF (Civic Health), Roc
 
 Project Lead Contact: Juhan Sonin, GoInvo, juhan@goinvo.com, 617.504.3390
 
-URL as of 3.Dec.25: https://civic-engine.vercel.app/
-Possible future URL: WhatThePeopleWant.org
+---
+
+## Policy Database (33 Policies)
+
+All policies have supermajority bipartisan support or strong cross-partisan consensus. Data sourced from Program for Public Consultation (PPC), Gallup, Pew Research, Voice of the People, and others.
+
+| # | Policy | Category | Avg Support |
+|---|--------|----------|-------------|
+| 1 | Shore Up Social Security ("Donut Hole") | Economy | 87% |
+| 2 | Ban Congressional Stock Trading | Governance | 86% |
+| 3 | Congressional Term Limits | Governance | 83% |
+| 4 | National Right to Repair Act | Economy | 83% |
+| 5 | Universal Drug Price Negotiation | Healthcare | 85% |
+| 6 | AI Safety & Deepfake Liability | Technology | 79% |
+| 7 | Universal Broadband & Municipal Internet | Infrastructure | 76% |
+| 8 | Mandate "Dark Money" Disclosure | Governance | 85% |
+| 9 | Immigration Grand Bargain | Justice | 76% |
+| 10 | Invest in Vocational Training | Education | 82% |
+| 11 | Kids Online Safety Act (KOSA) | Technology | 83% |
+| 12 | Universal Background Checks | Justice | 93% |
+| 13 | Free and Easy Voter ID | Governance | 81% |
+| 14 | Junk Fee Prevention Act | Economy | 87% |
+| 15 | Expand Child Tax Credit | Economy | 85% |
+| 16 | Supreme Court Term Limits (18 Years) | Governance | 78% |
+| 17 | Ultra-Millionaire Wealth Tax | Economy | 67% |
+| 18 | End Corporate Personhood | Governance | 72% |
+| 19 | Voluntary National Service | Society | 80% |
+| 20 | Simplified Tax Filing (Direct File) | Governance | 73% |
+| 21 | Ban Foreign Ownership of Farmland | Security | 82% |
+| 22 | Raise Minimum Wage ($17) | Economy | 70% |
+| 23 | Healthcare Public Option | Healthcare | 65% |
+| 24 | Expand Nuclear Energy (ADVANCE Act) | Infrastructure | 61% |
+| 25 | Police Accountability Standards | Justice | 84% |
+| 26 | Affordable Housing Supply (NHIA) | Economy | 71% |
+| 27 | 988 Mental Health Lifeline | Healthcare | 64% |
+| 28 | Cannabis Banking (SAFER Act) | Economy | 64% |
+| 29 | Universal Pre-K | Education | 70% |
+| 30 | "Buy American" Mandates | Economy | 75% |
+| 31 | Universal Basic Income (UBI) | Economy | 55% |
+| 32 | Federal Job Guarantee | Economy | 58% |
+| 33 | Medicare for All (Single-Payer) | Healthcare | 63% |
+
+### Categories
+- **Economy** (13): Social Security, Right to Repair, Junk Fees, Child Tax Credit, Wealth Tax, Minimum Wage, Housing, Cannabis Banking, Buy American, UBI, Job Guarantee
+- **Governance** (8): Stock Ban, Term Limits, Dark Money, Voter ID, SCOTUS Terms, Citizens United, Direct File
+- **Healthcare** (4): Drug Negotiation, Public Option, 988 Lifeline, Medicare for All
+- **Justice** (3): Immigration, Background Checks, Police Accountability
+- **Technology** (2): AI Safety, Kids Online Safety
+- **Infrastructure** (2): Broadband, Nuclear Energy
+- **Education** (2): Vocational Training, Universal Pre-K
+- **Security** (1): Foreign Farmland Ban
+- **Society** (1): National Service

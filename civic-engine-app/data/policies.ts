@@ -1901,6 +1901,204 @@ export const policies: Policy[] = [
     trending: 'up',
     lastUpdated: '2025-06-01',
   },
+
+  // ===========================================
+  // POLICIES WITH FULL METHODOLOGY
+  // These have detailed evidence-based V2 scoring
+  // ===========================================
+
+  {
+    id: 'universal-basic-income',
+    rank: 31,
+    title: 'Universal Basic Income (UBI)',
+    description: 'A universal, unconditional cash payment to all individuals, intended to provide a minimum floor of income regardless of employment status.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Wallet',
+    averageSupport: 55,
+    partySupport: {
+      democrats: 65,
+      republicans: 42,
+      independents: 58,
+    },
+    sources: [
+      {
+        organization: 'Various Polling (Gallup, Hill-HarrisX)',
+        title: 'Universal Basic Income Polling',
+        url: 'https://news.gallup.com',
+        year: 2025,
+        supportPercentage: 55,
+      },
+    ],
+    notes: [
+      'Full methodology available with detailed 13-factor analysis. Score varies widely by framing and amount.',
+    ],
+    details: [
+      {
+        title: 'Cash Freedom',
+        description: 'Individuals decide how to spend based on their local knowledge, avoiding bureaucratic decision-making.',
+      },
+      {
+        title: 'Automatic Stabilizer',
+        description: 'Payments continue regardless of employment, maintaining consumer demand during recessions.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Tax Revenue (varies by funding mechanism)',
+      to: 'All Citizens',
+      channel: 'Direct cash transfer',
+    },
+    ifThen: [
+      'If you are a citizen, you receive the same monthly payment as everyone else',
+      'If you lose your job, your UBI continues without interruption',
+      'If you want to start a business or leave a bad job, you have a cushion',
+    ],
+    causalChain: {
+      immediate: 'Distribute equal cash payments to all adults',
+      outcome: 'Eliminates extreme poverty, provides "F-you money" for freedom from exploitation',
+    },
+    commonQuestions: [
+      {
+        question: 'How is it funded?',
+        answer: 'Proposals vary: income tax, VAT, land value tax, carbon tax, or wealth tax. The funding mechanism affects how progressive/equitable it is.',
+      },
+      {
+        question: 'Won\'t people stop working?',
+        answer: 'Pilots show minimal work reduction. UBI provides security to take risks, train, or care for family.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    hasV2Methodology: true,
+  },
+  {
+    id: 'federal-job-guarantee',
+    rank: 32,
+    title: 'Federal Job Guarantee',
+    description: 'A program assuring a public job at a liveable wage to all who want work, making the government an employer of last resort to achieve full employment.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Briefcase',
+    averageSupport: 58,
+    partySupport: {
+      democrats: 72,
+      republicans: 44,
+      independents: 56,
+    },
+    sources: [
+      {
+        organization: 'Data for Progress / CBPP',
+        title: 'Job Guarantee Polling',
+        url: 'https://www.cbpp.org',
+        year: 2025,
+        supportPercentage: 58,
+      },
+    ],
+    notes: [
+      'Full methodology available. Scores highest on stability, exit/voice, and protection (decommodifying labor).',
+    ],
+    details: [
+      {
+        title: 'Employer of Last Resort',
+        description: 'Government provides jobs when private sector fails to hire, eliminating involuntary unemployment.',
+      },
+      {
+        title: 'Polycentric Design',
+        description: 'Federal funding with local implementation: communities identify needed projects.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Budget',
+      to: 'Workers via Public Jobs',
+      channel: 'Local government and nonprofit implementation',
+    },
+    ifThen: [
+      'If you want work, the government guarantees a job at a living wage',
+      'If the private sector treats you poorly, you can exit to the public option',
+      'If a recession hits, the program automatically expands (stabilizer)',
+    ],
+    causalChain: {
+      immediate: 'Offer public employment to all willing workers',
+      outcome: 'Eliminates unemployment, strengthens worker bargaining power across economy',
+    },
+    commonQuestions: [
+      {
+        question: 'What kind of jobs?',
+        answer: 'Community-identified needs: caregiving, infrastructure, environmental restoration, education support.',
+      },
+      {
+        question: 'How is it different from UBI?',
+        answer: 'JG provides income through work; UBI provides cash unconditionally. JG scores higher on exit/voice (1.0 vs 0.8).',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    hasV2Methodology: true,
+  },
+  {
+    id: 'medicare-for-all',
+    rank: 33,
+    title: 'Medicare for All (Single-Payer)',
+    description: 'A universal, national health insurance program covering all residents for medically necessary care, with the government as the single payer.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'Hospital',
+    averageSupport: 63,
+    partySupport: {
+      democrats: 85,
+      republicans: 38,
+      independents: 60,
+    },
+    sources: [
+      {
+        organization: 'KFF Health Tracking Poll',
+        title: 'Medicare for All Polling',
+        url: 'https://kff.org',
+        year: 2025,
+        supportPercentage: 63,
+      },
+    ],
+    notes: [
+      'Full methodology available. Highest scores on protection (1.0), the floor (1.0), and sphere justice (1.0).',
+    ],
+    details: [
+      {
+        title: 'Healthcare as a Right',
+        description: 'Distributes healthcare by need, not ability to pay. Everyone shows the same card at the hospital.',
+      },
+      {
+        title: 'Administrative Simplicity',
+        description: 'One payer, one set of rules. Eliminates navigating dozens of plans, networks, and deductibles.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Progressive Taxation',
+      to: 'Universal Coverage',
+      channel: 'Government single-payer administration',
+    },
+    ifThen: [
+      'If you are a resident, you are covered for all medically necessary care',
+      'If you lose your job, your healthcare continues unchanged',
+      'If you need treatment, you get it based on medical need, not wealth',
+    ],
+    causalChain: {
+      immediate: 'Establish universal public health insurance',
+      outcome: 'Eliminates medical bankruptcy, frees workers from employer/insurer domination',
+    },
+    commonQuestions: [
+      {
+        question: 'What about private insurance?',
+        answer: 'Most proposals eliminate duplicative private insurance for covered services but may allow supplementary coverage.',
+      },
+      {
+        question: 'How is it different from Public Option?',
+        answer: 'Single-payer replaces private insurance; public option competes with it. M4A scores higher on protection and sphere justice.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    hasV2Methodology: true,
+  },
 ];
 
 /*

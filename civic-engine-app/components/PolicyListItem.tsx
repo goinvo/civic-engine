@@ -7,6 +7,8 @@ import { Plus, ArrowUpRight, ThumbsUp, ThumbsDown, Sparkles, TrendingUp, Trendin
 import { Policy } from '@/types/policy';
 import { useVoting } from '@/contexts/VotingContext';
 import { useImpactScore } from '@/hooks/useImpactScore';
+import { V2ScoreDisplay } from '@/components/v2';
+import { V3ScoreDisplay } from '@/components/v3';
 
 interface PolicyListItemProps {
   policy: Policy;
@@ -26,7 +28,8 @@ export default function PolicyListItem({ policy, isActive = false, displayRank, 
   const rankToShow = displayRank ?? policy.rank;
   const { addVote, getVote } = useVoting();
   const currentVote = getVote(policy.id);
-  const { personalizedScore, baseScore, difference, insight, hasPersonalization } = useImpactScore(policy.id);
+  const { personalizedScore, baseScore, difference, insight, hasPersonalization, baseV2Score, scoringModel, v3Score, hasV3 } = useImpactScore(policy.id);
+  const isV2 = scoringModel === 'v2';
 
   return (
     <motion.div
@@ -159,6 +162,30 @@ export default function PolicyListItem({ policy, isActive = false, displayRank, 
                       </Link>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* V2 Factor Scores Display (tabbed) */}
+              {baseV2Score && baseV2Score.factors && (
+                <div className="mb-6">
+                  <V2ScoreDisplay
+                    policyId={policy.id}
+                    factorScores={baseV2Score.factors}
+                    defaultMode="table"
+                    showMethodologyLink={true}
+                  />
+                </div>
+              )}
+
+              {/* V3 Needs-Based Scores Display */}
+              {hasV3 && v3Score && (
+                <div className="mb-6">
+                  <V3ScoreDisplay
+                    policyId={policy.id}
+                    impactScore={v3Score}
+                    defaultMode="table"
+                    showMethodologyLink={true}
+                  />
                 </div>
               )}
 
