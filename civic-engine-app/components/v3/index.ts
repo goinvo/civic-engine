@@ -6,4 +6,5 @@
 
 export { V3ScoreDisplay } from './V3ScoreDisplay';
 export { NeedsRadarChart } from './NeedsRadarChart';
+export { NeedsWeightsRadar } from './NeedsWeightsRadar';
 export { V3ArchetypeCard } from './V3ArchetypeCard';

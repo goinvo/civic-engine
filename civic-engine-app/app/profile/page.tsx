@@ -2,14 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles, RefreshCw, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCw, RotateCcw, CheckCircle, Edit3 } from 'lucide-react';
 import { useValues } from '@/contexts/ValuesContext';
 import { ARCHETYPES, VALUE_FACTORS, QUESTIONS, LIKERT_LABELS } from '@/data/values';
 import { WeightProfile } from '@/types/values';
 import { V2_ARCHETYPES } from '@/data/archetypesV2';
 import { V3_ARCHETYPES, V3_NEED_INFO, NEED_CATEGORY_ORDER } from '@/data/archetypesV3';
-import { ModelSelector, AutoMapBanner, V2ArchetypeCard } from '@/components/v2';
-import { V3ArchetypeCard } from '@/components/v3';
+import { ModelSelector, AutoMapBanner, V2ArchetypeCard, EconomicsWeightsRadar } from '@/components/v2';
+import { V3ArchetypeCard, NeedsWeightsRadar } from '@/components/v3';
 import {
   V1MethodologySection,
   V3MethodologySection,
@@ -17,6 +17,7 @@ import {
   PhilosophyCard,
   HowScoresWork,
 } from './components';
+import { findClosestV2Archetype, findClosestV3Archetype } from '@/lib/archetypeMatching';
 
 // Calculate Euclidean distance between two weight profiles
 function calculateWeightDistance(w1: WeightProfile, w2: WeightProfile): number {

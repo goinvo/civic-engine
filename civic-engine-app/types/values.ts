@@ -79,7 +79,7 @@ export interface QuestionnaireResponses {
 }
 
 // Scoring model version
-export type ScoringModelVersion = 'v1' | 'v2' | 'v3';
+export type ScoringModelVersion = 'v1' | 'v2' | 'v3' | 'v4';
 
 // V2 Questionnaire responses (13 questions)
 export interface V2QuestionnaireResponses {
@@ -88,6 +88,11 @@ export interface V2QuestionnaireResponses {
 
 // V3 Need Category Weights (sum should = 1.0)
 export type V3NeedWeights = Record<NeedCategory, number>;
+
+// V3 Questionnaire responses (5 questions)
+export interface V3QuestionnaireResponses {
+  [key: string]: LikertScale;
+}
 
 // V3 Archetype IDs
 export type V3ArchetypeId =
@@ -98,7 +103,32 @@ export type V3ArchetypeId =
   | 'pragmatist'      // Prioritizes safety & opportunity
   | 'custom_v3';      // Custom weights
 
-// User's complete values profile (supports v1, v2, and v3)
+// V4 Archetype IDs (Unified Model)
+export type V4ArchetypeId =
+  | 'pragmatist'      // Prioritizes Impact lens (feasibility, reach)
+  | 'economist'       // Prioritizes Economics lens (political economy)
+  | 'humanist'        // Prioritizes Needs lens (human flourishing)
+  | 'balanced'        // Equal weight across all lenses
+  | 'custom_v4';      // Custom weights
+
+// V4 Weight Profile (combines all three lenses)
+export interface V4WeightProfile {
+  lensWeights: {
+    impact: number;
+    economics: number;
+    needs: number;
+  };
+  impactWeights: WeightProfile;
+  economicsWeights: import('@/types/consensus').V2WeightProfile;
+  needsWeights: V3NeedWeights;
+}
+
+// V4 Questionnaire responses
+export interface V4QuestionnaireResponses {
+  [key: string]: LikertScale;
+}
+
+// User's complete values profile (supports v1, v2, v3, and v4)
 export interface UserValuesProfile {
   // V1 fields (always present for backwards compatibility)
   archetypeId: ArchetypeId;
@@ -117,6 +147,12 @@ export interface UserValuesProfile {
   // V3 fields (optional, present when user has used v3)
   v3ArchetypeId?: V3ArchetypeId;
   v3NeedWeights?: V3NeedWeights;
+  v3Responses?: V3QuestionnaireResponses;
+
+  // V4 fields (optional, present when user has used v4 unified model)
+  v4ArchetypeId?: V4ArchetypeId;
+  v4Weights?: V4WeightProfile;
+  v4Responses?: V4QuestionnaireResponses;
 
   // Timestamps
   createdAt: string;

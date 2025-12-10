@@ -11,6 +11,10 @@ import {
   V2QuestionnaireResponses,
   V3ArchetypeId,
   V3NeedWeights,
+  V3QuestionnaireResponses,
+  V4ArchetypeId,
+  V4WeightProfile,
+  V4QuestionnaireResponses,
 } from '@/types/values';
 import {
   V2ArchetypeId,
@@ -28,6 +32,10 @@ import {
   V3_ARCHETYPES,
   DEFAULT_V3_WEIGHTS,
 } from '@/data/archetypesV3';
+import {
+  V4_ARCHETYPES,
+  DEFAULT_V4_WEIGHTS,
+} from '@/data/v4Methodology';
 
 interface ValuesContextType {
   profile: UserValuesProfile | null;
@@ -48,6 +56,12 @@ interface ValuesContextType {
 
   // V3 scoring model support
   setV3Archetype: (archetypeId: V3ArchetypeId) => void;
+  saveV2Profile: (data: { v2ArchetypeId: V2ArchetypeId; v2Weights: V2WeightProfile; v2Responses?: V2QuestionnaireResponses; v2AutoMapped?: boolean }) => void;
+  saveV3Profile: (data: { v3ArchetypeId: V3ArchetypeId; v3NeedWeights: V3NeedWeights; v3Responses?: V3QuestionnaireResponses }) => void;
+
+  // V4 unified model support
+  setV4Archetype: (archetypeId: V4ArchetypeId) => void;
+  saveV4Profile: (data: { v4ArchetypeId: V4ArchetypeId; v4Weights: V4WeightProfile; v4Responses?: V4QuestionnaireResponses }) => void;
 }
 
 const ValuesContext = createContext<ValuesContextType | undefined>(undefined);
@@ -229,6 +243,17 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
       };
 
       setProfile(newProfile);
+    } else if (version === 'v4' && !profile.v4ArchetypeId) {
+      // If switching to v4 and no v4 profile exists, set default balanced archetype
+      const newProfile: UserValuesProfile = {
+        ...profile,
+        scoringModel: 'v4',
+        v4ArchetypeId: 'balanced',
+        v4Weights: DEFAULT_V4_WEIGHTS,
+        updatedAt: now,
+      };
+
+      setProfile(newProfile);
     } else {
       // Just switch the model
       setProfile({
@@ -317,27 +342,10 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
       5: 2.0,
     };
 
-    // Question ID to factor mapping
-    const questionToFactor: Record<string, V2Factor> = {
-      q_hayek: 'hayek',
-      q_ostrom: 'ostrom',
-      q_downs: 'downs',
-      q_olson: 'olson',
-      q_keynes: 'keynes',
-      q_pettit: 'pettit',
-      q_hirschman: 'hirschman',
-      q_buchanan: 'buchanan',
-      q_polanyi: 'polanyi',
-      q_rawls: 'rawls',
-      q_george: 'george',
-      q_acemoglu: 'acemoglu',
-      q_walzer: 'walzer',
-    };
-
-    // Calculate points for each factor
+    // Calculate points for each factor using v2_q_ prefix
     const points: Partial<Record<V2Factor, number>> = {};
     for (const factor of V2_FACTORS) {
-      const questionId = `q_${factor}`;
+      const questionId = `v2_q_${factor}`;
       const response = responses[questionId] as LikertScale | undefined;
       points[factor] = baselinePoints * multipliers[response || 3];
     }
@@ -407,6 +415,151 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
     setHasCompletedOnboarding(true);
   };
 
+  /**
+   * Save V2 profile from questionnaire
+   */
+  const saveV2Profile = (data: {
+    v2ArchetypeId: V2ArchetypeId;
+    v2Weights: V2WeightProfile;
+    v2Responses?: V2QuestionnaireResponses;
+    v2AutoMapped?: boolean;
+  }) => {
+    const now = new Date().toISOString();
+
+    const newProfile: UserValuesProfile = {
+      // Preserve or set default V1 fields
+      archetypeId: profile?.archetypeId || 'balanced',
+      weights: profile?.weights || DEFAULT_WEIGHTS,
+      responses: profile?.responses,
+      // Set V2 fields
+      scoringModel: 'v2',
+      v2ArchetypeId: data.v2ArchetypeId,
+      v2Weights: data.v2Weights,
+      v2Responses: data.v2Responses,
+      v2AutoMapped: data.v2AutoMapped || false,
+      // Preserve V3 fields if they exist
+      v3ArchetypeId: profile?.v3ArchetypeId,
+      v3NeedWeights: profile?.v3NeedWeights,
+      v3Responses: profile?.v3Responses,
+      createdAt: profile?.createdAt || now,
+      updatedAt: now,
+    };
+
+    setProfile(newProfile);
+    setHasCompletedOnboarding(true);
+    setShowAutoMapBanner(false);
+  };
+
+  /**
+   * Save V3 profile from questionnaire
+   */
+  const saveV3Profile = (data: {
+    v3ArchetypeId: V3ArchetypeId;
+    v3NeedWeights: V3NeedWeights;
+    v3Responses?: V3QuestionnaireResponses;
+  }) => {
+    const now = new Date().toISOString();
+
+    const newProfile: UserValuesProfile = {
+      // Preserve or set default V1 fields
+      archetypeId: profile?.archetypeId || 'balanced',
+      weights: profile?.weights || DEFAULT_WEIGHTS,
+      responses: profile?.responses,
+      // Preserve V2 fields if they exist
+      v2ArchetypeId: profile?.v2ArchetypeId,
+      v2Weights: profile?.v2Weights,
+      v2Responses: profile?.v2Responses,
+      v2AutoMapped: profile?.v2AutoMapped,
+      // Set V3 fields
+      scoringModel: 'v3',
+      v3ArchetypeId: data.v3ArchetypeId,
+      v3NeedWeights: data.v3NeedWeights,
+      v3Responses: data.v3Responses,
+      createdAt: profile?.createdAt || now,
+      updatedAt: now,
+    };
+
+    setProfile(newProfile);
+    setHasCompletedOnboarding(true);
+  };
+
+  // ===========================================
+  // V4 UNIFIED MODEL FUNCTIONS
+  // ===========================================
+
+  /**
+   * Set V4 archetype directly
+   */
+  const setV4Archetype = (archetypeId: V4ArchetypeId) => {
+    const archetype = V4_ARCHETYPES.find((a) => a.id === archetypeId);
+    if (!archetype && archetypeId !== 'custom_v4') return;
+
+    const now = new Date().toISOString();
+    const weights = archetype?.weights || DEFAULT_V4_WEIGHTS;
+
+    const newProfile: UserValuesProfile = {
+      // Preserve V1 fields
+      archetypeId: profile?.archetypeId || 'balanced',
+      weights: profile?.weights || DEFAULT_WEIGHTS,
+      responses: profile?.responses,
+      // Preserve V2 fields
+      v2ArchetypeId: profile?.v2ArchetypeId,
+      v2Weights: profile?.v2Weights,
+      v2Responses: profile?.v2Responses,
+      v2AutoMapped: profile?.v2AutoMapped,
+      // Preserve V3 fields
+      v3ArchetypeId: profile?.v3ArchetypeId,
+      v3NeedWeights: profile?.v3NeedWeights,
+      v3Responses: profile?.v3Responses,
+      // Set V4 fields
+      scoringModel: 'v4',
+      v4ArchetypeId: archetypeId,
+      v4Weights: weights,
+      createdAt: profile?.createdAt || now,
+      updatedAt: now,
+    };
+
+    setProfile(newProfile);
+    setHasCompletedOnboarding(true);
+  };
+
+  /**
+   * Save V4 profile from questionnaire
+   */
+  const saveV4Profile = (data: {
+    v4ArchetypeId: V4ArchetypeId;
+    v4Weights: V4WeightProfile;
+    v4Responses?: V4QuestionnaireResponses;
+  }) => {
+    const now = new Date().toISOString();
+
+    const newProfile: UserValuesProfile = {
+      // Preserve or set default V1 fields
+      archetypeId: profile?.archetypeId || 'balanced',
+      weights: profile?.weights || DEFAULT_WEIGHTS,
+      responses: profile?.responses,
+      // Preserve V2 fields if they exist
+      v2ArchetypeId: profile?.v2ArchetypeId,
+      v2Weights: profile?.v2Weights,
+      v2Responses: profile?.v2Responses,
+      v2AutoMapped: profile?.v2AutoMapped,
+      // Preserve V3 fields if they exist
+      v3ArchetypeId: profile?.v3ArchetypeId,
+      v3NeedWeights: profile?.v3NeedWeights,
+      v3Responses: profile?.v3Responses,
+      // Set V4 fields
+      scoringModel: 'v4',
+      v4ArchetypeId: data.v4ArchetypeId,
+      v4Weights: data.v4Weights,
+      v4Responses: data.v4Responses,
+      createdAt: profile?.createdAt || now,
+      updatedAt: now,
+    };
+
+    setProfile(newProfile);
+    setHasCompletedOnboarding(true);
+  };
+
   return (
     <ValuesContext.Provider
       value={{
@@ -426,6 +579,12 @@ export function ValuesProvider({ children }: { children: React.ReactNode }) {
         showAutoMapBanner,
         // V3 functions
         setV3Archetype,
+        // V4 functions
+        setV4Archetype,
+        // Save profile functions
+        saveV2Profile,
+        saveV3Profile,
+        saveV4Profile,
       }}
     >
       {children}
