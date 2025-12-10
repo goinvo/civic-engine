@@ -30,6 +30,7 @@ export function ModelSelector({ className = '' }: ModelSelectorProps) {
         <option value="v1">Impact Lens</option>
         <option value="v2">Economics Lens</option>
         <option value="v3">Needs Lens</option>
+        <option value="v4">Combined Lens</option>
       </select>
     </div>
   );

@@ -8,8 +8,10 @@ import { ARCHETYPES, VALUE_FACTORS, QUESTIONS, LIKERT_LABELS } from '@/data/valu
 import { WeightProfile } from '@/types/values';
 import { V2_ARCHETYPES } from '@/data/archetypesV2';
 import { V3_ARCHETYPES, V3_NEED_INFO, NEED_CATEGORY_ORDER } from '@/data/archetypesV3';
+import { V4_ARCHETYPES, V4_LENS_DEFINITIONS, V4Lens } from '@/data/v4Methodology';
 import { ModelSelector, AutoMapBanner, V2ArchetypeCard, EconomicsWeightsRadar } from '@/components/v2';
 import { V3ArchetypeCard, NeedsWeightsRadar } from '@/components/v3';
+import { V4ArchetypeCard } from '@/components/v4';
 import {
   V1MethodologySection,
   V3MethodologySection,
@@ -47,11 +49,12 @@ function findClosestArchetype(weights: WeightProfile) {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, clearProfile, setArchetype, setV2Archetype, setV3Archetype } = useValues();
+  const { profile, clearProfile, setArchetype, setV2Archetype, setV3Archetype, setV4Archetype } = useValues();
 
   const scoringModel = profile?.scoringModel || 'v1';
   const isV2 = scoringModel === 'v2';
   const isV3 = scoringModel === 'v3';
+  const isV4 = scoringModel === 'v4';
 
   // If no profile, redirect to values page
   if (!profile) {
@@ -75,6 +78,10 @@ export default function ProfilePage() {
   // V3 archetype info
   const v3Archetype = V3_ARCHETYPES.find((a) => a.id === profile.v3ArchetypeId);
   const isCustomV3Profile = profile.v3ArchetypeId === 'custom_v3';
+
+  // V4 archetype info
+  const v4Archetype = V4_ARCHETYPES.find((a) => a.id === profile.v4ArchetypeId);
+  const isCustomV4Profile = profile.v4ArchetypeId === 'custom_v4';
 
   // Find closest archetype for custom profiles
   const closestArchetype = isCustomProfile ? findClosestArchetype(profile.weights) : null;
@@ -160,7 +167,11 @@ export default function ProfilePage() {
           Your Values Profile
         </h1>
         <p className="font-body text-xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto">
-          {isV3
+          {isV4
+            ? (isCustomV4Profile
+                ? 'Your custom Combined Lens profile'
+                : `Your ${v4Archetype?.name || 'Balanced'} profile`)
+            : isV3
             ? (isCustomV3Profile
                 ? 'Your custom Needs Lens profile'
                 : `Your ${v3Archetype?.name || 'Balanced'} profile`)
@@ -182,8 +193,43 @@ export default function ProfilePage() {
       {/* Auto-Map Banner */}
       <AutoMapBanner className="mb-8" />
 
-      {/* Archetype Card - V3 version shows archetype selection */}
-      {isV3 ? (
+      {/* Archetype Card - Version-specific display */}
+      {isV4 ? (
+        <div className="mb-12">
+          <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
+            Select Your Combined Lens Profile
+          </h2>
+          <p className="font-body text-gray-600 dark:text-gray-400 mb-4">
+            Choose a profile that balances Impact, Economics, and Needs lenses according to your priorities.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {V4_ARCHETYPES.map((arch) => (
+              <V4ArchetypeCard
+                key={arch.id}
+                archetype={arch}
+                isSelected={profile.v4ArchetypeId === arch.id}
+                onSelect={() => setV4Archetype(arch.id)}
+              />
+            ))}
+          </div>
+          <div className="flex justify-center mb-6">
+            <Link
+              href="/profile/questionnaire-v4"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#2F3BBD] via-[#7B2D8E] to-[#C91A2B] text-white border-4 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>Take Combined Lens Questionnaire</span>
+            </Link>
+          </div>
+          <div className="text-sm font-body text-gray-600 dark:text-gray-400 text-center">
+            Profile updated on {new Date(profile.updatedAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </div>
+        </div>
+      ) : isV3 ? (
         <div className="mb-12">
           <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
             Select Your Needs Lens Profile
@@ -265,7 +311,48 @@ export default function ProfilePage() {
       )}
 
       {/* Top Values */}
-      {isV3 ? (
+      {isV4 && profile.v4Weights ? (
+        <div className="mb-12">
+          <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
+            Your Lens Priorities
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {(Object.entries(profile.v4Weights.lensWeights) as [V4Lens, number][])
+              .sort(([, a], [, b]) => b - a)
+              .map(([lens, weight], index) => {
+                const lensInfo = V4_LENS_DEFINITIONS[lens];
+                const percentage = Math.round(weight * 100);
+                const gradients = [
+                  `bg-gradient-to-r ${lensInfo.gradient} shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]`,
+                  `bg-gradient-to-r ${lensInfo.gradient} shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]`,
+                  'bg-white dark:bg-gray-800',
+                ];
+
+                return (
+                  <div
+                    key={lens}
+                    className={`border-4 border-black dark:border-gray-600 ${gradients[index]} p-6`}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`font-display text-sm font-black ${index < 2 ? 'text-white/80' : 'text-black dark:text-white'}`}>
+                        #{index + 1}
+                      </span>
+                      <div className={`text-3xl font-display font-black ${index < 2 ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                        {percentage}%
+                      </div>
+                    </div>
+                    <h3 className={`font-display text-xl font-black mb-2 ${index < 2 ? 'text-white' : 'text-black dark:text-white'}`}>
+                      {lensInfo.name}
+                    </h3>
+                    <p className={`font-body text-sm font-medium ${index < 2 ? 'text-white/90' : 'text-gray-700 dark:text-gray-300'}`}>
+                      {lensInfo.description}
+                    </p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      ) : isV3 ? (
         <div className="mb-12">
           <h2 className="font-display text-3xl font-black text-black dark:text-white mb-6">
             Your Need Priorities
