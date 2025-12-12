@@ -173,36 +173,47 @@ export default function ProfilePage() {
     setArchetype('balanced');
   };
 
-  // Get philosophy info based on model
-  const philosophyInfo = isV3
-    ? v3Archetype
-      ? {
-          title: 'Your Needs-Based Philosophy',
-          philosophyName: v3Archetype.philosophyName || '',
-          philosopher: v3Archetype.philosopher || '',
-          philosophyDescription: v3Archetype.philosophyDescription || '',
-          thinkerBio: v3Archetype.thinkerBio,
-        }
-      : null
+  // Determine if user has completed a questionnaire or made an explicit archetype choice
+  // (not just using the default balanced archetype from auto-setup)
+  const hasExplicitV1Choice = profile.responses !== undefined || profile.archetypeId !== 'balanced';
+  const hasExplicitV2Choice = profile.v2Responses !== undefined || (profile.v2ArchetypeId !== undefined && !profile.v2AutoMapped);
+  const hasExplicitV3Choice = profile.v3Responses !== undefined || (profile.v3ArchetypeId !== undefined && profile.v3ArchetypeId !== 'balanced');
+  const hasExplicitV4Choice = profile.v4Responses !== undefined || (profile.v4ArchetypeId !== undefined && profile.v4ArchetypeId !== 'balanced');
+
+  // Get philosophy info based on model - only show if user has made an explicit choice
+  const philosophyInfo = isV4
+    ? (hasExplicitV4Choice && v4Archetype
+        ? null  // V4 doesn't have philosopher alignments yet
+        : null)
+    : isV3
+    ? (hasExplicitV3Choice && v3Archetype
+        ? {
+            title: 'Your Needs-Based Philosophy',
+            philosophyName: v3Archetype.philosophyName || '',
+            philosopher: v3Archetype.philosopher || '',
+            philosophyDescription: v3Archetype.philosophyDescription || '',
+            thinkerBio: v3Archetype.thinkerBio,
+          }
+        : null)
     : isV2
-    ? v2Archetype
-      ? {
-          title: 'Your Political Economy Philosophy',
-          philosophyName: v2Archetype.philosophyName,
-          philosopher: v2Archetype.philosopher,
-          philosophyDescription: v2Archetype.philosophyDescription,
-          thinkerBio: v2Archetype.thinkerBio,
-        }
-      : null
-    : (archetype || closestArchetype)
-    ? {
-        title: 'Your Impact Philosophy',
-        philosophyName: (isCustomProfile ? closestArchetype?.philosophyName : archetype?.philosophyName) || '',
-        philosopher: (isCustomProfile ? closestArchetype?.philosopher : archetype?.philosopher) || '',
-        philosophyDescription: (isCustomProfile ? closestArchetype?.philosophyDescription : archetype?.philosophyDescription) || '',
-        thinkerBio: (isCustomProfile ? closestArchetype?.thinkerBio : archetype?.thinkerBio),
-      }
-    : null;
+    ? (hasExplicitV2Choice && v2Archetype
+        ? {
+            title: 'Your Political Economy Philosophy',
+            philosophyName: v2Archetype.philosophyName,
+            philosopher: v2Archetype.philosopher,
+            philosophyDescription: v2Archetype.philosophyDescription,
+            thinkerBio: v2Archetype.thinkerBio,
+          }
+        : null)
+    : (hasExplicitV1Choice && (archetype || closestArchetype)
+        ? {
+            title: 'Your Impact Philosophy',
+            philosophyName: (isCustomProfile ? closestArchetype?.philosophyName : archetype?.philosophyName) || '',
+            philosopher: (isCustomProfile ? closestArchetype?.philosopher : archetype?.philosopher) || '',
+            philosophyDescription: (isCustomProfile ? closestArchetype?.philosophyDescription : archetype?.philosophyDescription) || '',
+            thinkerBio: (isCustomProfile ? closestArchetype?.thinkerBio : archetype?.thinkerBio),
+          }
+        : null);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">

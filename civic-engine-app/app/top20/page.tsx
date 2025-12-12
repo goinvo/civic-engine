@@ -8,6 +8,7 @@ import PolicyTable from '@/components/PolicyTable';
 import { getAllPoliciesSorted } from '@/data/policies';
 import { useValues } from '@/contexts/ValuesContext';
 import { calculatePersonalizedScore } from '@/utils/impactScore';
+import { calculateV4CombinedScore } from '@/utils/v4Score';
 import { policyImpactScores } from '@/data/policyScores';
 
 type SortOption =
@@ -73,7 +74,8 @@ type ViewMode = 'list' | 'table';
 export default function Top20Page() {
   const allPolicies = getAllPoliciesSorted();
   const { profile } = useValues();
-  const [sortBy, setSortBy] = useState<SortOption>('support');
+  // Default to personalized sort
+  const [sortBy, setSortBy] = useState<SortOption>('personalized');
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [expandedPolicyId, setExpandedPolicyId] = useState<string | null>(null);
 
@@ -100,11 +102,28 @@ export default function Top20Page() {
     }
 
     if (sortBy === 'personalized') {
-      // Use profile weights if available, otherwise use default weights
-      const weights = profile?.weights || defaultWeights;
+      // Use scoring based on selected model (default to V4)
+      const scoringModel = profile?.scoringModel || 'v4';
+
       return policies.sort((a, b) => {
-        const scoreA = calculatePersonalizedScore(a.id, weights) || 0;
-        const scoreB = calculatePersonalizedScore(b.id, weights) || 0;
+        let scoreA = 0;
+        let scoreB = 0;
+
+        if (scoringModel === 'v4' || !profile) {
+          // Use V4 combined scoring (default)
+          scoreA = calculateV4CombinedScore(a.id, profile?.v4Weights || null) || 0;
+          scoreB = calculateV4CombinedScore(b.id, profile?.v4Weights || null) || 0;
+        } else if (scoringModel === 'v1') {
+          // Use V1 impact scoring
+          const weights = profile?.weights || defaultWeights;
+          scoreA = calculatePersonalizedScore(a.id, weights) || 0;
+          scoreB = calculatePersonalizedScore(b.id, weights) || 0;
+        } else {
+          // For v2/v3, fall back to V4 combined scoring
+          scoreA = calculateV4CombinedScore(a.id, profile?.v4Weights || null) || 0;
+          scoreB = calculateV4CombinedScore(b.id, profile?.v4Weights || null) || 0;
+        }
+
         return scoreB - scoreA;
       });
     }

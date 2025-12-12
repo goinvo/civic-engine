@@ -280,12 +280,12 @@ function TableView({
         </motion.div>
       </div>
 
-      {/* Dimensions Section */}
+      {/* Dimensions Section - Granular Bars */}
       <div>
-        <div className="text-[10px] font-bold uppercase mb-1 text-indigo-700 dark:text-indigo-400">
+        <div className="text-[10px] font-bold uppercase mb-2 text-indigo-700 dark:text-indigo-400">
           Scoring Dimensions
         </div>
-        <motion.div className="flex flex-wrap gap-0.5" layout transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}>
+        <div className="space-y-2">
           {DIMENSIONS.map(dimension => {
             const score = impactScore.dimensions[dimension];
             const def = DIMENSION_DEFINITIONS[dimension];
@@ -293,94 +293,82 @@ function TableView({
             const isExpanded = expandedItem === `dim-${dimension}`;
 
             return (
-              <motion.div
-                key={dimension}
-                layout
-                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className={`relative ${isExpanded ? 'flex-[1_1_100%]' : 'flex-1 min-w-0'}`}
-              >
-                <motion.div
-                  layout="position"
-                  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                  className={`w-full ${getScoreColor(score)} ${
-                    isExpanded
-                      ? 'flex items-center justify-between px-3 py-2'
-                      : 'h-10 flex flex-col items-center justify-center'
-                  }`}
+              <div key={dimension} className="relative">
+                <button
+                  onClick={() => handleItemClick(`dim-${dimension}`)}
+                  className="w-full group"
+                  title={`${def.name} - Click to expand`}
                 >
-                  {isExpanded ? (
-                    <>
-                      <span className="text-xs font-bold text-white">
-                        {def.name}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-black text-white">
-                          {score.toFixed(1)}
-                        </span>
-                        <motion.button
-                          initial={{ opacity: 0, scale: 0.8, x: 10 }}
-                          animate={{ opacity: 1, scale: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: 0.1 }}
-                          onClick={() => handleItemClick(`dim-${dimension}`)}
-                          className="w-6 h-6 flex items-center justify-center bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-                          title="Close"
-                        >
-                          <X className="w-4 h-4" strokeWidth={3} />
-                        </motion.button>
-                      </div>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => handleItemClick(`dim-${dimension}`)}
-                      title={`${def.name} - Click to expand`}
-                      className="w-full h-full flex flex-col items-center justify-center group hover:opacity-90"
-                    >
-                      <span className="text-[8px] font-bold text-white/90 leading-none group-hover:hidden">
-                        {DIM_ABBREV[dimension]}
-                      </span>
-                      <span className="text-[7px] font-bold text-white/90 leading-none hidden group-hover:block">
-                        Click
-                      </span>
-                      <span className="text-sm font-black text-white leading-none">
-                        {score.toFixed(1)}
-                      </span>
-                    </button>
-                  )}
-                </motion.div>
+                  {/* Label and score row */}
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
+                      {def.name}
+                    </span>
+                    <span className={`text-xs font-bold ${getScoreTextColor(score)}`}>
+                      {score.toFixed(1)}
+                    </span>
+                  </div>
+
+                  {/* Granular progress bar */}
+                  <div className="relative h-3 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600 group-hover:border-indigo-500 transition-colors">
+                    {/* Neutral marker at 50% */}
+                    <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-400 dark:bg-gray-500 z-10" />
+                    {/* Score fill */}
+                    <div
+                      className={`h-full ${getScoreColor(score)} transition-all duration-300`}
+                      style={{ width: `${score * 10}%` }}
+                    />
+                    {/* Tick marks at 0, 5, 10 */}
+                    <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
+                      <div className="w-0.5 h-1.5 bg-gray-400 dark:bg-gray-500" />
+                      <div className="w-0.5 h-2 bg-gray-500 dark:bg-gray-400" />
+                      <div className="w-0.5 h-1.5 bg-gray-400 dark:bg-gray-500" />
+                    </div>
+                  </div>
+
+                  {/* Scale labels */}
+                  <div className="flex justify-between text-[8px] text-gray-400 dark:text-gray-500 mt-0.5">
+                    <span>0</span>
+                    <span>5</span>
+                    <span>10</span>
+                  </div>
+                </button>
 
                 {/* Expanded content */}
                 {isExpanded && (
                   <motion.div
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                    className="bg-white dark:bg-gray-800 border-2 border-t-0 border-black dark:border-gray-600"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)]"
                   >
                     <div className="p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-700 dark:text-indigo-400">
+                          {def.name}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleItemClick(`dim-${dimension}`);
+                          }}
+                          className="w-5 h-5 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                          title="Close"
+                        >
+                          <X className="w-3 h-3" strokeWidth={3} />
+                        </button>
+                      </div>
+
                       <p className="text-xs text-gray-600 dark:text-gray-400 italic">
                         {def.keyQuestion}
                       </p>
 
-                      {/* Score bar */}
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 border border-black dark:border-gray-500 relative">
-                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-400 dark:bg-gray-500 z-10" />
-                          <div
-                            className={`h-full ${getScoreColor(score)}`}
-                            style={{ width: `${score * 10}%` }}
-                          />
-                        </div>
-                        <span className={`text-xs font-bold ${getScoreTextColor(score)}`}>
-                          {score.toFixed(1)}/10
-                        </span>
-                      </div>
-
                       {/* Scale anchors */}
-                      <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-400">
-                        <span className="max-w-[30%]">{def.scale[0]}</span>
-                        <span>{def.scale[5]}</span>
-                        <span className="max-w-[30%] text-right">{def.scale[10]}</span>
+                      <div className="flex justify-between text-[9px] text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-2 border border-gray-200 dark:border-gray-600">
+                        <span className="max-w-[30%]"><strong>0:</strong> {def.scale[0]}</span>
+                        <span><strong>5:</strong> {def.scale[5]}</span>
+                        <span className="max-w-[30%] text-right"><strong>10:</strong> {def.scale[10]}</span>
                       </div>
 
                       {/* Methodology details */}
@@ -401,10 +389,10 @@ function TableView({
                     </div>
                   </motion.div>
                 )}
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
 
       {/* Top & Bottom Summary */}
