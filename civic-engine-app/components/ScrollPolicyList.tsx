@@ -3,26 +3,27 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowUpRight, ThumbsUp, ThumbsDown, Sparkles, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Policy } from '@/types/policy';
-import { useVoting } from '@/contexts/VotingContext';
-import { useImpactScore } from '@/hooks/useImpactScore';
-import { ConsensusBadge, V2ScoreDisplay } from '@/components/v2';
 
 type SortOptionGroup = {
   label: string;
-  options: { value: string; label: string; requiresProfile?: boolean }[];
+  options: { value: string; label: string }[];
 };
 
 interface ScrollPolicyListProps {
   policies: Policy[];
   sortBy?: string;
-  setSortBy?: (value: any) => void;
+  setSortBy?: (value: string) => void;
   sortOptionGroups?: SortOptionGroup[];
-  hasProfile?: boolean;
 }
 
-export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOptionGroups, hasProfile }: ScrollPolicyListProps) {
+export default function ScrollPolicyList({
+  policies,
+  sortBy,
+  setSortBy,
+  sortOptionGroups,
+}: ScrollPolicyListProps) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isAtBottom, setIsAtBottom] = useState<boolean>(false);
@@ -31,11 +32,8 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
   const [maxWindowHeight, setMaxWindowHeight] = useState<string>('calc(100vh - 8rem)');
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [entryDirectionState, setEntryDirectionState] = useState<'UP' | 'DOWN'>('DOWN');
-  const [isV2Expanded, setIsV2Expanded] = useState<boolean>(false);
-  const [sidebarPeekProgress, setSidebarPeekProgress] = useState<number>(0); // 0 = hidden, 1 = fully visible
 
   const containerRef = useRef<HTMLDivElement>(null);
   const mainContainerRef = useRef<HTMLDivElement>(null);
@@ -49,12 +47,9 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const lastScrollYRef = useRef<number>(0);
   const scrollDirectionRef = useRef<'UP' | 'DOWN'>('DOWN');
-
-  // FIX 3: Robust Locking Mechanism
   const isProgrammaticScrollRef = useRef<boolean>(false);
   const isObserverLockedRef = useRef<boolean>(false);
 
-  // --- RESIZE & LAYOUT LOGIC (Standard) ---
   useEffect(() => {
     const calculateHeight = () => {
       const viewportHeight = window.innerHeight;
@@ -80,8 +75,6 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
       const positions = desktopButtonRefs.current.map((button) => {
         if (!button) return { top: 0, height: 0 };
         const rect = button.getBoundingClientRect();
-        const parent = button.offsetParent;
-        if (!parent) return { top: 0, height: 0 };
         const top = button.offsetTop;
         const height = rect.height;
         return { top, height };
@@ -96,25 +89,18 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
     };
   }, [policies]);
 
-  // --- OBSERVERS ---
   useEffect(() => {
     const observers = scrollSectionRefs.current.map((ref, index) => {
       if (!ref) return null;
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // FIX 3: If we are programmatically scrolling, ignore the observer
-            // to prevent "bouncing" or skipping indexes
             if (isObserverLockedRef.current) return;
-
             if (entry.isIntersecting) {
               setActiveIndex(index);
             }
           });
         },
-        // Adjusted margins: Desktop uses a smaller detection zone near the top of viewport
-        // to prevent early triggering. The -45% top margin means we only detect
-        // when the section is well into the viewport.
         { threshold: 0, rootMargin: isMobile ? '-10% 0px -80% 0px' : '-45% 0px -45% 0px' }
       );
       observer.observe(ref);
@@ -123,14 +109,12 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
     return () => observers.forEach((observer) => observer?.disconnect());
   }, [policies, isMobile]);
 
-  // --- INTERNAL SCROLL TRACKING ---
   useEffect(() => {
     const contentElement = contentRef.current;
     if (!contentElement) return;
 
     const handleContentScroll = () => {
       const maxScroll = contentElement.scrollHeight - contentElement.clientHeight;
-      // FIX 2: Added a small buffer (5px) to make hitting "bottom" easier on mobile
       const atBottom = contentElement.scrollTop >= maxScroll - 5;
       const atTop = contentElement.scrollTop <= 5;
       setIsAtBottom(atBottom);
@@ -139,15 +123,13 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
 
     contentElement.addEventListener('scroll', handleContentScroll, { passive: true });
     return () => contentElement.removeEventListener('scroll', handleContentScroll);
-  }, [activeIndex]); // Re-bind when active index changes (new content ref)
+  }, [activeIndex]);
 
-  // --- MAIN SCROLL LOGIC ---
   useEffect(() => {
     let animationFrameId: number;
     let scrollEndTimeout: NodeJS.Timeout;
 
     const handlePageScroll = () => {
-      // FIX 3: Ignore scroll updates if the machine is doing the work
       if (isProgrammaticScrollRef.current) return;
 
       const currentSection = scrollSectionRefs.current[activeIndex];
@@ -182,7 +164,6 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
           if (!contentRef.current) return;
 
           const maxScroll = contentRef.current.scrollHeight - contentRef.current.clientHeight;
-          // FIX 2: Increased mobile ratio slightly to ensure users hit the bottom sooner
           const speedRatio = isMobile ? 0.90 : 0.65;
           const adjustedProgress = Math.min(1, progress / speedRatio);
           const targetScroll = adjustedProgress * maxScroll;
@@ -196,12 +177,8 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
         });
       }
 
-      // Pull-to-next Logic (both mobile and desktop)
-      // Only trigger if we are strictly at the bottom AND scrolling down
       const isMobileView = window.innerWidth < 1024;
       if (isAtBottom && activeIndex < policies.length - 1) {
-        // We define a "Pull Zone" at the end of the scroll section
-        // Desktop needs a later start since content is shorter relative to scroll height
         const pullStart = isMobileView ? 0.85 : 0.90;
         const pullLength = isMobileView ? 0.15 : 0.10;
 
@@ -221,14 +198,11 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
       clearTimeout(scrollEndTimeout);
       scrollEndTimeout = setTimeout(() => {
         const isMobileView = window.innerWidth < 1024;
-
-        // Trigger scroll to next policy when user has scrolled past the threshold
-        // Mobile: 30% pull, Desktop: 50% pull (requires more deliberate scrolling)
         const threshold = isMobileView ? 0.3 : 0.5;
         if (transitionProgress > threshold && activeIndex < policies.length - 1) {
           scrollToPolicy(activeIndex + 1);
         }
-      }, 100); // Fast reaction
+      }, 100);
     };
 
     window.addEventListener('scroll', handlePageScroll, { passive: true });
@@ -245,104 +219,24 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
     };
   }, [activeIndex, policies.length, isAtBottom, isTransitioning, isMobile, transitionProgress]);
 
-  // FIX 1 & 3: Reliable Programmatic Scroll
   const scrollToPolicy = (index: number) => {
     const targetRef = scrollSectionRefs.current[index];
     if (!targetRef) return;
 
-    // LOCK interactions
     isProgrammaticScrollRef.current = true;
     isObserverLockedRef.current = true;
 
-    // Calculate absolute position manually (more reliable than scrollIntoView on mobile)
-    const yOffset = -20; // Slight offset for visual breathing room
+    const yOffset = -20;
     const y = targetRef.getBoundingClientRect().top + window.scrollY + yOffset;
 
     window.scrollTo({ top: y, behavior: 'smooth' });
-
-    // Manually set index immediately to ensure UI updates while scrolling
     setActiveIndex(index);
 
-    // UNLOCK after animation
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
       isObserverLockedRef.current = false;
     }, 800);
   };
-
-  // --- SIDEBAR PEEK ON HOVER (when V2 expanded) ---
-  useEffect(() => {
-    if (!isV2Expanded || isMobile) {
-      setSidebarPeekProgress(0);
-      return;
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const policyWindow = policyWindowRef.current;
-      if (!policyWindow) return;
-
-      // Get the policy window's left edge position
-      const windowRect = policyWindow.getBoundingClientRect();
-      const windowLeftEdge = windowRect.left;
-
-      // Mouse X position relative to viewport
-      const mouseX = e.clientX;
-
-      // Calculate how far left of the content the mouse is
-      // Only trigger when mouse is in the empty margin (left of content)
-      const distanceFromContent = windowLeftEdge - mouseX;
-
-      // Define zones based on distance from content edge:
-      // We use a buffer for CLOSING (going back to content) but not for the actual position calculation
-      // This prevents the sidebar from collapsing while trying to click buttons
-
-      const CLOSE_BUFFER = -50; // Allow mouse to be 50px INTO content before closing (for clicking sidebar)
-      const PEEK_START = 20; // Start peeking when 20px into margin
-      const GRADIENT_START = 80;
-      const FULL_REVEAL = 160;
-
-      let progress = 0;
-
-      if (distanceFromContent <= CLOSE_BUFFER) {
-        // Mouse is well into the content - close the sidebar
-        progress = 0;
-      } else if (distanceFromContent >= FULL_REVEAL) {
-        // Far left - full reveal
-        progress = 1;
-      } else if (distanceFromContent >= GRADIENT_START) {
-        // Gradient zone: map GRADIENT_START-FULL_REVEAL to 0.3-1
-        progress = 0.3 + ((distanceFromContent - GRADIENT_START) / (FULL_REVEAL - GRADIENT_START)) * 0.7;
-      } else if (distanceFromContent >= PEEK_START) {
-        // Peek zone: map PEEK_START-GRADIENT_START to 0-0.3
-        progress = ((distanceFromContent - PEEK_START) / (GRADIENT_START - PEEK_START)) * 0.3;
-      } else if (distanceFromContent > CLOSE_BUFFER) {
-        // In the buffer zone between content and peek start - maintain minimal visibility if already peeking
-        // This allows clicking on the revealed sidebar without it collapsing
-        progress = 0.1;
-      }
-
-      setSidebarPeekProgress(progress);
-    };
-
-    const handleMouseLeave = () => {
-      setSidebarPeekProgress(0);
-    };
-
-    // Listen on document to catch mouse in the margin area
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [isV2Expanded, isMobile]);
-
-  // Calculate sidebar visibility based on expansion state and peek progress
-  const sidebarWidth = isV2Expanded ? sidebarPeekProgress * 256 : 256;
-  const sidebarOpacity = isV2Expanded ? sidebarPeekProgress : 1;
-  // Gradient mask: more opaque on left when peeking partially
-  const showGradientMask = isV2Expanded && sidebarPeekProgress > 0 && sidebarPeekProgress < 0.8;
 
   return (
     <div ref={mainContainerRef} className="flex flex-col lg:flex-row gap-8">
@@ -389,7 +283,6 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
               className="overflow-hidden bg-white dark:bg-gray-800 border-4 border-t-0 border-black dark:border-gray-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] -mt-1 pointer-events-auto"
             >
               <div className="p-2 max-h-[60vh] overflow-y-auto">
-                {/* Sort Dropdown - Mobile */}
                 {sortBy && setSortBy && sortOptionGroups && (
                   <div className="mb-3 px-1">
                     <label htmlFor="mobile-sort-select" className="block font-display font-bold text-xs text-gray-600 dark:text-gray-400 mb-1">
@@ -403,14 +296,11 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
                     >
                       {sortOptionGroups.map((group) => (
                         <optgroup key={group.label} label={group.label}>
-                          {group.options.map((option) => {
-                            if (option.requiresProfile && !hasProfile) return null;
-                            return (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            );
-                          })}
+                          {group.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
                         </optgroup>
                       ))}
                     </select>
@@ -423,7 +313,6 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
                       key={policy.id}
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        // FIX 1: Ensure scrollToPolicy is called directly
                         scrollToPolicy(index);
                       }}
                       className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 pointer-events-auto ${activeIndex === index ? 'bg-[#C91A2B] text-white' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white'}`}
@@ -439,104 +328,69 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
       </div>
 
       {/* Desktop Sidebar */}
-      <motion.div
-        className="hidden lg:block flex-shrink-0 overflow-hidden sticky top-24 self-start z-20"
-        initial={false}
-        animate={{
-          width: sidebarWidth,
-          opacity: sidebarOpacity,
-        }}
-        transition={{
-          duration: isV2Expanded ? 0.1 : 0.3, // Faster response when peeking
-          ease: [0.4, 0, 0.2, 1]
-        }}
-      >
-        <div className="w-64 relative">
-          {/* Gradient fade mask overlay - fades left side when peeking */}
-          {showGradientMask && (
-            <div
-              className="absolute inset-0 z-50 pointer-events-none"
-              style={{
-                background: `linear-gradient(to right, rgba(255,255,255,${1 - sidebarPeekProgress}) 0%, transparent 60%)`,
-              }}
-            />
-          )}
-          <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
-            <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
-            {(() => {
-              const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
-              const rectTop = shouldRender ? headerHeight + buttonPositions[activeIndex].top + 18 : 0;
-              const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
-                ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
-                : shouldRender ? buttonPositions[activeIndex].height : 0;
-              const rectHeight = Math.max(0, rectHeightRaw - 2);
+      <div className="hidden lg:block w-64 flex-shrink-0 sticky top-24 self-start z-20">
+        <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] relative overflow-hidden">
+          <h3 ref={desktopHeaderRef} className="font-display font-black text-sm mb-4 text-black dark:text-white">Policies</h3>
+          {(() => {
+            const shouldRender = buttonPositions.length > 0 && buttonPositions[activeIndex];
+            const rectTop = shouldRender ? headerHeight + buttonPositions[activeIndex].top + 18 : 0;
+            const rectHeightRaw = shouldRender && transitionProgress > 0 && activeIndex < policies.length - 1 && buttonPositions[activeIndex + 1]
+              ? buttonPositions[activeIndex].height + transitionProgress * (buttonPositions[activeIndex + 1].top - buttonPositions[activeIndex].top)
+              : shouldRender ? buttonPositions[activeIndex].height : 0;
+            const rectHeight = Math.max(0, rectHeightRaw - 2);
 
-              return shouldRender ? (
-                <motion.div
-                  className="absolute left-4 right-4 bg-[#C91A2B] pointer-events-none z-0"
-                  initial={false}
-                  animate={{ top: rectTop, height: rectHeight }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              ) : null;
-            })()}
-            <div className="space-y-2 relative z-10">
-              {policies.map((policy, index) => (
-                <button
-                  key={policy.id}
-                  ref={(el) => { desktopButtonRefs.current[index] = el; }}
-                  onClick={() => scrollToPolicy(index)}
-                  className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'text-white' : 'text-black dark:text-white'}`}
-                >
-                  {index + 1}. {policy.title}
-                </button>
-              ))}
+            return shouldRender ? (
+              <motion.div
+                className="absolute left-4 right-4 bg-[#C91A2B] pointer-events-none z-0"
+                initial={false}
+                animate={{ top: rectTop, height: rectHeight }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            ) : null;
+          })()}
+          <div className="space-y-2 relative z-10">
+            {policies.map((policy, index) => (
+              <button
+                key={policy.id}
+                ref={(el) => { desktopButtonRefs.current[index] = el; }}
+                onClick={() => scrollToPolicy(index)}
+                className={`w-full text-left px-3 py-2 text-xs font-display font-bold transition-colors border-2 border-black dark:border-gray-600 ${activeIndex === index ? 'text-white' : 'text-black dark:text-white'}`}
+              >
+                {index + 1}. {policy.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {sortBy && setSortBy && sortOptionGroups && (
+          <div className="mt-4">
+            <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
+              <label htmlFor="desktop-sort-select" className="block font-display font-black text-xs text-gray-600 dark:text-gray-400 mb-2">
+                SORT BY
+              </label>
+              <select
+                id="desktop-sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full font-display font-bold text-sm text-black dark:text-white bg-transparent border-2 border-black dark:border-gray-600 px-3 py-2 outline-none cursor-pointer"
+              >
+                {sortOptionGroups.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
             </div>
           </div>
-
-          {/* Sort Dropdown - Desktop (below Policies box, inside sticky container) */}
-          {sortBy && setSortBy && sortOptionGroups && (
-            <div className="mt-4">
-              <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
-                <label htmlFor="desktop-sort-select" className="block font-display font-black text-xs text-gray-600 dark:text-gray-400 mb-2">
-                  SORT BY
-                </label>
-                <select
-                  id="desktop-sort-select"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full font-display font-bold text-sm text-black dark:text-white bg-transparent border-2 border-black dark:border-gray-600 px-3 py-2 outline-none cursor-pointer"
-                >
-                  {sortOptionGroups.map((group) => (
-                    <optgroup key={group.label} label={group.label}>
-                      {group.options.map((option) => {
-                        if (option.requiresProfile && !hasProfile) return null;
-                        return (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        );
-                      })}
-                    </optgroup>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-        </div>
-      </motion.div>
+        )}
+      </div>
 
       {/* Scroll Container */}
-      <motion.div
-        className="relative pb-48 lg:pb-32"
-        ref={containerRef}
-        initial={false}
-        animate={{
-          flex: isV2Expanded ? '1 1 100%' : '1 1 0%',
-        }}
-        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        style={{ minWidth: 0 }}
-      >
+      <div className="relative pb-48 lg:pb-32 flex-1" ref={containerRef} style={{ minWidth: 0 }}>
         <div ref={policyWindowRef} className="sticky top-[180px] lg:top-24 z-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -555,21 +409,13 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
               <PolicyWindow
                 policy={policies[activeIndex]}
                 isAtBottom={isAtBottom}
-                isAtTop={isAtTop}
                 hasNext={activeIndex < policies.length - 1}
-                hasPrevious={activeIndex > 0}
                 maxHeight={maxWindowHeight}
                 entryDirection={entryDirectionState}
-                onContentRefChange={(el) => {
-                  contentRef.current = el;
-                }}
+                onContentRefChange={(el) => { contentRef.current = el; }}
                 displayRank={activeIndex + 1}
-                isMobile={isMobile}
-                isV2Expanded={isV2Expanded}
-                onV2ExpandedChange={setIsV2Expanded}
               />
 
-              {/* Next Policy Preview */}
               <AnimatePresence>
                 {transitionProgress > 0 && activeIndex < policies.length - 1 && (
                   <motion.div
@@ -605,7 +451,7 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
             />
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -613,44 +459,21 @@ export default function ScrollPolicyList({ policies, sortBy, setSortBy, sortOpti
 function PolicyWindow({
   policy,
   isAtBottom,
-  isAtTop,
   hasNext,
-  hasPrevious,
   maxHeight,
   entryDirection,
   onContentRefChange,
   displayRank,
-  isMobile,
-  onV2ExpandedChange,
-  isV2Expanded,
 }: {
   policy: Policy;
   isAtBottom: boolean;
-  isAtTop: boolean;
   hasNext: boolean;
-  hasPrevious: boolean;
   maxHeight: string;
   entryDirection: 'UP' | 'DOWN';
   onContentRefChange: (el: HTMLDivElement | null) => void;
   displayRank: number;
-  isMobile: boolean;
-  onV2ExpandedChange?: (expanded: boolean) => void;
-  isV2Expanded?: boolean;
 }) {
   const localRef = useRef<HTMLDivElement | null>(null);
-  const { addVote, getVote } = useVoting();
-  const currentVote = getVote(policy.id);
-  const {
-    personalizedScore,
-    baseScore,
-    difference,
-    insight,
-    hasPersonalization,
-    scoringModel,
-    consensusState,
-    baseV2Score,
-  } = useImpactScore(policy.id);
-  const isV2 = scoringModel === 'v2';
 
   const setRefs = (element: HTMLDivElement | null) => {
     localRef.current = element;
@@ -687,7 +510,7 @@ function PolicyWindow({
             {policy.description}
           </p>
 
-          {/* Support stats (static - no shadows) */}
+          {/* Support stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <div className="bg-white dark:bg-gray-700 border-2 border-black dark:border-gray-600 p-3">
               <div className="text-3xl font-display font-black text-black dark:text-white">{policy.averageSupport}%</div>
@@ -711,165 +534,22 @@ function PolicyWindow({
             )}
           </div>
 
-          {/* Impact Score Section */}
-          {(baseScore || isV2) && (
+          {/* Key Details */}
+          {policy.details && policy.details.length > 0 && (
             <div className="mb-6">
-              {hasPersonalization ? (
-                <Link
-                  href="/profile"
-                  className="block border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(75,85,99,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 cursor-pointer"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <Sparkles className="w-4 h-4 text-white" strokeWidth={2.5} />
-                      <h3 className="font-display text-base font-black text-white">
-                        {isV2 ? 'Your Economics Score' : 'Your Impact Score'}
-                      </h3>
-                      {isV2 && consensusState && (
-                        <ConsensusBadge state={consensusState} showTooltip={false} />
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="text-3xl font-display font-black text-white">{personalizedScore}</div>
-                      <ArrowUpRight className="w-5 h-5 text-white/70" strokeWidth={2.5} />
-                    </div>
-                  </div>
-                  {insight && (
-                    <div className="flex items-start space-x-2 bg-white/10 p-2 border-2 border-white/20">
-                      {difference && difference > 0 ? (
-                        <TrendingUp className="w-4 h-4 text-white mt-0.5 flex-shrink-0" strokeWidth={2.5} />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 text-white mt-0.5 flex-shrink-0" strokeWidth={2.5} />
-                      )}
-                      <p className="font-body text-xs text-white font-medium">{insight}</p>
-                    </div>
-                  )}
-                </Link>
-              ) : (
-                <div className="border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <h3 className="font-display text-base font-black text-black dark:text-white">
-                        {isV2 ? 'Economics Score' : 'Base Impact Score'}
-                      </h3>
-                      {isV2 && consensusState && (
-                        <ConsensusBadge state={consensusState} />
-                      )}
-                    </div>
-                    <div className="text-3xl font-display font-black text-black dark:text-white">
-                      {isV2 ? personalizedScore : baseScore?.totalScore}
-                    </div>
-                  </div>
-                  {!isV2 && baseScore && (
-                    <p className="font-body text-xs text-gray-700 dark:text-gray-300 font-medium mb-3">
-                      {baseScore.rationale}
-                    </p>
-                  )}
-                  <Link
-                    href="/values"
-                    className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 font-bold text-sm"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Get Your Personalized Score</span>
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* V2 Factor Scores Display (tabbed) */}
-          {baseV2Score && baseV2Score.factors && (
-            <div className="mb-6">
-              <V2ScoreDisplay
-                policyId={policy.id}
-                factorScores={baseV2Score.factors}
-                defaultMode="table"
-                showMethodologyLink={true}
-                onExpandedChange={onV2ExpandedChange}
-              />
-            </div>
-          )}
-
-          <div className="mb-6">
-            <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>
-            <ul className="space-y-3">
-              {policy.details.map((detail, index) => (
-                <li key={index}>
-                  <h4 className="font-display font-black text-black dark:text-white mb-1">{detail.title}</h4>
-                  <p className="font-body text-gray-700 dark:text-gray-300 font-medium">{detail.description}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {policy.resourceFlow && (
-            <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">How It Works</h3>
-              <div className="bg-[#2F3BBD] dark:bg-blue-900 border-2 border-black dark:border-gray-600 p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <div className="text-xs font-display font-black text-white uppercase mb-1">From</div>
-                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.from}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-display font-black text-white uppercase mb-1">To</div>
-                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.to}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-display font-black text-white uppercase mb-1">How</div>
-                    <div className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.resourceFlow.channel}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {policy.ifThen && policy.ifThen.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">In Practice</h3>
-              <ul className="space-y-2">
-                {policy.ifThen.map((statement, index) => (
-                  <li key={index} className="flex items-start space-x-2">
-                    <span className="font-display text-black dark:text-white font-bold mt-0.5">→</span>
-                    <p className="font-body font-medium text-gray-700 dark:text-gray-300 text-sm">{statement}</p>
+              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Key Details</h3>
+              <ul className="space-y-3">
+                {policy.details.map((detail, index) => (
+                  <li key={index}>
+                    <h4 className="font-display font-black text-black dark:text-white mb-1">{detail.title}</h4>
+                    <p className="font-body text-gray-700 dark:text-gray-300 font-medium">{detail.description}</p>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {policy.causalChain && (
-            <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Policy Goal</h3>
-              <div className="bg-[#C91A2B] dark:bg-red-900 border-2 border-black dark:border-gray-600 p-4">
-                <div className="space-y-3">
-                  <div>
-                    <div className="text-xs font-display font-black text-white uppercase mb-1">Immediate Action</div>
-                    <p className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.causalChain.immediate}</p>
-                  </div>
-                  <div>
-                    <div className="text-xs font-display font-black text-white uppercase mb-1">Intended Outcome</div>
-                    <p className="font-body font-bold text-white dark:text-gray-200 text-sm">{policy.causalChain.outcome}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {policy.commonQuestions && policy.commonQuestions.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Common Questions</h3>
-              <div className="space-y-4">
-                {policy.commonQuestions.map((qa, index) => (
-                  <div key={index}>
-                    <h4 className="font-display font-black text-black dark:text-white mb-1 text-sm">{qa.question}</h4>
-                    <p className="font-body font-medium text-gray-700 dark:text-gray-300 text-sm">{qa.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+          {/* Data Sources */}
           <div className="mb-4">
             <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Data Sources</h3>
             <ul className="space-y-2">
@@ -892,19 +572,6 @@ function PolicyWindow({
             </ul>
           </div>
 
-          {policy.notes && policy.notes.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-display text-xl font-black text-black dark:text-white mb-3">Notes</h3>
-              <ul className="space-y-2 list-disc pl-5">
-                {policy.notes.map((note, index) => (
-                  <li key={index} className="font-body text-gray-700 dark:text-gray-300 text-sm font-medium">
-                    {note}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
           <div className="text-xs text-gray-600 dark:text-gray-400 mb-6">
             Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -913,39 +580,20 @@ function PolicyWindow({
             })}
           </div>
 
-          <div className="border-t-4 border-black dark:border-gray-600 pt-6 -mx-6 px-6 bg-gray-50 dark:bg-gray-700">
-            <h3 className="font-display text-xl font-black text-black dark:text-white mb-4">What's your position?</h3>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'support')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all duration-150 ${currentVote?.vote === 'support'
-                    ? 'bg-[#2F3BBD] text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]'
-                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1'
-                  }`}
-              >
-                <ThumbsUp className="w-6 h-6" strokeWidth={3} />
-                <span>Support</span>
-              </button>
-              <button
-                onClick={() => addVote(policy.id, policy.title, policy.averageSupport, 'oppose')}
-                className={`flex-1 flex items-center justify-center space-x-3 px-6 py-4 font-display font-bold text-lg border-4 transition-all duration-150 ${currentVote?.vote === 'oppose'
-                    ? 'bg-[#C91A2B] text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]'
-                    : 'bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[1px_1px_0px_0px_rgba(75,85,99,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1'
-                  }`}
-              >
-                <ThumbsDown className="w-6 h-6" strokeWidth={3} />
-                <span>Oppose</span>
-              </button>
-            </div>
-            {currentVote && (
-              <p className="text-center text-sm font-body font-medium text-gray-600 dark:text-gray-400 mt-3">
-                You voted {currentVote.vote === 'support' ? 'to support' : 'to oppose'} this policy
-              </p>
-            )}
+          {/* View Full Details Link */}
+          <div className="pt-4 border-t-2 border-gray-200 dark:border-gray-600">
+            <Link
+              href={`/policies/${policy.id}`}
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all font-bold"
+            >
+              <span>View Full Details</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </div>
 
+      {/* Scroll indicator */}
       <AnimatePresence>
         {isAtBottom && hasNext && (
           <motion.div

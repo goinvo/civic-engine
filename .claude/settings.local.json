@@ -42,7 +42,9 @@
       "Bash(for file in *.ts)",
       "Bash(do if [ \"$file\" != \"index.ts\" ])",
       "Bash(then sed -i \"s|from ''./index''|from ''../index''|g\" \"$file\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

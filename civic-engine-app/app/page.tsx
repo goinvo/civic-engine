@@ -1,161 +1,20 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ScrollPolicyList from '@/components/ScrollPolicyList';
-import { getTopPolicies, getPoliciesCount, getAllPoliciesSorted } from '@/data/policies';
-import { useValues } from '@/contexts/ValuesContext';
-import { calculatePersonalizedScore } from '@/utils/impactScore';
-import { calculateV4CombinedScore } from '@/utils/v4Score';
-import { policyImpactScores } from '@/data/policyScores';
-
-type SortOption =
-  | 'support'
-  | 'personalized'
-  | 'democrat'
-  | 'republican'
-  | 'independent'
-  | 'population'
-  | 'economic'
-  | 'intensity'
-  | 'duration'
-  | 'equity'
-  | 'externalities'
-  | 'implementation';
-
-type SortOptionGroup = {
-  label: string;
-  options: { value: SortOption; label: string; requiresProfile?: boolean }[];
-};
-
-const SORT_OPTION_GROUPS: SortOptionGroup[] = [
-  {
-    label: 'Support',
-    options: [
-      { value: 'support', label: 'Bipartisan Average' },
-      { value: 'personalized', label: 'Your Score' },
-    ],
-  },
-  {
-    label: 'By Party',
-    options: [
-      { value: 'democrat', label: 'Democrat Support' },
-      { value: 'republican', label: 'Republican Support' },
-      { value: 'independent', label: 'Independent Support' },
-    ],
-  },
-  {
-    label: 'Impact Factors',
-    options: [
-      { value: 'population', label: 'Population Reach' },
-      { value: 'economic', label: 'Economic Scale' },
-      { value: 'intensity', label: 'Individual Impact' },
-      { value: 'duration', label: 'Time Horizon' },
-      { value: 'equity', label: 'Equity & Justice' },
-      { value: 'externalities', label: 'Side Effects' },
-      { value: 'implementation', label: 'Feasibility' },
-    ],
-  },
-];
+import ExpandablePolicyCard from '@/components/ExpandablePolicyCard';
+import ParticleWave from '@/components/ParticleWave';
+import { getTopPolicies, getPoliciesCount } from '@/data/policies';
 
 export default function Home() {
-  const topTenBySupport = getTopPolicies(10);
-  const allPolicies = getAllPoliciesSorted();
+  const topPolicies = getTopPolicies(10);
   const totalPolicies = getPoliciesCount();
   const [navbarHeight, setNavbarHeight] = useState(0);
-  const { hasCompletedOnboarding, profile } = useValues();
-  // Default to personalized sort if user has completed onboarding
-  const [sortBy, setSortBy] = useState<SortOption>('personalized');
-
-  // Default weights - adjusted to reflect average American priorities
-  const defaultWeights = {
-    population: 0.12,
-    economic: 0.12,
-    intensity: 0.20,
-    duration: 0.16,
-    equity: 0.20,
-    externalities: 0.10,
-    implementation: 0.10,
-  };
-
-  const topTenPolicies = useMemo(() => {
-    // When sorting by support, use the pre-sorted top 10
-    if (sortBy === 'support') {
-      return topTenBySupport;
-    }
-
-    // For other sorts, pull from all policies and take top 10
-    const policies = [...allPolicies];
-
-    if (sortBy === 'personalized') {
-      // Use scoring based on selected model (default to V4)
-      const scoringModel = profile?.scoringModel || 'v4';
-
-      policies.sort((a, b) => {
-        let scoreA = 0;
-        let scoreB = 0;
-
-        if (scoringModel === 'v4' || !profile) {
-          // Use V4 combined scoring (default)
-          scoreA = calculateV4CombinedScore(a.id, profile?.v4Weights || null) || 0;
-          scoreB = calculateV4CombinedScore(b.id, profile?.v4Weights || null) || 0;
-        } else if (scoringModel === 'v1') {
-          // Use V1 impact scoring
-          const weights = profile?.weights || defaultWeights;
-          scoreA = calculatePersonalizedScore(a.id, weights) || 0;
-          scoreB = calculatePersonalizedScore(b.id, weights) || 0;
-        } else {
-          // For v2/v3, fall back to V4 combined scoring
-          scoreA = calculateV4CombinedScore(a.id, profile?.v4Weights || null) || 0;
-          scoreB = calculateV4CombinedScore(b.id, profile?.v4Weights || null) || 0;
-        }
-
-        return scoreB - scoreA;
-      });
-      return policies.slice(0, 10);
-    }
-
-    // Sort by party support
-    if (sortBy === 'democrat') {
-      policies.sort((a, b) => {
-        const supportA = a.partySupport?.democrats || 0;
-        const supportB = b.partySupport?.democrats || 0;
-        return supportB - supportA;
-      });
-      return policies.slice(0, 10);
-    }
-
-    if (sortBy === 'republican') {
-      policies.sort((a, b) => {
-        const supportA = a.partySupport?.republicans || 0;
-        const supportB = b.partySupport?.republicans || 0;
-        return supportB - supportA;
-      });
-      return policies.slice(0, 10);
-    }
-
-    if (sortBy === 'independent') {
-      policies.sort((a, b) => {
-        const supportA = a.partySupport?.independents || 0;
-        const supportB = b.partySupport?.independents || 0;
-        return supportB - supportA;
-      });
-      return policies.slice(0, 10);
-    }
-
-    // Sort by impact factor
-    policies.sort((a, b) => {
-      const impactA = policyImpactScores[a.id]?.breakdown[sortBy] || 0;
-      const impactB = policyImpactScores[b.id]?.breakdown[sortBy] || 0;
-      return impactB - impactA;
-    });
-    return policies.slice(0, 10);
-  }, [topTenBySupport, allPolicies, sortBy, profile]);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Calculate navbar height
     const navbar = document.querySelector('nav');
     if (navbar) {
       setNavbarHeight(navbar.offsetHeight);
@@ -167,6 +26,10 @@ export default function Home() {
     policiesSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleToggle = (policyId: string) => {
+    setExpandedId(expandedId === policyId ? null : policyId);
+  };
+
   return (
     <>
       {/* Full-Height Hero Section */}
@@ -174,66 +37,49 @@ export default function Home() {
         className="flex items-center justify-center relative px-6"
         style={{
           minHeight: `calc(100vh - ${navbarHeight}px)`,
-          paddingBottom: '80px' // Extra space for scroll indicator
+          paddingBottom: '80px'
         }}
       >
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="font-display text-7xl sm:text-8xl md:text-9xl font-black text-black dark:text-white mb-8 leading-tight">
+        {/* Particle Wave Background */}
+        <ParticleWave />
+
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <h1 className="font-display text-6xl sm:text-7xl md:text-8xl font-black text-black dark:text-white mb-8 leading-tight">
             What Most of Us<br />Agree On
           </h1>
-          <p className={`font-body text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto ${hasCompletedOnboarding ? 'mb-6' : 'mb-12'}`}>
+          <p className="font-body text-xl sm:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-12">
             Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
           </p>
 
-          {/* Personalized Badge for users who completed onboarding */}
-          {hasCompletedOnboarding && (
-            <Link
-              href="/profile"
-              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#2F3BBD] text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-150 mb-12"
-            >
-              <Sparkles className="w-5 h-5" strokeWidth={2.5} />
-              <span className="font-display font-bold text-sm">Personalized scores active</span>
-            </Link>
-          )}
-
-          {/* Stats - Neobrutalist Cards (static - no shadows) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <div className="bg-black border-4 border-black p-8">
-              <div className="text-6xl font-display font-black text-white">{totalPolicies}</div>
-              <div className="text-base font-body text-white/80 font-bold">Consensus Policies</div>
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mb-12">
+            <div className="bg-black border-4 border-black p-6 sm:p-8">
+              <div className="text-5xl sm:text-6xl font-display font-black text-white">{totalPolicies}</div>
+              <div className="text-sm sm:text-base font-body text-white/80 font-bold">Consensus Policies</div>
             </div>
-            <div className="bg-white border-4 border-black p-8">
-              <div className="text-6xl font-display font-black text-black">70%+</div>
-              <div className="text-base font-body text-gray-600 font-bold">Average Support</div>
+            <div className="bg-white border-4 border-black p-6 sm:p-8">
+              <div className="text-5xl sm:text-6xl font-display font-black text-black">70%+</div>
+              <div className="text-sm sm:text-base font-body text-gray-600 font-bold">Average Support</div>
             </div>
-            <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black p-8">
-              <div className="text-6xl font-display font-black text-white">2025</div>
-              <div className="text-base font-body text-white/80 font-bold">Latest Data</div>
+            <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black p-6 sm:p-8">
+              <div className="text-5xl sm:text-6xl font-display font-black text-white">2025</div>
+              <div className="text-sm sm:text-base font-body text-white/80 font-bold">Latest Data</div>
             </div>
           </div>
 
-          {/* CTA Buttons - with press effect */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            {!hasCompletedOnboarding && (
-              <Link
-                href="/values"
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
-              >
-                <Sparkles className="w-5 h-5" />
-                <span>Get Personalized Scores</span>
-              </Link>
-            )}
-            <Link
-              href="/top20"
+          {/* CTA Button */}
+          <div className="mb-16">
+            <button
+              onClick={scrollToPolicies}
               className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
             >
-              <span>View All {totalPolicies} Policies</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+              <span>See the Top 10</span>
+              <ChevronDown className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
-        {/* Animated Scroll Indicator */}
+        {/* Scroll Indicator */}
         <motion.button
           onClick={scrollToPolicies}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer group"
@@ -249,53 +95,31 @@ export default function Home() {
         </motion.button>
       </section>
 
-      {/* Personalization Feature Section */}
-      {!hasCompletedOnboarding && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="border-4 border-black dark:border-gray-600 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="w-16 h-16 bg-white border-4 border-black mx-auto mb-6 flex items-center justify-center">
-                <Sparkles className="w-8 h-8 text-[#2F3BBD]" strokeWidth={2.5} />
-              </div>
-              <h2 className="font-display text-4xl sm:text-5xl font-black text-white mb-4">
-                See Policies Through Your Values
-              </h2>
-              <p className="font-body text-xl text-white/90 font-medium mb-8">
-                Get personalized impact scores for every policy based on what matters most to you—whether that's economic scale, helping the vulnerable, or long-term change.
-              </p>
-              <Link
-                href="/values"
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-black font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
-              >
-                <Sparkles className="w-5 h-5" />
-                <span>Take the Values Pulse</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Policies Section with Scroll */}
-      <section id="policies-section" className="max-w-7xl mx-auto px-6 py-16">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-5xl font-black text-black dark:text-white mb-4">Top 10 Policies</h2>
-          <p className="font-body text-xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto">
-            {hasCompletedOnboarding
-              ? 'Scroll through to explore each policy with your personalized impact scores.'
-              : "Scroll through to explore each policy in detail. They'll automatically expand as you scroll."}
+      {/* Policies Section */}
+      <section id="policies-section" className="max-w-6xl mx-auto px-6 py-16">
+        <div className="text-center mb-12">
+          <h2 className="font-display text-4xl sm:text-5xl font-black text-black dark:text-white mb-4">
+            Top 10 Policies
+          </h2>
+          <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto">
+            These are the policies with the highest bipartisan support. Click any policy to learn more.
           </p>
         </div>
 
-        <ScrollPolicyList
-          policies={topTenPolicies}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          sortOptionGroups={SORT_OPTION_GROUPS}
-          hasProfile={!!profile}
-        />
+        {/* Expandable Policy Cards - 2x5 Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          {topPolicies.map((policy, index) => (
+            <ExpandablePolicyCard
+              key={policy.id}
+              policy={policy}
+              rank={index + 1}
+              isExpanded={expandedId === policy.id}
+              onToggle={() => handleToggle(policy.id)}
+            />
+          ))}
+        </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-12 text-center">
           <Link
             href="/top20"
             className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
@@ -307,8 +131,8 @@ export default function Home() {
       </section>
 
       {/* Info Section */}
-      <section className="max-w-7xl mx-auto px-6 py-16 text-center">
-        <h2 className="font-display text-4xl font-black text-black dark:text-white mb-6">
+      <section className="max-w-4xl mx-auto px-6 py-16 text-center">
+        <h2 className="font-display text-3xl sm:text-4xl font-black text-black dark:text-white mb-6">
           Data You Can Trust
         </h2>
         <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-6">
