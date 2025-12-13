@@ -174,28 +174,36 @@ export default function ParticleWave() {
         ctx.fill();
       }
 
-      // Draw white gradient overlay from center with quadratic falloff
+      // Draw white gradient overlay from center with soft blurred edges
       // Gradient width adapts to particle width and screen size
       const pw = particleWidthRef.current;
       const gw = gradientWidthRef.current; // Gradient width multiplier
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
 
-      // Quadratic falloff based on particle width, scaled by gradient width multiplier
-      const innerEdge = 0.5 - (0.5 - pw) * gw; // Where gradient reaches near-solid
+      // Soft falloff with extra padding - starts fade earlier for blur effect
+      const padding = 0.05; // Extra padding for white area
+      const fadeStart = Math.max(0, pw * 0.3); // Start fade earlier
+      const solidStart = Math.max(pw + padding, 0.15); // Where solid white begins (with padding)
+      const innerEdge = 0.5 - (0.5 - solidStart) * gw;
       const outerEdge = 1 - innerEdge;
 
+      // Very gradual fade from edge to solid white
       gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      gradient.addColorStop(pw * 0.4, 'rgba(255, 255, 255, 0.05)');
-      gradient.addColorStop(pw * 0.7, 'rgba(255, 255, 255, 0.2)');
-      gradient.addColorStop(pw * 0.85, 'rgba(255, 255, 255, 0.5)');
-      gradient.addColorStop(pw * 1.0, 'rgba(255, 255, 255, 0.85)');
-      gradient.addColorStop(Math.min(innerEdge, 0.49), 'rgba(255, 255, 255, 0.98)');
+      gradient.addColorStop(fadeStart, 'rgba(255, 255, 255, 0)');
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.2, 'rgba(255, 255, 255, 0.03)');
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.4, 'rgba(255, 255, 255, 0.1)');
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.6, 'rgba(255, 255, 255, 0.25)');
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.8, 'rgba(255, 255, 255, 0.5)');
+      gradient.addColorStop(solidStart, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(Math.min(innerEdge, 0.48), 'rgba(255, 255, 255, 0.95)');
       gradient.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
-      gradient.addColorStop(Math.max(outerEdge, 0.51), 'rgba(255, 255, 255, 0.98)');
-      gradient.addColorStop(1 - pw, 'rgba(255, 255, 255, 0.85)');
-      gradient.addColorStop(1 - pw * 0.85, 'rgba(255, 255, 255, 0.5)');
-      gradient.addColorStop(1 - pw * 0.7, 'rgba(255, 255, 255, 0.2)');
-      gradient.addColorStop(1 - pw * 0.4, 'rgba(255, 255, 255, 0.05)');
+      gradient.addColorStop(Math.max(outerEdge, 0.52), 'rgba(255, 255, 255, 0.95)');
+      gradient.addColorStop(1 - solidStart, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.8, 'rgba(255, 255, 255, 0.5)');
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.6, 'rgba(255, 255, 255, 0.25)');
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.4, 'rgba(255, 255, 255, 0.1)');
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.2, 'rgba(255, 255, 255, 0.03)');
+      gradient.addColorStop(1 - fadeStart, 'rgba(255, 255, 255, 0)');
       gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);

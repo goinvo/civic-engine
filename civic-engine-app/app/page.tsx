@@ -69,13 +69,23 @@ export default function Home() {
 
           {/* CTA Button */}
           <div className="mb-16">
-            <button
-              onClick={scrollToPolicies}
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
-            >
-              <span>See the Top 10</span>
-              <ChevronDown className="w-5 h-5" />
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/wrapped"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
+              >
+                <span>Build Your Policy Profile</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+
+              <button
+                onClick={scrollToPolicies}
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
+              >
+                <span>See the Top 10</span>
+                <ChevronDown className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 

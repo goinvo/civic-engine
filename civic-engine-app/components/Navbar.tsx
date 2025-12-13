@@ -35,6 +35,12 @@ export default function Navbar() {
             >
               All Policies
             </Link>
+            <Link
+              href="/wrapped"
+              className="text-sm font-black text-white bg-[#2F3BBD] px-4 py-2 border-2 border-black hover:opacity-90 transition-opacity"
+            >
+              Policy Wrapped
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -68,6 +74,13 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 All Policies
+              </Link>
+              <Link
+                href="/wrapped"
+                className="mx-4 px-4 py-3 bg-[#2F3BBD] text-white border-2 border-black font-black text-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Policy Wrapped
               </Link>
             </div>
           </div>

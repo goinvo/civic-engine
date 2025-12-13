@@ -11,6 +11,9 @@ import {
   Shield,
   Hammer,
   DollarSign,
+  Cpu,
+  Lock,
+  Users,
   Grid3x3
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -26,6 +29,9 @@ export type CategoryType =
   | 'civil-rights'
   | 'defense'
   | 'infrastructure'
+  | 'technology'
+  | 'security'
+  | 'society'
   | 'other';
 
 interface CategoryFilterProps {
@@ -50,6 +56,9 @@ const categories: Array<{
   { id: 'infrastructure', label: 'Infrastructure', icon: Hammer, color: 'bg-orange-50 text-orange-700 border-orange-200' },
   { id: 'civil-rights', label: 'Civil Rights', icon: Scale, color: 'bg-pink-50 text-pink-700 border-pink-200' },
   { id: 'defense', label: 'Defense', icon: Shield, color: 'bg-gray-50 text-gray-700 border-gray-200' },
+  { id: 'technology', label: 'Technology', icon: Cpu, color: 'bg-slate-50 text-slate-700 border-slate-200' },
+  { id: 'security', label: 'Security', icon: Lock, color: 'bg-yellow-50 text-yellow-800 border-yellow-200' },
+  { id: 'society', label: 'Society', icon: Users, color: 'bg-teal-50 text-teal-800 border-teal-200' },
 ];
 
 export default function CategoryFilter({
