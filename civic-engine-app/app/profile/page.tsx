@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Copy, Download, ExternalLink, Share2, Trash2 } from 'lucide-react';
+import { Copy, ExternalLink, Share2, Trash2 } from 'lucide-react';
 import { toBlob } from 'html-to-image';
 import { getAllPoliciesSorted } from '@/data/policies';
 import type { Policy } from '@/types/policy';
@@ -151,16 +151,13 @@ export default function ProfilePage() {
             <Share2 className="w-4 h-4" />
             {exporting ? 'Preparing…' : 'Share'}
           </button>
-          <button
-            onClick={downloadShareCard}
+          <Link
+            href="/export"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
-            type="button"
-            disabled={exporting}
-            title="Download a story-sized PNG for Instagram/TikTok"
+            title="Choose export format and export"
           >
-            <Download className="w-4 h-4" />
-            {exporting ? 'Exporting…' : 'Download image'}
-          </button>
+            Export
+          </Link>
           <button
             onClick={onCopyLink}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"

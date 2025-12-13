@@ -60,7 +60,7 @@ export default function ParticleWave() {
         amountY = 20;
         verticalSpread = 0.35;
         verticalOffset = 0.10; // Push down significantly on tablet
-        gradientWidth = 0.6; // Narrower gradient on tablet
+        gradientWidth = 0.4; 
       } else if (width < 1440) {
         particleWidth = 0.22; // Standard desktop
       } else {
@@ -181,7 +181,7 @@ export default function ParticleWave() {
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
 
       // Soft falloff with extra padding - starts fade earlier for blur effect
-      const padding = 0.05; // Extra padding for white area
+      const padding = 0.12; // Extra padding for white area
       const fadeStart = Math.max(0, pw * 0.3); // Start fade earlier
       const solidStart = Math.max(pw + padding, 0.15); // Where solid white begins (with padding)
       const innerEdge = 0.5 - (0.5 - solidStart) * gw;

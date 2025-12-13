@@ -44,47 +44,64 @@ export default function Home() {
         <ParticleWave />
 
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="font-display text-6xl sm:text-7xl md:text-8xl font-black text-black dark:text-white mb-8 leading-tight">
-            What Most of Us<br />Agree On
-          </h1>
-          <p className="font-body text-xl sm:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-12">
-            Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
-          </p>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mb-12">
-            <div className="bg-black border-4 border-black p-6 sm:p-8">
-              <div className="text-5xl sm:text-6xl font-display font-black text-white">{totalPolicies}</div>
-              <div className="text-sm sm:text-base font-body text-white/80 font-bold">Consensus Policies</div>
+          {/* Soft background halo for legibility (not a card) */}
+          <div className="relative px-6 py-10 sm:px-10 sm:py-12">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 -z-10"
+            >
+              <div
+                className="
+                  absolute inset-0
+                  bg-white/85 dark:bg-black/40
+                  blur-2xl
+                  [mask-image:radial-gradient(closest-side,rgba(0,0,0,1),rgba(0,0,0,0))]
+                "
+              />
             </div>
-            <div className="bg-white border-4 border-black p-6 sm:p-8">
-              <div className="text-5xl sm:text-6xl font-display font-black text-black">70%+</div>
-              <div className="text-sm sm:text-base font-body text-gray-600 font-bold">Average Support</div>
-            </div>
-            <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black p-6 sm:p-8">
-              <div className="text-5xl sm:text-6xl font-display font-black text-white">2025</div>
-              <div className="text-sm sm:text-base font-body text-white/80 font-bold">Latest Data</div>
-            </div>
-          </div>
 
-          {/* CTA Button */}
-          <div className="mb-16">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/wrapped"
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
-              >
-                <span>Build Your Policy Profile</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl font-black text-black dark:text-white mb-8 leading-tight">
+              What Most of Us<br />Agree On
+            </h1>
+            <p className="font-body text-xl sm:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto mb-12">
+              Discover the policies that unite Americans across party lines. Every policy shown has majority support from Democrats, Republicans, and Independents.
+            </p>
 
-              <button
-                onClick={scrollToPolicies}
-                className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
-              >
-                <span>See the Top 10</span>
-                <ChevronDown className="w-5 h-5" />
-              </button>
+            {/* Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mb-12">
+              <div className="bg-black border-4 border-black p-6 sm:p-8">
+                <div className="text-5xl sm:text-6xl font-display font-black text-white">{totalPolicies}</div>
+                <div className="text-sm sm:text-base font-body text-white/80 font-bold">Consensus Policies</div>
+              </div>
+              <div className="bg-white border-4 border-black p-6 sm:p-8">
+                <div className="text-5xl sm:text-6xl font-display font-black text-black">70%+</div>
+                <div className="text-sm sm:text-base font-body text-gray-600 font-bold">Average Support</div>
+              </div>
+              <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black p-6 sm:p-8">
+                <div className="text-5xl sm:text-6xl font-display font-black text-white">2025</div>
+                <div className="text-sm sm:text-base font-body text-white/80 font-bold">Latest Data</div>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="mb-16">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/wrapped"
+                  className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
+                >
+                  <span>Build Your Policy Profile</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+
+                <button
+                  onClick={scrollToPolicies}
+                  className="inline-flex items-center space-x-2 px-8 py-4 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all duration-150 text-lg"
+                >
+                  <span>See the Top 10</span>
+                  <ChevronDown className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -20,6 +20,48 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## HQ MP4 export (Remotion render server)
+
+This app is configured for **static export** (`output: 'export'`), so HQ MP4 rendering can’t run inside Next.js API routes in production.
+Instead, we run a **separate render server** (Node + Remotion + FFmpeg) and point the frontend at it.
+
+### 1) Install FFmpeg
+
+The render server requires **FFmpeg** available on your PATH.
+
+- **Windows**:
+  - `winget install Gyan.FFmpeg`
+  - or `choco install ffmpeg`
+
+### 2) Start the render server
+
+In `civic-engine-app/`:
+
+```bash
+npm run render-server
+```
+
+By default it listens on `http://localhost:8787` and exposes:
+- `POST /render/policy-wrapped-square` → returns `video/mp4`
+
+### 3) Point the frontend to the render server
+
+Set this environment variable when building/serving the frontend:
+
+```bash
+NEXT_PUBLIC_RENDERER_URL=http://localhost:8787
+```
+
+Then the `/export` page’s **Animated video (HQ)** option will offer a true one-click **Export HQ MP4** button.
+
+### Manual fallback (no render server)
+
+The `/export` page can also download a `policy-wrapped.remotion.json` payload, which you can render locally:
+
+```bash
+npm run remotion:render:payload -- --input policy-wrapped.remotion.json --out policy-wrapped.mp4
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

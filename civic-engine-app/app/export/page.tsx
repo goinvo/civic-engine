@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Copy, Download, Share2 } from 'lucide-react';
+import { Copy, Download, Share2, Sparkles } from 'lucide-react';
 import { toBlob } from 'html-to-image';
 import { getAllPoliciesSorted } from '@/data/policies';
 import type { Policy } from '@/types/policy';
@@ -11,22 +11,17 @@ import {
   getDisplayName,
   loadWrappedProfile,
 } from '@/lib/policyWrappedProfile';
-import PolicyWrappedShareCard, { type PolicyWrappedShareCardFormat } from '@/components/PolicyWrappedShareCard';
+import PolicyWrappedShareCard from '@/components/PolicyWrappedShareCard';
+import PolicyWrappedShareCardVideo from '@/components/PolicyWrappedShareCardVideo';
 
-type ExportFormat = PolicyWrappedShareCardFormat;
+type ExportKind = 'static' | 'animated';
 
-const EXPORT_FORMATS: Array<{
-  id: ExportFormat;
-  label: string;
-  description: string;
-  width: number;
-  height: number;
-  previewAspectClass: string;
-}> = [
-  { id: 'story', label: 'Story (9:16)', description: 'Best for Instagram Stories, TikTok, Reels', width: 1080, height: 1920, previewAspectClass: 'aspect-[9/16]' },
-  { id: 'portrait', label: 'Portrait (4:5)', description: 'Best for Instagram feed portrait', width: 1080, height: 1350, previewAspectClass: 'aspect-[4/5]' },
-  { id: 'square', label: 'Square (1:1)', description: 'Best for Instagram feed square', width: 1080, height: 1080, previewAspectClass: 'aspect-square' },
-];
+const EXPORT_SIZE = 1080; // requested: always export 1080x1080
+
+const RENDERER_URL =
+  // In a static export, this must point to a separate server.
+  // Example: http://localhost:8787
+  process.env.NEXT_PUBLIC_RENDERER_URL;
 
 function useCurrentUrl(): string {
   const [url, setUrl] = useState('');
@@ -37,15 +32,32 @@ function useCurrentUrl(): string {
   return url;
 }
 
+function useElementWidth(ref: React.RefObject<HTMLElement | null>): number {
+  const [w, setW] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setW(el.clientWidth));
+    ro.observe(el);
+    setW(el.clientWidth);
+    return () => ro.disconnect();
+  }, [ref]);
+  return w;
+}
+
 export default function ExportPage() {
   const allPolicies = useMemo(() => getAllPoliciesSorted(), []);
-  const [format, setFormat] = useState<ExportFormat>('story');
+  const [exportKind, setExportKind] = useState<ExportKind>('static');
   const [firstName, setFirstName] = useState<string | undefined>(undefined);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [exporting, setExporting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const exportNodeRef = useRef<HTMLDivElement | null>(null);
+  const [animT, setAnimT] = useState(0);
+  const previewOuterRef = useRef<HTMLDivElement | null>(null);
+  const previewOuterWidth = useElementWidth(previewOuterRef);
+  const exportStaticRef = useRef<HTMLDivElement | null>(null);
+  const exportAnimRef = useRef<HTMLDivElement | null>(null);
   const origin = useCurrentUrl();
 
   useEffect(() => {
@@ -61,27 +73,27 @@ export default function ExportPage() {
 
   const stats = useMemo(() => deriveWrappedStats(selectedPolicies), [selectedPolicies]);
   const displayName = getDisplayName(firstName);
-  const activeFormat = EXPORT_FORMATS.find((f) => f.id === format) ?? EXPORT_FORMATS[0];
+  const previewScale = previewOuterWidth > 0 ? Math.min(1, previewOuterWidth / EXPORT_SIZE) : 0.25;
 
-  const getExportBlob = async (): Promise<Blob | null> => {
-    if (!exportNodeRef.current) return null;
+  const getStaticBlob = async (): Promise<Blob | null> => {
+    if (!exportStaticRef.current) return null;
     setError(null);
-    return await toBlob(exportNodeRef.current, {
+    return await toBlob(exportStaticRef.current, {
       cacheBust: true,
       pixelRatio: 1,
     });
   };
 
-  const download = async () => {
+  const downloadPng = async () => {
     if (typeof window === 'undefined') return;
     try {
       setExporting(true);
-      const blob = await getExportBlob();
+      const blob = await getStaticBlob();
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `policy-wrapped-${format}.png`;
+      a.download = 'policy-wrapped.png';
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -93,20 +105,20 @@ export default function ExportPage() {
     }
   };
 
-  const share = async () => {
+  const sharePng = async () => {
     if (typeof window === 'undefined') return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const navAny = navigator as any;
     if (!navAny.share) {
-      await download();
+      await downloadPng();
       return;
     }
 
     try {
       setExporting(true);
-      const blob = await getExportBlob();
+      const blob = await getStaticBlob();
       if (blob) {
-        const file = new File([blob], `policy-wrapped-${format}.png`, { type: 'image/png' });
+        const file = new File([blob], 'policy-wrapped.png', { type: 'image/png' });
         if (!navAny.canShare || navAny.canShare({ files: [file] })) {
           await navAny.share({
             title: 'Policy Wrapped',
@@ -124,7 +136,97 @@ export default function ExportPage() {
       });
     } catch {
       // fallback
-      await download();
+      await downloadPng();
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const downloadRemotionPayload = async (): Promise<void> => {
+    if (typeof window === 'undefined') return;
+    try {
+      setError(null);
+      setExporting(true);
+      setAnimT(1);
+
+      const payload = {
+        displayName,
+        label: stats.label,
+        avgConsensusSupport: stats.avgConsensusSupport,
+        policies: selectedPolicies.map((p) => ({
+          id: p.id,
+          title: p.title,
+          category: p.category,
+          averageSupport: p.averageSupport,
+        })),
+        urlText: origin ? `${origin}/wrapped` : undefined,
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'policy-wrapped.remotion.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError('Could not generate the Remotion payload. Try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportHqMp4OneClick = async (): Promise<void> => {
+    if (typeof window === 'undefined') return;
+
+    if (!RENDERER_URL) {
+      setError('HQ video rendering needs a render server. Set NEXT_PUBLIC_RENDERER_URL and try again.');
+      return;
+    }
+
+    try {
+      setExporting(true);
+      setError(null);
+      setAnimT(1);
+
+      const payload = {
+        displayName,
+        label: stats.label,
+        avgConsensusSupport: stats.avgConsensusSupport,
+        policies: selectedPolicies.map((p) => ({
+          id: p.id,
+          title: p.title,
+          category: p.category,
+          averageSupport: p.averageSupport,
+        })),
+        urlText: origin ? `${origin}/wrapped` : undefined,
+      };
+
+      const res = await fetch(`${RENDERER_URL.replace(/\/$/, '')}/render/policy-wrapped-square`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const json = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(json?.error || `Render failed (${res.status})`);
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'policy-wrapped.mp4';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Unknown error';
+      setError(msg);
     } finally {
       setExporting(false);
     }
@@ -179,26 +281,6 @@ export default function ExportPage() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={share}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
-            type="button"
-            disabled={exporting}
-            title="Share image via the native share sheet (mobile)"
-          >
-            <Share2 className="w-4 h-4" />
-            {exporting ? 'Preparing…' : 'Share'}
-          </button>
-          <button
-            onClick={download}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
-            type="button"
-            disabled={exporting}
-            title="Download PNG"
-          >
-            <Download className="w-4 h-4" />
-            {exporting ? 'Exporting…' : 'Export PNG'}
-          </button>
-          <button
             onClick={onCopyLink}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
             type="button"
@@ -214,95 +296,174 @@ export default function ExportPage() {
           Export your Policy Profile
         </h1>
         <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium max-w-3xl">
-          Choose a format, preview it, then export. On mobile, “Share” opens the share sheet (Instagram/TikTok usually appear if installed).
+          Preview is rendered from an exact 1080×1080 source and scaled to fit your screen, so what you see matches what you export.
         </p>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-        {/* Format picker */}
-        <div className="bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-6">
-          <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
-            Export format
-          </h2>
-          <div className="space-y-3">
-            {EXPORT_FORMATS.map((f) => (
-              <label
-                key={f.id}
-                className={`block border-2 border-black dark:border-gray-600 p-4 cursor-pointer ${
-                  format === f.id ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <input
-                    type="radio"
-                    name="format"
-                    checked={format === f.id}
-                    onChange={() => setFormat(f.id)}
-                    className="mt-1"
-                  />
-                  <div className="min-w-0">
-                    <div className="font-black text-black dark:text-white">{f.label}</div>
-                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {f.description} • {f.width}×{f.height}
-                    </div>
-                  </div>
-                </div>
-              </label>
-            ))}
+      {/* Preview (front + center) */}
+      <div className="w-full max-w-md mx-auto">
+        <div
+          ref={previewOuterRef}
+          className="relative border-4 border-black dark:border-gray-600 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(75,85,99,1)] overflow-hidden w-full aspect-square bg-black/5 dark:bg-white/5"
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              style={{
+                width: EXPORT_SIZE,
+                height: EXPORT_SIZE,
+                transform: `scale(${previewScale})`,
+                transformOrigin: 'center',
+              }}
+            >
+              {exportKind === 'animated' ? (
+                <PolicyWrappedShareCardVideo
+                  displayName={displayName}
+                  label={stats.label}
+                  avgConsensusSupport={stats.avgConsensusSupport}
+                  policies={selectedPolicies}
+                  urlText={origin ? `${origin}/wrapped` : undefined}
+                  format="square"
+                  t={animT}
+                />
+              ) : (
+                <PolicyWrappedShareCard
+                  displayName={displayName}
+                  label={stats.label}
+                  avgConsensusSupport={stats.avgConsensusSupport}
+                  policies={selectedPolicies}
+                  urlText={origin ? `${origin}/wrapped` : undefined}
+                  format="square"
+                />
+              )}
+            </div>
           </div>
-
-          {error && (
-            <p className="mt-4 text-sm font-bold text-[#C91A2B]">
-              {error}
-            </p>
-          )}
         </div>
-
-        {/* Preview */}
-        <div>
-          <div className={`border-4 border-black dark:border-gray-600 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(75,85,99,1)] overflow-hidden w-full max-w-md mx-auto ${activeFormat.previewAspectClass}`}>
-            <PolicyWrappedShareCard
-              displayName={displayName}
-              label={stats.label}
-              avgConsensusSupport={stats.avgConsensusSupport}
-              policies={selectedPolicies}
-              urlText={origin ? `${origin}/wrapped` : undefined}
-              format={format}
-            />
-          </div>
-          <p className="mt-4 text-sm font-medium text-gray-600 dark:text-gray-400 text-center">
-            Preview only. Export is generated at exact pixel size: {activeFormat.width}×{activeFormat.height}.
-          </p>
+        <div className="mt-4 text-sm font-medium text-gray-600 dark:text-gray-400 text-center">
+          Export size: {EXPORT_SIZE}×{EXPORT_SIZE}
         </div>
       </div>
 
-      {/* Offscreen exact-size export node */}
-      <div
-        style={{
-          position: 'fixed',
-          left: -10000,
-          top: 0,
-          width: activeFormat.width,
-          height: activeFormat.height,
-          background: 'transparent',
-          zIndex: -1,
-        }}
-      >
-        <div
-          ref={exportNodeRef}
-          style={{
-            width: activeFormat.width,
-            height: activeFormat.height,
-            border: '0px',
-          }}
-        >
+      {/* Options below preview */}
+      <div className="mt-10 max-w-3xl mx-auto bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-6">
+        <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
+          Export options
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setExportKind('static')}
+            className={`border-2 border-black dark:border-gray-600 p-4 text-left ${
+              exportKind === 'static' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            }`}
+          >
+            <div className="font-black text-black dark:text-white">Static image</div>
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Export a PNG for Instagram/TikTok upload.
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setExportKind('animated')}
+            className={`border-2 border-black dark:border-gray-600 p-4 text-left ${
+              exportKind === 'animated' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            }`}
+          >
+            <div className="flex items-center gap-2 font-black text-black dark:text-white">
+              <Sparkles className="w-4 h-4" />
+              Animated video (HQ)
+            </div>
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Remotion exports crisp MP4 (H.264) via FFmpeg.
+            </div>
+          </button>
+        </div>
+
+        <div className="mt-5 flex flex-col sm:flex-row gap-3">
+          {exportKind === 'animated' ? (
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              <button
+                onClick={exportHqMp4OneClick}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                type="button"
+                disabled={exporting}
+                title={RENDERER_URL ? 'Render and download an MP4' : 'Set NEXT_PUBLIC_RENDERER_URL to enable one-click render'}
+              >
+                <Download className="w-4 h-4" />
+                {exporting ? 'Rendering…' : 'Export HQ MP4'}
+              </button>
+              <button
+                onClick={downloadRemotionPayload}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-900 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600 flex-1"
+                type="button"
+                disabled={exporting}
+                title="Download JSON payload for manual Remotion rendering"
+              >
+                <Download className="w-4 h-4" />
+                {exporting ? 'Preparing…' : 'Download payload'}
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={sharePng}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                type="button"
+                disabled={exporting}
+              >
+                <Share2 className="w-4 h-4" />
+                {exporting ? 'Preparing…' : 'Share image'}
+              </button>
+              <button
+                onClick={downloadPng}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-900 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
+                type="button"
+                disabled={exporting}
+              >
+                <Download className="w-4 h-4" />
+                {exporting ? 'Exporting…' : 'Export PNG'}
+              </button>
+            </>
+          )}
+        </div>
+
+        {error && (
+          <p className="mt-4 text-sm font-bold text-[#C91A2B]">
+            {error}
+          </p>
+        )}
+
+        {exportKind === 'animated' && !error && (
+          <div className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+            To render an MP4 locally (manual fallback), run:
+            <div className="mt-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 border-2 border-black dark:border-gray-600 p-3 overflow-x-auto">
+              npm run remotion:render:payload -- --input policy-wrapped.remotion.json --out policy-wrapped.mp4
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Offscreen exact-size export nodes (always 1080x1080) */}
+      <div style={{ position: 'fixed', left: -10000, top: 0, width: EXPORT_SIZE, height: EXPORT_SIZE, zIndex: -1 }}>
+        <div ref={exportStaticRef} style={{ width: EXPORT_SIZE, height: EXPORT_SIZE }}>
           <PolicyWrappedShareCard
             displayName={displayName}
             label={stats.label}
             avgConsensusSupport={stats.avgConsensusSupport}
             policies={selectedPolicies}
             urlText={origin ? `${origin}/wrapped` : undefined}
-            format={format}
+            format="square"
+          />
+        </div>
+        <div ref={exportAnimRef} style={{ width: EXPORT_SIZE, height: EXPORT_SIZE }}>
+          <PolicyWrappedShareCardVideo
+            displayName={displayName}
+            label={stats.label}
+            avgConsensusSupport={stats.avgConsensusSupport}
+            policies={selectedPolicies}
+            urlText={origin ? `${origin}/wrapped` : undefined}
+            format="square"
+            t={animT}
           />
         </div>
       </div>
