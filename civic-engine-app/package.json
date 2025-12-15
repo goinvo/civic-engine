@@ -9,12 +9,13 @@
     "lint": "eslint",
     "remotion:preview": "remotion preview remotion/index.ts",
     "remotion:render:square": "remotion render remotion/index.ts PolicyWrappedSquare policy-wrapped.mp4",
+    "remotion:ensure-browser": "remotion browser ensure",
     "remotion:render:payload": "node scripts/render-policy-wrapped.mjs",
     "render-server": "node server/render-server.mjs"
   },
   "dependencies": {
-    "@remotion/bundler": "^4.0.388",
-    "@remotion/renderer": "^4.0.388",
+    "@remotion/bundler": "4.0.390",
+    "@remotion/renderer": "4.0.390",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -25,9 +26,10 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "recharts": "^3.5.1",
-    "remotion": "^4.0.388"
+    "remotion": "4.0.390"
   },
   "devDependencies": {
+    "@remotion/cli": "4.0.390",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

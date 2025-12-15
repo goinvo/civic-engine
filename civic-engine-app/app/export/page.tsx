@@ -54,6 +54,9 @@ export default function ExportPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [animT, setAnimT] = useState(0);
+  const [renderJobId, setRenderJobId] = useState<string | null>(null);
+  const [renderStage, setRenderStage] = useState<string>('idle');
+  const [renderProgress, setRenderProgress] = useState<number>(0);
   const previewOuterRef = useRef<HTMLDivElement | null>(null);
   const previewOuterWidth = useElementWidth(previewOuterRef);
   const exportStaticRef = useRef<HTMLDivElement | null>(null);
@@ -191,6 +194,10 @@ export default function ExportPage() {
       setError(null);
       setAnimT(1);
 
+      // Reset progress UI
+      setRenderProgress(0);
+      setRenderStage('queueing');
+
       const payload = {
         displayName,
         label: stats.label,
@@ -204,18 +211,81 @@ export default function ExportPage() {
         urlText: origin ? `${origin}/wrapped` : undefined,
       };
 
-      const res = await fetch(`${RENDERER_URL.replace(/\/$/, '')}/render/policy-wrapped-square`, {
+      // Use job endpoint so we can show progress while rendering.
+      const base = RENDERER_URL.replace(/\/$/, '');
+      const startRes = await fetch(`${base}/jobs/policy-wrapped-square`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const json = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(json?.error || `Render failed (${res.status})`);
+      if (!startRes.ok) {
+        const json = (await startRes.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(json?.error || `Render failed (${startRes.status})`);
       }
 
-      const blob = await res.blob();
+      const { jobId } = (await startRes.json()) as { jobId: string };
+      setRenderStage('bundling');
+      setRenderJobId(jobId);
+
+      // Listen for progress via SSE
+      const es = new EventSource(`${base}/jobs/${encodeURIComponent(jobId)}/events`);
+      await new Promise<void>((resolve, reject) => {
+        const handle = (evt: Event) => {
+          try {
+            const raw = (evt as MessageEvent).data;
+            if (typeof raw !== 'string') return;
+            const data = JSON.parse(raw) as { status: string; stage: string; progress: number; error?: string | null };
+            setRenderProgress(Math.max(0, Math.min(1, data.progress ?? 0)));
+            setRenderStage(data.stage || 'rendering');
+
+            if (data.status === 'done') {
+              es.close();
+              resolve();
+            }
+            if (data.status === 'error') {
+              es.close();
+              reject(new Error(data.error || 'Render failed'));
+            }
+          } catch {
+            // ignore parse errors
+          }
+        };
+
+        // Prefer explicit event name, but also handle default "message" just in case.
+        es.addEventListener('progress', handle);
+        es.addEventListener('message', handle);
+
+        es.onerror = () => {
+          // If SSE fails, fall back to polling.
+          es.close();
+          resolve();
+        };
+      });
+
+      // Polling fallback (or SSE unavailable): keep checking status until done.
+      if (renderStage !== 'done') {
+        for (;;) {
+          const statusRes = await fetch(`${base}/jobs/${encodeURIComponent(jobId)}`);
+          if (!statusRes.ok) break;
+          const data = (await statusRes.json()) as { status: string; stage: string; progress: number; error?: string | null };
+          setRenderProgress(Math.max(0, Math.min(1, data.progress ?? 0)));
+          setRenderStage(data.stage || 'rendering');
+          if (data.status === 'done') break;
+          if (data.status === 'error') throw new Error(data.error || 'Render failed');
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+      }
+
+      // Download rendered file
+      setRenderStage('downloading');
+      const fileRes = await fetch(`${base}/jobs/${encodeURIComponent(jobId)}/file`);
+      if (!fileRes.ok) {
+        const json = (await fileRes.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(json?.error || `Download failed (${fileRes.status})`);
+      }
+
+      const blob = await fileRes.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -224,11 +294,17 @@ export default function ExportPage() {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
+
+      setRenderStage('done');
+      setRenderProgress(1);
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Unknown error';
       setError(msg);
     } finally {
       setExporting(false);
+      setTimeout(() => {
+        setRenderJobId(null);
+      }, 1500);
     }
   };
 
@@ -431,6 +507,35 @@ export default function ExportPage() {
           <p className="mt-4 text-sm font-bold text-[#C91A2B]">
             {error}
           </p>
+        )}
+
+        {exportKind === 'animated' && exporting && (
+          <div className="mt-5">
+            <div className="flex items-center justify-between text-sm font-bold text-gray-700 dark:text-gray-300">
+              <span>
+                {renderStage === 'queueing' && 'Queueing…'}
+                {renderStage === 'queued' && 'Queued…'}
+                {renderStage === 'bundling' && 'Bundling…'}
+                {renderStage === 'rendering' && 'Rendering…'}
+                {renderStage === 'finalizing' && 'Finalizing…'}
+                {renderStage === 'downloading' && 'Downloading…'}
+                {renderStage === 'done' && 'Done'}
+                {['idle', 'error'].includes(renderStage) && 'Working…'}
+              </span>
+              <span>{Math.round(renderProgress * 100)}%</span>
+            </div>
+            <div className="mt-2 h-3 bg-gray-200 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
+              <div
+                className="h-full bg-[#C91A2B] transition-[width] duration-300"
+                style={{ width: `${Math.round(renderProgress * 100)}%` }}
+              />
+            </div>
+            {renderJobId && (
+              <div className="mt-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                Job: {renderJobId}
+              </div>
+            )}
+          </div>
         )}
 
         {exportKind === 'animated' && !error && (

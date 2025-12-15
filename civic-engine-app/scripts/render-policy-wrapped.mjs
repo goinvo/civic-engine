@@ -43,8 +43,13 @@ async function main() {
     outputLocation: outPath,
     inputProps,
     // High bitrate for crisp text
-    // eslint-disable-next-line no-undefined
-    ffmpegOverride: (args) => [...args, '-b:v', '12M', '-maxrate', '18M', '-bufsize', '24M'],
+    // IMPORTANT: FFmpeg options must be inserted BEFORE the output file argument.
+    ffmpegOverride: (args) => {
+      if (!Array.isArray(args) || args.length === 0) return args;
+      const outFile = args[args.length - 1];
+      const rest = args.slice(0, -1);
+      return [...rest, '-b:v', '12M', '-maxrate', '18M', '-bufsize', '24M', outFile];
+    },
   });
 
   console.log(`Rendered: ${outPath}`);

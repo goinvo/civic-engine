@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(npx remotion:*)",
+      "Bash(Get-Process)",
+      "Bash(Where-Object {$_ProcessName -like \"*node*\" -or $_ProcessName -like \"*chrome*\"})",
+      "Bash(Select-Object -First 10 ProcessName, Id)",
+      "Bash(node:*)",
+      "Bash(JOB_ID=test-123 SERVE_URL=\"C:\\Users\\quest\\Programming\\GoInvo\\civic-engine\\civic-engine-app\\.remotion-bundle-server\" OUT_PATH=/tmp/test-output.mp4 INPUT_JSON=/tmp/test-input.json RENDER_DEBUG=true node:*)",
+      "Bash(powershell.exe -Command \"cd ''C:\\Users\\quest\\Programming\\GoInvo\\civic-engine\\civic-engine-app''; $env:JOB_ID=''test-123''; $env:SERVE_URL=''C:\\Users\\quest\\Programming\\GoInvo\\civic-engine\\civic-engine-app\\.remotion-bundle-server''; $env:OUT_PATH=''C:\\Users\\quest\\AppData\\Local\\Temp\\test-output.mp4''; $env:RENDER_DEBUG=''true''; ''{\"\"displayName\"\":\"\"Test\"\",\"\"label\"\":\"\"Test\"\",\"\"avgConsensusSupport\"\":50,\"\"policies\"\":[{\"\"id\"\":\"\"1\"\",\"\"title\"\":\"\"Test Policy\"\",\"\"category\"\":\"\"test\"\",\"\"averageSupport\"\":60}],\"\"urlText\"\":\"\"test.com\"\"}'' | Out-File -Encoding utf8 ''C:\\Users\\quest\\AppData\\Local\\Temp\\test-input.json''; $env:INPUT_JSON=''C:\\Users\\quest\\AppData\\Local\\Temp\\test-input.json''; Write-Host ''Starting worker...''; node server/render-worker.cjs\")",
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:www.remotion.dev)",
+      "Bash(powershell.exe -Command \"Test-Path ''C:\\Users\\quest\\AppData\\Local\\Temp\\test-render-fix.mp4''\")"
+    ]
+  }
+}

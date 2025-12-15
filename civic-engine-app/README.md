@@ -43,6 +43,9 @@ npm run render-server
 
 By default it listens on `http://localhost:8787` and exposes:
 - `POST /render/policy-wrapped-square` → returns `video/mp4`
+- `POST /jobs/policy-wrapped-square` → returns `{ jobId }`
+- `GET /jobs/:jobId/events` → progress via Server-Sent Events (SSE)
+- `GET /jobs/:jobId/file` → returns `video/mp4` when ready
 
 ### 3) Point the frontend to the render server
 
