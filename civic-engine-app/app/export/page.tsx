@@ -538,14 +538,6 @@ export default function ExportPage() {
           </div>
         )}
 
-        {exportKind === 'animated' && !error && (
-          <div className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-            To render an MP4 locally (manual fallback), run:
-            <div className="mt-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 border-2 border-black dark:border-gray-600 p-3 overflow-x-auto">
-              npm run remotion:render:payload -- --input policy-wrapped.remotion.json --out policy-wrapped.mp4
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Offscreen exact-size export nodes (always 1080x1080) */}

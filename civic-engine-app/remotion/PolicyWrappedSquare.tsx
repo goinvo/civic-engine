@@ -4,6 +4,13 @@ import type { PolicyWrappedRenderProps } from './types';
 
 const bg = 'linear-gradient(180deg, #121212 0%, #0b1a3a 100%)';
 
+// Font families - use actual font names instead of CSS variables (which aren't available in Remotion)
+const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
+const FONT_BODY = "'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+
+// Google Fonts CSS import URL
+const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap';
+
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
 export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
@@ -32,20 +39,22 @@ export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
   const statsScale = interpolate(statsProgress, [0, 1], [0.94, 1]);
   const statsA = interpolate(statsProgress, [0, 1], [0, 1]);
 
-  const top = policies.slice(0, 5);
-  const remaining = Math.max(0, policies.length - top.length);
+  // Show all policies (up to 10)
+  const displayPolicies = policies.slice(0, 10);
 
   return (
     <AbsoluteFill style={{ background: bg, color: 'white' }}>
+      {/* Load Google Fonts */}
+      <style>{`@import url('${GOOGLE_FONTS_URL}');`}</style>
       <div
         style={{
-          padding: 72,
+          padding: 56,
           width: '100%',
           height: '100%',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
-          fontFamily: 'var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, sans-serif',
+          fontFamily: FONT_BODY,
         }}
       >
         <div
@@ -57,7 +66,7 @@ export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
             opacity: headerA,
           }}
         >
-          <div style={{ fontFamily: 'var(--font-display), system-ui, sans-serif', fontWeight: 900, fontSize: 26, opacity: 0.92 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 26, opacity: 0.92 }}>
             Policy Wrapped
           </div>
           <div style={{ fontWeight: 900, fontSize: 18, opacity: 0.85 }}>
@@ -65,63 +74,59 @@ export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
           </div>
         </div>
 
-        <div style={{ marginTop: 56, transform: `translateY(${titleY}px)`, opacity: titleA }}>
-          <div style={{ fontFamily: 'var(--font-display), system-ui, sans-serif', fontWeight: 900, fontSize: 56, lineHeight: 1.05 }}>
+        <div style={{ marginTop: 32, transform: `translateY(${titleY}px)`, opacity: titleA }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 48, lineHeight: 1.05 }}>
             {displayName}
           </div>
-          <div style={{ marginTop: 18, fontWeight: 900, fontSize: 22, opacity: 0.9 }}>
+          <div style={{ marginTop: 12, fontWeight: 900, fontSize: 20, opacity: 0.9 }}>
             Label: <span style={{ opacity: 1 }}>{label}</span>
           </div>
         </div>
 
         <div
           style={{
-            marginTop: 56,
+            marginTop: 32,
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 28,
+            gap: 20,
             transform: `scale(${statsScale})`,
             opacity: statsA,
             transformOrigin: 'top left',
           }}
         >
-          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 28 }}>
-            <div style={{ fontSize: 54, fontWeight: 900 }}>{policies.length}</div>
-            <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
+          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
+            <div style={{ fontSize: 40, fontWeight: 900 }}>{policies.length}</div>
+            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 28 }}>
-            <div style={{ fontSize: 54, fontWeight: 900 }}>{avgConsensusSupport}%</div>
-            <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
+          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
+            <div style={{ fontSize: 40, fontWeight: 900 }}>{avgConsensusSupport}%</div>
+            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
           </div>
         </div>
 
-        <div style={{ marginTop: 56 }}>
-          <div style={{ fontSize: 18, fontWeight: 900, opacity: 0.72, marginBottom: 18 }}>Top priorities</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {top.map((p, idx) => {
-              const step = idx / Math.max(1, top.length);
+        <div style={{ marginTop: 24, flex: 1, minHeight: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }}>Your key issues</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {displayPolicies.map((p, idx) => {
+              const step = idx / Math.max(1, displayPolicies.length);
               const pProg = clamp((listReveal - step * 0.55) / 0.45, 0, 1);
-              const y = interpolate(pProg, [0, 1], [18, 0]);
+              const y = interpolate(pProg, [0, 1], [12, 0]);
               const a = interpolate(pProg, [0, 1], [0, 1]);
               return (
-                <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 24, transform: `translateY(${y}px)`, opacity: a }}>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 22, fontWeight: 900 }}>{idx + 1}. {p.title}</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.72 }}>{p.category.replace('-', ' ')}</div>
+                <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, transform: `translateY(${y}px)`, opacity: a }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{idx + 1}. {p.title}</div>
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 900 }}>{p.averageSupport}%</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, flexShrink: 0 }}>{p.averageSupport}%</div>
                 </div>
               );
             })}
           </div>
-          {remaining > 0 && (
-            <div style={{ marginTop: 20, fontSize: 18, fontWeight: 900, opacity: 0.8 }}>+{remaining} more</div>
-          )}
         </div>
 
-        <div style={{ marginTop: 'auto', paddingTop: 64, opacity: interpolate(frame, [70, 95], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) }}>
-          <div style={{ fontSize: 18, fontWeight: 900, opacity: 0.72 }}>Build yours at</div>
-          <div style={{ fontSize: 20, fontWeight: 900, wordBreak: 'break-all' }}>{urlText || '…'}</div>
+        <div style={{ marginTop: 'auto', paddingTop: 24, opacity: interpolate(frame, [70, 95], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) }}>
+          <div style={{ fontSize: 16, fontWeight: 900, opacity: 0.72 }}>Build yours at</div>
+          <div style={{ fontSize: 18, fontWeight: 900, wordBreak: 'break-all' }}>{urlText || '…'}</div>
         </div>
       </div>
     </AbsoluteFill>

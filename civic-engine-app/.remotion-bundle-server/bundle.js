@@ -15,6 +15,9 @@ var jsx_runtime = __webpack_require__(4848);
 
 
 const bg = "linear-gradient(180deg, #121212 0%, #0b1a3a 100%)";
+const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
+const FONT_BODY = "'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+const GOOGLE_FONTS_URL = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap";
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const PolicyWrappedSquare = ({
   displayName,
@@ -36,106 +39,100 @@ const PolicyWrappedSquare = ({
   const titleA = (0,esm.interpolate)(titleProgress, [0, 1], [0, 1]);
   const statsScale = (0,esm.interpolate)(statsProgress, [0, 1], [0.94, 1]);
   const statsA = (0,esm.interpolate)(statsProgress, [0, 1], [0, 1]);
-  const top = policies.slice(0, 5);
-  const remaining = Math.max(0, policies.length - top.length);
-  return /* @__PURE__ */ (0,jsx_runtime.jsx)(esm.AbsoluteFill, { style: { background: bg, color: "white" }, children: /* @__PURE__ */ (0,jsx_runtime.jsxs)(
-    "div",
-    {
-      style: {
-        padding: 72,
-        width: "100%",
-        height: "100%",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
-      },
-      children: [
-        /* @__PURE__ */ (0,jsx_runtime.jsxs)(
-          "div",
-          {
-            style: {
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              transform: `translateY(${headerY}px)`,
-              opacity: headerA
-            },
-            children: [
-              /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontFamily: "var(--font-display), system-ui, sans-serif", fontWeight: 900, fontSize: 26, opacity: 0.92 }, children: "Policy Wrapped" }),
-              /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontWeight: 900, fontSize: 18, opacity: 0.85 }, children: (/* @__PURE__ */ new Date()).getFullYear() })
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 56, transform: `translateY(${titleY}px)`, opacity: titleA }, children: [
-          /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontFamily: "var(--font-display), system-ui, sans-serif", fontWeight: 900, fontSize: 56, lineHeight: 1.05 }, children: displayName }),
-          /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 18, fontWeight: 900, fontSize: 22, opacity: 0.9 }, children: [
-            "Label: ",
-            /* @__PURE__ */ (0,jsx_runtime.jsx)("span", { style: { opacity: 1 }, children: label })
-          ] })
-        ] }),
-        /* @__PURE__ */ (0,jsx_runtime.jsxs)(
-          "div",
-          {
-            style: {
-              marginTop: 56,
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 28,
-              transform: `scale(${statsScale})`,
-              opacity: statsA,
-              transformOrigin: "top left"
-            },
-            children: [
-              /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,0.10)", border: "2px solid rgba(255,255,255,0.18)", padding: 28 }, children: [
-                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 54, fontWeight: 900 }, children: policies.length }),
-                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 18, fontWeight: 800, opacity: 0.8 }, children: "Key issues" })
-              ] }),
-              /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,0.10)", border: "2px solid rgba(255,255,255,0.18)", padding: 28 }, children: [
-                /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 54, fontWeight: 900 }, children: [
-                  avgConsensusSupport,
-                  "%"
+  const displayPolicies = policies.slice(0, 10);
+  return /* @__PURE__ */ (0,jsx_runtime.jsxs)(esm.AbsoluteFill, { style: { background: bg, color: "white" }, children: [
+    /* @__PURE__ */ (0,jsx_runtime.jsx)("style", { children: `@import url('${GOOGLE_FONTS_URL}');` }),
+    /* @__PURE__ */ (0,jsx_runtime.jsxs)(
+      "div",
+      {
+        style: {
+          padding: 56,
+          width: "100%",
+          height: "100%",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          fontFamily: FONT_BODY
+        },
+        children: [
+          /* @__PURE__ */ (0,jsx_runtime.jsxs)(
+            "div",
+            {
+              style: {
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                transform: `translateY(${headerY}px)`,
+                opacity: headerA
+              },
+              children: [
+                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 26, opacity: 0.92 }, children: "Policy Wrapped" }),
+                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontWeight: 900, fontSize: 18, opacity: 0.85 }, children: (/* @__PURE__ */ new Date()).getFullYear() })
+              ]
+            }
+          ),
+          /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 32, transform: `translateY(${titleY}px)`, opacity: titleA }, children: [
+            /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 48, lineHeight: 1.05 }, children: displayName }),
+            /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 12, fontWeight: 900, fontSize: 20, opacity: 0.9 }, children: [
+              "Label: ",
+              /* @__PURE__ */ (0,jsx_runtime.jsx)("span", { style: { opacity: 1 }, children: label })
+            ] })
+          ] }),
+          /* @__PURE__ */ (0,jsx_runtime.jsxs)(
+            "div",
+            {
+              style: {
+                marginTop: 32,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 20,
+                transform: `scale(${statsScale})`,
+                opacity: statsA,
+                transformOrigin: "top left"
+              },
+              children: [
+                /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,0.10)", border: "2px solid rgba(255,255,255,0.18)", padding: 20 }, children: [
+                  /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 40, fontWeight: 900 }, children: policies.length }),
+                  /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 16, fontWeight: 800, opacity: 0.8 }, children: "Key issues" })
                 ] }),
-                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 18, fontWeight: 800, opacity: 0.8 }, children: "Avg consensus support" })
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 56 }, children: [
-          /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 18, fontWeight: 900, opacity: 0.72, marginBottom: 18 }, children: "Top priorities" }),
-          /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: 16 }, children: top.map((p, idx) => {
-            const step = idx / Math.max(1, top.length);
-            const pProg = clamp((listReveal - step * 0.55) / 0.45, 0, 1);
-            const y = (0,esm.interpolate)(pProg, [0, 1], [18, 0]);
-            const a = (0,esm.interpolate)(pProg, [0, 1], [0, 1]);
-            return /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { display: "flex", justifyContent: "space-between", gap: 24, transform: `translateY(${y}px)`, opacity: a }, children: [
-              /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { minWidth: 0 }, children: [
-                /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 22, fontWeight: 900 }, children: [
+                /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,0.10)", border: "2px solid rgba(255,255,255,0.18)", padding: 20 }, children: [
+                  /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 40, fontWeight: 900 }, children: [
+                    avgConsensusSupport,
+                    "%"
+                  ] }),
+                  /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 16, fontWeight: 800, opacity: 0.8 }, children: "Avg consensus support" })
+                ] })
+              ]
+            }
+          ),
+          /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 24, flex: 1, minHeight: 0 }, children: [
+            /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }, children: "Your key issues" }),
+            /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: 6 }, children: displayPolicies.map((p, idx) => {
+              const step = idx / Math.max(1, displayPolicies.length);
+              const pProg = clamp((listReveal - step * 0.55) / 0.45, 0, 1);
+              const y = (0,esm.interpolate)(pProg, [0, 1], [12, 0]);
+              const a = (0,esm.interpolate)(pProg, [0, 1], [0, 1]);
+              return /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, transform: `translateY(${y}px)`, opacity: a }, children: [
+                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { minWidth: 0, flex: 1 }, children: /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 16, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }, children: [
                   idx + 1,
                   ". ",
                   p.title
-                ] }),
-                /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 16, fontWeight: 800, opacity: 0.72 }, children: p.category.replace("-", " ") })
-              ] }),
-              /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 22, fontWeight: 900 }, children: [
-                p.averageSupport,
-                "%"
-              ] })
-            ] }, p.id);
-          }) }),
-          remaining > 0 && /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: 20, fontSize: 18, fontWeight: 900, opacity: 0.8 }, children: [
-            "+",
-            remaining,
-            " more"
+                ] }) }),
+                /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { fontSize: 16, fontWeight: 700, flexShrink: 0 }, children: [
+                  p.averageSupport,
+                  "%"
+                ] })
+              ] }, p.id);
+            }) })
+          ] }),
+          /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: "auto", paddingTop: 24, opacity: (0,esm.interpolate)(frame, [70, 95], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) }, children: [
+            /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 16, fontWeight: 900, opacity: 0.72 }, children: "Build yours at" }),
+            /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 18, fontWeight: 900, wordBreak: "break-all" }, children: urlText || "\u2026" })
           ] })
-        ] }),
-        /* @__PURE__ */ (0,jsx_runtime.jsxs)("div", { style: { marginTop: "auto", paddingTop: 64, opacity: (0,esm.interpolate)(frame, [70, 95], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) }, children: [
-          /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 18, fontWeight: 900, opacity: 0.72 }, children: "Build yours at" }),
-          /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { style: { fontSize: 20, fontWeight: 900, wordBreak: "break-all" }, children: urlText || "\u2026" })
-        ] })
-      ]
-    }
-  ) });
+        ]
+      }
+    )
+  ] });
 };
 
 ;// ./remotion/Root.tsx
