@@ -18,23 +18,26 @@ function getFormatTuning(format: PolicyWrappedShareCardFormat) {
     return {
       titleClass: 'text-2xl',
       statNumberClass: 'text-xl',
-      showTopCount: 4,
+      showTopCount: 10,
       paddingClass: 'p-5',
+      policyTextClass: 'text-xs',
     };
   }
   if (format === 'portrait') {
     return {
       titleClass: 'text-3xl',
       statNumberClass: 'text-2xl',
-      showTopCount: 5,
+      showTopCount: 10,
       paddingClass: 'p-6',
+      policyTextClass: 'text-sm',
     };
   }
   return {
     titleClass: 'text-3xl',
     statNumberClass: 'text-2xl',
-    showTopCount: 5,
+    showTopCount: 10,
     paddingClass: 'p-6',
+    policyTextClass: 'text-sm',
   };
 }
 
@@ -47,11 +50,10 @@ export default function PolicyWrappedShareCard({
   format = 'story',
 }: PolicyWrappedShareCardProps) {
   const tuning = getFormatTuning(format);
-  const topPolicies = policies.slice(0, tuning.showTopCount);
-  const remaining = Math.max(0, policies.length - topPolicies.length);
+  const displayPolicies = policies.slice(0, tuning.showTopCount);
 
   return (
-    <div className={`bg-gradient-to-b from-[#121212] to-[#0b1a3a] text-white ${tuning.paddingClass} flex flex-col h-full`}>
+    <div className={`bg-gradient-to-b from-[#121212] to-[#0b1a3a] text-white ${tuning.paddingClass} flex flex-col w-full h-full`}>
       <div className="flex items-center justify-between">
         <div className="font-display font-black text-sm tracking-wide opacity-90">
           Policy Wrapped
@@ -81,37 +83,29 @@ export default function PolicyWrappedShareCard({
         </div>
       </div>
 
-      <div className="mt-6">
-        <div className="text-xs font-bold text-white/70 mb-2">
-          Top priorities
+      <div className="mt-4 flex-1">
+        <div className="text-xs font-bold text-white/70 mb-1">
+          Your key issues
         </div>
-        <ol className="space-y-2">
-          {topPolicies.map((p, idx) => (
-            <li key={p.id} className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="font-bold text-sm">
+        <ol className="space-y-1">
+          {displayPolicies.map((p, idx) => (
+            <li key={p.id} className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className={`font-bold ${tuning.policyTextClass} truncate`}>
                   {idx + 1}. {p.title}
                 </div>
-                <div className="text-xs text-white/70 font-medium">
-                  {p.category.replace('-', ' ')}
-                </div>
               </div>
-              <div className="text-sm font-black">{p.averageSupport}%</div>
+              <div className={`${tuning.policyTextClass} font-bold flex-shrink-0`}>{p.averageSupport}%</div>
             </li>
           ))}
         </ol>
-        {remaining > 0 && (
-          <div className="mt-3 text-xs font-bold text-white/75">
-            +{remaining} more
-          </div>
-        )}
       </div>
 
-      <div className="mt-auto pt-6">
+      <div className="mt-auto pt-3">
         <div className="text-xs font-bold text-white/70">
           Build yours at
         </div>
-        <div className="text-sm font-black break-all">
+        <div className="text-xs font-black break-all">
           {urlText || '…'}
         </div>
       </div>

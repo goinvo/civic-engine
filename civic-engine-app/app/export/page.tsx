@@ -382,11 +382,13 @@ export default function ExportPage() {
           ref={previewOuterRef}
           className="relative border-4 border-black dark:border-gray-600 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(75,85,99,1)] overflow-hidden w-full aspect-square bg-black/5 dark:bg-white/5"
         >
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
             <div
               style={{
                 width: EXPORT_SIZE,
                 height: EXPORT_SIZE,
+                minWidth: EXPORT_SIZE,
+                minHeight: EXPORT_SIZE,
                 transform: `scale(${previewScale})`,
                 transformOrigin: 'center',
               }}

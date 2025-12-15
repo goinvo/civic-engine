@@ -31,12 +31,13 @@ function lerp(a: number, b: number, t: number) {
 
 function getFormatTuning(format: PolicyWrappedShareCardFormat) {
   if (format === 'square') {
-    return { titleSize: 44, statSize: 44, showTopCount: 4, padding: 56 };
+    // Match Remotion PolicyWrappedSquare layout
+    return { titleSize: 48, statSize: 40, showTopCount: 10, padding: 56, policyFontSize: 16, policyGap: 6 };
   }
   if (format === 'portrait') {
-    return { titleSize: 56, statSize: 54, showTopCount: 5, padding: 72 };
+    return { titleSize: 56, statSize: 54, showTopCount: 10, padding: 72, policyFontSize: 18, policyGap: 8 };
   }
-  return { titleSize: 56, statSize: 54, showTopCount: 5, padding: 72 };
+  return { titleSize: 56, statSize: 54, showTopCount: 10, padding: 72, policyFontSize: 18, policyGap: 8 };
 }
 
 /**
@@ -53,8 +54,7 @@ export default function PolicyWrappedShareCardVideo({
   format = 'story',
 }: PolicyWrappedShareCardVideoProps) {
   const tuning = getFormatTuning(format);
-  const topPolicies = policies.slice(0, tuning.showTopCount);
-  const remaining = Math.max(0, policies.length - topPolicies.length);
+  const displayPolicies = policies.slice(0, tuning.showTopCount);
 
   // Phases
   const pHeader = easeOutCubic((t - 0.02) / 0.22);
@@ -113,7 +113,7 @@ export default function PolicyWrappedShareCardVideo({
 
       <div
         style={{
-          marginTop: 56,
+          marginTop: 32,
           transform: `translateY(${titleY}px)`,
           opacity: titleA,
         }}
@@ -128,41 +128,41 @@ export default function PolicyWrappedShareCardVideo({
         >
           {displayName}
         </div>
-        <div style={{ marginTop: 18, fontWeight: 800, fontSize: 22, opacity: 0.9 }}>
+        <div style={{ marginTop: 12, fontWeight: 900, fontSize: 20, opacity: 0.9 }}>
           Label: <span style={{ opacity: 1 }}>{label}</span>
         </div>
       </div>
 
       <div
         style={{
-          marginTop: 56,
+          marginTop: 32,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: 28,
+          gap: 20,
           transform: `scale(${statsScale})`,
           opacity: statsA,
           transformOrigin: 'top left',
         }}
       >
-        <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 28 }}>
+        <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
           <div style={{ fontSize: tuning.statSize, fontWeight: 900 }}>{policies.length}</div>
-          <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
+          <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 28 }}>
+        <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
           <div style={{ fontSize: tuning.statSize, fontWeight: 900 }}>{avgConsensusSupport}%</div>
-          <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
+          <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
         </div>
       </div>
 
-      <div style={{ marginTop: 56 }}>
-        <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.72, marginBottom: 18 }}>
-          Top priorities
+      <div style={{ marginTop: 24, flex: 1, minHeight: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }}>
+          Your key issues
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {topPolicies.map((p, idx) => {
-            const step = idx / Math.max(1, topPolicies.length);
+        <div style={{ display: 'flex', flexDirection: 'column', gap: tuning.policyGap }}>
+          {displayPolicies.map((p, idx) => {
+            const step = idx / Math.max(1, displayPolicies.length);
             const pi = easeOutCubic((pList - step * 0.55) / 0.45);
-            const y = lerp(18, 0, pi);
+            const y = lerp(12, 0, pi);
             const a = lerp(0, 1, pi);
             return (
               <div
@@ -170,37 +170,29 @@ export default function PolicyWrappedShareCardVideo({
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  gap: 24,
+                  alignItems: 'center',
+                  gap: 12,
                   transform: `translateY(${y}px)`,
                   opacity: a,
                 }}
               >
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 22, fontWeight: 900 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: tuning.policyFontSize, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {idx + 1}. {p.title}
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.72 }}>
-                    {p.category.replace('-', ' ')}
-                  </div>
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 900 }}>{p.averageSupport}%</div>
+                <div style={{ fontSize: tuning.policyFontSize, fontWeight: 700, flexShrink: 0 }}>{p.averageSupport}%</div>
               </div>
             );
           })}
         </div>
-
-        {remaining > 0 && (
-          <div style={{ marginTop: 20, fontSize: 18, fontWeight: 900, opacity: 0.8 }}>
-            +{remaining} more
-          </div>
-        )}
       </div>
 
-      <div style={{ marginTop: 'auto', paddingTop: 64, transform: `translateY(${lerp(18, 0, pFooter)}px)`, opacity: pFooter }}>
-        <div style={{ fontSize: 18, fontWeight: 800, opacity: 0.72 }}>
+      <div style={{ marginTop: 'auto', paddingTop: 24, transform: `translateY(${lerp(12, 0, pFooter)}px)`, opacity: pFooter }}>
+        <div style={{ fontSize: 16, fontWeight: 900, opacity: 0.72 }}>
           Build yours at
         </div>
-        <div style={{ fontSize: 20, fontWeight: 900, wordBreak: 'break-all' }}>
+        <div style={{ fontSize: 18, fontWeight: 900, wordBreak: 'break-all' }}>
           {urlText || '…'}
         </div>
       </div>
