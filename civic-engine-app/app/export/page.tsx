@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Copy, Download, Share2, Sparkles } from 'lucide-react';
+import { Copy, Download, Pause, Play, RotateCcw, Share2, Sparkles } from 'lucide-react';
 import { toBlob } from 'html-to-image';
 import { getAllPoliciesSorted } from '@/data/policies';
 import type { Policy } from '@/types/policy';
@@ -76,6 +76,7 @@ export default function ExportPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [animT, setAnimT] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [renderJobId, setRenderJobId] = useState<string | null>(null);
   const [renderStage, setRenderStage] = useState<string>('idle');
   const [renderProgress, setRenderProgress] = useState<number>(0);
@@ -90,6 +91,28 @@ export default function ExportPage() {
     setFirstName(p?.firstName);
     setSelectedIds(p?.selectedPolicyIds ?? []);
   }, []);
+
+  // Animation playback effect
+  useEffect(() => {
+    if (!isPlaying) return;
+    const duration = 4000; // 4 seconds total animation
+    const startTime = Date.now() - animT * duration;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      setAnimT(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setIsPlaying(false);
+      }
+    };
+
+    const frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [isPlaying, animT]);
 
   const selectedPolicies: Policy[] = useMemo(() => {
     const map = new Map(allPolicies.map((p) => [p.id, p]));
@@ -434,6 +457,58 @@ export default function ExportPage() {
               />
             )}
           </div>
+
+          {/* Video controls overlay - appears on hover */}
+          {exportKind === 'animated' && (
+            <div className="absolute inset-0 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+              <div className="m-3 p-2 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (animT >= 1) setAnimT(0);
+                      setIsPlaying(!isPlaying);
+                    }}
+                    className="p-1.5 bg-[#C91A2B] text-white border-2 border-black hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  >
+                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setAnimT(0);
+                    }}
+                    className="p-1.5 bg-white border-2 border-black hover:bg-gray-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                    title="Reset"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 h-3 bg-gray-200 border-2 border-black relative mx-1 min-w-[100px]">
+                    <div
+                      className="absolute inset-y-0 left-0 bg-[#C91A2B]"
+                      style={{ width: `${animT * 100}%` }}
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={animT}
+                      onChange={(e) => {
+                        setIsPlaying(false);
+                        setAnimT(parseFloat(e.target.value));
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                  <span className="text-xs font-mono font-black text-black w-10 text-right">
+                    {(animT * 4).toFixed(1)}s
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -464,26 +539,15 @@ export default function ExportPage() {
           <div className="flex-1" />
 
           {exportKind === 'animated' ? (
-            <>
-              <button
-                onClick={exportHqMp4OneClick}
-                className="inline-flex items-center gap-1 px-4 py-1.5 bg-[#C91A2B] text-white text-sm font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
-                type="button"
-                disabled={exporting}
-              >
-                <Download className="w-3 h-3" />
-                {exporting ? 'Rendering…' : 'Export MP4'}
-              </button>
-              <button
-                onClick={downloadRemotionPayload}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-bold border border-black dark:border-gray-600"
-                type="button"
-                disabled={exporting}
-                title="Download JSON payload"
-              >
-                JSON
-              </button>
-            </>
+            <button
+              onClick={exportHqMp4OneClick}
+              className="inline-flex items-center gap-1 px-4 py-1.5 bg-[#C91A2B] text-white text-sm font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
+              type="button"
+              disabled={exporting}
+            >
+              <Download className="w-3 h-3" />
+              {exporting ? 'Rendering…' : 'Export MP4'}
+            </button>
           ) : (
             <>
               <button
