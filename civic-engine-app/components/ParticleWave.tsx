@@ -47,7 +47,7 @@ export default function ParticleWave() {
       let amountY = 25;
       let verticalSpread = 0.5;
       let verticalOffset = 0; // How much to push particles down
-      let particleWidth = 0.10; // How far particles extend from edge (0-0.5)
+      let particleWidth = 0.08; // How far particles extend from edge (0-0.5)
 
       let gradientWidth = 1.0; // Gradient width multiplier
 
@@ -55,16 +55,16 @@ export default function ParticleWave() {
         amountY = 15;
         verticalSpread = 0.25;
         verticalOffset = 0.15; // Push down on mobile
-        particleWidth = 0.28; // Wider on mobile
+        particleWidth = 0.20; // Wider on mobile
       } else if (width < 1024) {
         amountY = 20;
         verticalSpread = 0.35;
         verticalOffset = 0.10; // Push down significantly on tablet
-        gradientWidth = 0.4; 
+        gradientWidth = 0.4;
       } else if (width < 1440) {
-        particleWidth = 0.22; // Standard desktop
+        particleWidth = 0.16; // Standard desktop
       } else {
-        particleWidth = 0.28; // Wide screens
+        particleWidth = 0.20; // Wide screens
       }
 
       particleWidthRef.current = particleWidth;

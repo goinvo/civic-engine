@@ -46,8 +46,9 @@ function sanitizePayload(body) {
   // Expected shape matches `remotion/types.ts` (PolicyWrappedRenderProps).
   const displayName = typeof body?.displayName === 'string' ? body.displayName.slice(0, 80) : 'Your Key Issues';
   const label = typeof body?.label === 'string' ? body.label.slice(0, 80) : 'Consensus Seeker';
-  const avgConsensusSupport =
-    typeof body?.avgConsensusSupport === 'number' ? Math.max(0, Math.min(100, Math.round(body.avgConsensusSupport))) : 0;
+  const avgScore =
+    typeof body?.avgScore === 'number' ? Math.max(0, Math.min(100, Math.round(body.avgScore))) : 0;
+  const scoreLabel = typeof body?.scoreLabel === 'string' ? body.scoreLabel.slice(0, 40) : 'Avg score';
   const urlText = typeof body?.urlText === 'string' ? body.urlText.slice(0, 120) : undefined;
 
   const policies = clampArray(body?.policies, 10).map((p) => ({
@@ -58,7 +59,7 @@ function sanitizePayload(body) {
       typeof p?.averageSupport === 'number' ? Math.max(0, Math.min(100, Math.round(p.averageSupport))) : 0,
   })).filter((p) => p.id && p.title);
 
-  return { displayName, label, avgConsensusSupport, policies, urlText };
+  return { displayName, label, avgScore, scoreLabel, policies, urlText };
 }
 
 const app = express();

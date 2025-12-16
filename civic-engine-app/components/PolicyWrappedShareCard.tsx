@@ -7,7 +7,8 @@ export type PolicyWrappedShareCardFormat = 'story' | 'portrait' | 'square';
 export type PolicyWrappedShareCardProps = {
   displayName: string;
   label: string;
-  avgConsensusSupport: number;
+  avgScore: number;
+  scoreLabel?: string;
   policies: Policy[];
   urlText?: string;
   format?: PolicyWrappedShareCardFormat;
@@ -25,7 +26,8 @@ const FONT_BODY = "'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-ser
 export default function PolicyWrappedShareCard({
   displayName,
   label,
-  avgConsensusSupport,
+  avgScore,
+  scoreLabel = 'Avg score',
   policies,
   urlText,
   maxPolicies,
@@ -93,8 +95,8 @@ export default function PolicyWrappedShareCard({
             <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
           </div>
           <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
-            <div style={{ fontSize: 40, fontWeight: 900 }}>{avgConsensusSupport}%</div>
-            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
+            <div style={{ fontSize: 40, fontWeight: 900 }}>{avgScore}</div>
+            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>{scoreLabel}</div>
           </div>
         </div>
 

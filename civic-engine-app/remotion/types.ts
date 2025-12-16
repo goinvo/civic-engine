@@ -8,7 +8,8 @@ export type PolicyWrappedRenderPolicy = {
 export type PolicyWrappedRenderProps = {
   displayName: string;
   label: string;
-  avgConsensusSupport: number;
+  avgScore: number;
+  scoreLabel?: string;
   policies: PolicyWrappedRenderPolicy[];
   urlText?: string;
 };

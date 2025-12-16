@@ -6,7 +6,8 @@ import type { PolicyWrappedShareCardFormat } from '@/components/PolicyWrappedSha
 export type PolicyWrappedShareCardVideoProps = {
   displayName: string;
   label: string;
-  avgConsensusSupport: number;
+  avgScore: number;
+  scoreLabel?: string;
   policies: Policy[];
   urlText?: string;
   /**
@@ -47,7 +48,8 @@ function getFormatTuning(format: PolicyWrappedShareCardFormat) {
 export default function PolicyWrappedShareCardVideo({
   displayName,
   label,
-  avgConsensusSupport,
+  avgScore,
+  scoreLabel = 'Avg score',
   policies,
   urlText,
   t,
@@ -149,8 +151,8 @@ export default function PolicyWrappedShareCardVideo({
           <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
         </div>
         <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
-          <div style={{ fontSize: tuning.statSize, fontWeight: 900 }}>{avgConsensusSupport}%</div>
-          <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
+          <div style={{ fontSize: tuning.statSize, fontWeight: 900 }}>{avgScore}</div>
+          <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>{scoreLabel}</div>
         </div>
       </div>
 

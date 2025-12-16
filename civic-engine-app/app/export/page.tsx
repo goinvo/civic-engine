@@ -15,8 +15,14 @@ import PolicyWrappedShareCard from '@/components/PolicyWrappedShareCard';
 import PolicyWrappedShareCardVideo from '@/components/PolicyWrappedShareCardVideo';
 
 type ExportKind = 'static' | 'animated';
+type ScoreType = 'our-score' | 'bipartisan';
 
 const EXPORT_SIZE = 1080; // requested: always export 1080x1080
+
+// Calculate "Our Score" based on rank (rank 1 = 100, rank 20 = 81)
+function getOurScore(policy: Policy): number {
+  return Math.max(0, 101 - policy.rank);
+}
 
 const RENDERER_URL =
   // In a static export, this must point to a separate server.
@@ -70,6 +76,7 @@ function useAvailableSize(ref: React.RefObject<HTMLElement | null>): { width: nu
 export default function ExportPage() {
   const allPolicies = useMemo(() => getAllPoliciesSorted(), []);
   const [exportKind, setExportKind] = useState<ExportKind>('static');
+  const [scoreType, setScoreType] = useState<ScoreType>('our-score');
   const [firstName, setFirstName] = useState<string | undefined>(undefined);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [exporting, setExporting] = useState(false);
@@ -119,9 +126,25 @@ export default function ExportPage() {
     return selectedIds.map((id) => map.get(id)).filter(Boolean) as Policy[];
   }, [allPolicies, selectedIds]);
 
+  // Transform policies with the selected score type
+  const displayPolicies = useMemo(() => {
+    return selectedPolicies.map((p) => ({
+      ...p,
+      averageSupport: scoreType === 'our-score' ? getOurScore(p) : p.averageSupport,
+    }));
+  }, [selectedPolicies, scoreType]);
+
+  // Calculate average score based on score type
+  const avgScore = useMemo(() => {
+    if (displayPolicies.length === 0) return 0;
+    const sum = displayPolicies.reduce((acc, p) => acc + p.averageSupport, 0);
+    return Math.round(sum / displayPolicies.length);
+  }, [displayPolicies]);
+
   const stats = useMemo(() => deriveWrappedStats(selectedPolicies), [selectedPolicies]);
   const displayName = getDisplayName(firstName);
   const previewScale = availableSize.width / EXPORT_SIZE;
+  const scoreLabel = scoreType === 'our-score' ? 'Avg score' : 'Avg bipartisan support';
 
   const getStaticBlob = async (): Promise<Blob | null> => {
     if (!exportStaticRef.current) return null;
@@ -200,8 +223,9 @@ export default function ExportPage() {
       const payload = {
         displayName,
         label: stats.label,
-        avgConsensusSupport: stats.avgConsensusSupport,
-        policies: selectedPolicies.map((p) => ({
+        avgScore,
+        scoreLabel,
+        policies: displayPolicies.map((p) => ({
           id: p.id,
           title: p.title,
           category: p.category,
@@ -246,8 +270,9 @@ export default function ExportPage() {
       const payload = {
         displayName,
         label: stats.label,
-        avgConsensusSupport: stats.avgConsensusSupport,
-        policies: selectedPolicies.map((p) => ({
+        avgScore,
+        scoreLabel,
+        policies: displayPolicies.map((p) => ({
           id: p.id,
           title: p.title,
           category: p.category,
@@ -440,8 +465,9 @@ export default function ExportPage() {
               <PolicyWrappedShareCardVideo
                 displayName={displayName}
                 label={stats.label}
-                avgConsensusSupport={stats.avgConsensusSupport}
-                policies={selectedPolicies}
+                avgScore={avgScore}
+                scoreLabel={scoreLabel}
+                policies={displayPolicies}
                 urlText={origin ? `${origin}/wrapped` : undefined}
                 format="square"
                 t={animT}
@@ -450,8 +476,9 @@ export default function ExportPage() {
               <PolicyWrappedShareCard
                 displayName={displayName}
                 label={stats.label}
-                avgConsensusSupport={stats.avgConsensusSupport}
-                policies={selectedPolicies}
+                avgScore={avgScore}
+                scoreLabel={scoreLabel}
+                policies={displayPolicies}
                 urlText={origin ? `${origin}/wrapped` : undefined}
                 format="square"
               />
@@ -536,6 +563,26 @@ export default function ExportPage() {
             MP4
           </button>
 
+          <span className="text-sm font-bold text-black dark:text-white ml-4 mr-2">Score:</span>
+          <button
+            type="button"
+            onClick={() => setScoreType('our-score')}
+            className={`text-sm font-bold px-3 py-1 border border-black dark:border-gray-600 ${
+              scoreType === 'our-score' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            }`}
+          >
+            Our Score
+          </button>
+          <button
+            type="button"
+            onClick={() => setScoreType('bipartisan')}
+            className={`text-sm font-bold px-3 py-1 border border-black dark:border-gray-600 ${
+              scoreType === 'bipartisan' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            }`}
+          >
+            Bipartisan
+          </button>
+
           <div className="flex-1" />
 
           {exportKind === 'animated' ? (
@@ -603,8 +650,9 @@ export default function ExportPage() {
           <PolicyWrappedShareCard
             displayName={displayName}
             label={stats.label}
-            avgConsensusSupport={stats.avgConsensusSupport}
-            policies={selectedPolicies}
+            avgScore={avgScore}
+            scoreLabel={scoreLabel}
+            policies={displayPolicies}
             urlText={origin ? `${origin}/wrapped` : undefined}
             format="square"
           />
@@ -613,8 +661,9 @@ export default function ExportPage() {
           <PolicyWrappedShareCardVideo
             displayName={displayName}
             label={stats.label}
-            avgConsensusSupport={stats.avgConsensusSupport}
-            policies={selectedPolicies}
+            avgScore={avgScore}
+            scoreLabel={scoreLabel}
+            policies={displayPolicies}
             urlText={origin ? `${origin}/wrapped` : undefined}
             format="square"
             t={animT}
