@@ -13,7 +13,8 @@
       "Bash(cat:*)",
       "WebSearch",
       "WebFetch(domain:www.remotion.dev)",
-      "Bash(powershell.exe -Command \"Test-Path ''C:\\Users\\quest\\AppData\\Local\\Temp\\test-render-fix.mp4''\")"
+      "Bash(powershell.exe -Command \"Test-Path ''C:\\Users\\quest\\AppData\\Local\\Temp\\test-render-fix.mp4''\")",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

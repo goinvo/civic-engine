@@ -154,7 +154,7 @@ export default function PolicyWrappedShareCardVideo({
         </div>
       </div>
 
-      <div style={{ marginTop: 24, flex: 1, minHeight: 0 }}>
+      <div style={{ marginTop: 24 }}>
         <div style={{ fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }}>
           Your key issues
         </div>
@@ -188,7 +188,7 @@ export default function PolicyWrappedShareCardVideo({
         </div>
       </div>
 
-      <div style={{ marginTop: 'auto', paddingTop: 24, transform: `translateY(${lerp(12, 0, pFooter)}px)`, opacity: pFooter }}>
+      <div style={{ marginTop: 32, paddingTop: 24, transform: `translateY(${lerp(12, 0, pFooter)}px)`, opacity: pFooter }}>
         <div style={{ fontSize: 16, fontWeight: 900, opacity: 0.72 }}>
           Build yours at
         </div>

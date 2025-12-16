@@ -11,106 +11,124 @@ export type PolicyWrappedShareCardProps = {
   policies: Policy[];
   urlText?: string;
   format?: PolicyWrappedShareCardFormat;
+  /** Maximum number of policies to display (default: all) */
+  maxPolicies?: number;
 };
 
-function getFormatTuning(format: PolicyWrappedShareCardFormat) {
-  if (format === 'square') {
-    return {
-      titleClass: 'text-2xl',
-      statNumberClass: 'text-xl',
-      showTopCount: 10,
-      paddingClass: 'p-5',
-      policyTextClass: 'text-xs',
-    };
-  }
-  if (format === 'portrait') {
-    return {
-      titleClass: 'text-3xl',
-      statNumberClass: 'text-2xl',
-      showTopCount: 10,
-      paddingClass: 'p-6',
-      policyTextClass: 'text-sm',
-    };
-  }
-  return {
-    titleClass: 'text-3xl',
-    statNumberClass: 'text-2xl',
-    showTopCount: 10,
-    paddingClass: 'p-6',
-    policyTextClass: 'text-sm',
-  };
-}
+// Match Remotion's font families
+const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
+const FONT_BODY = "'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
 
+/**
+ * Static version of the Policy Wrapped card that matches the Remotion export layout exactly.
+ */
 export default function PolicyWrappedShareCard({
   displayName,
   label,
   avgConsensusSupport,
   policies,
   urlText,
-  format = 'story',
+  maxPolicies,
 }: PolicyWrappedShareCardProps) {
-  const tuning = getFormatTuning(format);
-  const displayPolicies = policies.slice(0, tuning.showTopCount);
+  const displayPolicies = maxPolicies ? policies.slice(0, maxPolicies) : policies;
 
   return (
-    <div className={`bg-gradient-to-b from-[#121212] to-[#0b1a3a] text-white ${tuning.paddingClass} flex flex-col w-full h-full`}>
-      <div className="flex items-center justify-between">
-        <div className="font-display font-black text-sm tracking-wide opacity-90">
-          Policy Wrapped
+    <div
+      style={{
+        background: 'linear-gradient(180deg, #121212 0%, #0b1a3a 100%)',
+        color: 'white',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div
+        style={{
+          padding: 56,
+          width: '100%',
+          height: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          fontFamily: FONT_BODY,
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 26, opacity: 0.92 }}>
+            Policy Wrapped
+          </div>
+          <div style={{ fontWeight: 900, fontSize: 18, opacity: 0.85 }}>
+            {new Date().getFullYear()}
+          </div>
         </div>
-        <div className="text-xs font-bold opacity-80">
-          {new Date().getFullYear()}
-        </div>
-      </div>
 
-      <div className="mt-6">
-        <h1 className={`font-display font-black leading-tight ${tuning.titleClass}`}>
-          {displayName}
-        </h1>
-        <p className="mt-2 font-body font-bold text-white/85">
-          Label: <span className="text-white">{label}</span>
-        </p>
-      </div>
+        {/* Title section */}
+        <div style={{ marginTop: 32 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 900, fontSize: 48, lineHeight: 1.05 }}>
+            {displayName}
+          </div>
+          <div style={{ marginTop: 12, fontWeight: 900, fontSize: 20, opacity: 0.9 }}>
+            Label: <span style={{ opacity: 1 }}>{label}</span>
+          </div>
+        </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
-        <div className="bg-white/10 border border-white/20 p-3">
-          <div className={`${tuning.statNumberClass} font-black`}>{policies.length}</div>
-          <div className="text-xs font-bold text-white/80">Key issues</div>
+        {/* Stats grid */}
+        <div
+          style={{
+            marginTop: 32,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 20,
+          }}
+        >
+          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
+            <div style={{ fontSize: 40, fontWeight: 900 }}>{policies.length}</div>
+            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Key issues</div>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.10)', border: '2px solid rgba(255,255,255,0.18)', padding: 20 }}>
+            <div style={{ fontSize: 40, fontWeight: 900 }}>{avgConsensusSupport}%</div>
+            <div style={{ fontSize: 16, fontWeight: 800, opacity: 0.8 }}>Avg consensus support</div>
+          </div>
         </div>
-        <div className="bg-white/10 border border-white/20 p-3">
-          <div className={`${tuning.statNumberClass} font-black`}>{avgConsensusSupport}%</div>
-          <div className="text-xs font-bold text-white/80">Avg consensus support</div>
-        </div>
-      </div>
 
-      <div className="mt-4 flex-1">
-        <div className="text-xs font-bold text-white/70 mb-1">
-          Your key issues
-        </div>
-        <ol className="space-y-1">
-          {displayPolicies.map((p, idx) => (
-            <li key={p.id} className="flex items-center justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <div className={`font-bold ${tuning.policyTextClass} truncate`}>
-                  {idx + 1}. {p.title}
+        {/* Policy list */}
+        <div style={{ marginTop: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }}>Your key issues</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {displayPolicies.map((p, idx) => (
+              <div
+                key={p.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 12,
+                }}
+              >
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {idx + 1}. {p.title}
+                  </div>
                 </div>
+                <div style={{ fontSize: 16, fontWeight: 700, flexShrink: 0 }}>{p.averageSupport}%</div>
               </div>
-              <div className={`${tuning.policyTextClass} font-bold flex-shrink-0`}>{p.averageSupport}%</div>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      <div className="mt-auto pt-3">
-        <div className="text-xs font-bold text-white/70">
-          Build yours at
+            ))}
+          </div>
         </div>
-        <div className="text-xs font-black break-all">
-          {urlText || '…'}
+
+        {/* Footer */}
+        <div style={{ marginTop: 32, paddingTop: 24 }}>
+          <div style={{ fontSize: 16, fontWeight: 900, opacity: 0.72 }}>Build yours at</div>
+          <div style={{ fontSize: 18, fontWeight: 900, wordBreak: 'break-all' }}>{urlText || '…'}</div>
         </div>
       </div>
     </div>
   );
 }
-
-

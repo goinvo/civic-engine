@@ -32,17 +32,39 @@ function useCurrentUrl(): string {
   return url;
 }
 
-function useElementWidth(ref: React.RefObject<HTMLElement | null>): number {
-  const [w, setW] = useState(0);
+function useAvailableSize(ref: React.RefObject<HTMLElement | null>): { width: number; height: number } {
+  const [size, setSize] = useState({ width: 600, height: 600 });
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setW(el.clientWidth));
-    ro.observe(el);
-    setW(el.clientWidth);
-    return () => ro.disconnect();
+    const measure = () => {
+      const el = ref.current;
+      // Get available width from parent container
+      const parentWidth = el?.clientWidth || window.innerWidth - 48; // account for px-6 padding
+      // Get available height: viewport minus header, title section, export options, and padding
+      const headerHeight = 70; // nav height
+      const titleHeight = 100; // title + description + margins
+      const exportOptionsHeight = 80; // compact toolbar + margin
+      const padding = 100; // margins, shadow, and breathing room
+      const availableHeight = window.innerHeight - headerHeight - titleHeight - exportOptionsHeight - padding;
+
+      // Use the smaller of width or height to maintain square aspect
+      const maxSize = Math.min(parentWidth, availableHeight, 900); // cap at 900px
+      if (maxSize > 0) setSize({ width: maxSize, height: maxSize });
+    };
+
+    const ro = new ResizeObserver(measure);
+    if (ref.current) ro.observe(ref.current);
+
+    measure();
+    window.addEventListener('resize', measure);
+    const timer = setTimeout(measure, 100);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+      clearTimeout(timer);
+    };
   }, [ref]);
-  return w;
+  return size;
 }
 
 export default function ExportPage() {
@@ -58,7 +80,7 @@ export default function ExportPage() {
   const [renderStage, setRenderStage] = useState<string>('idle');
   const [renderProgress, setRenderProgress] = useState<number>(0);
   const previewOuterRef = useRef<HTMLDivElement | null>(null);
-  const previewOuterWidth = useElementWidth(previewOuterRef);
+  const availableSize = useAvailableSize(previewOuterRef);
   const exportStaticRef = useRef<HTMLDivElement | null>(null);
   const exportAnimRef = useRef<HTMLDivElement | null>(null);
   const origin = useCurrentUrl();
@@ -76,7 +98,7 @@ export default function ExportPage() {
 
   const stats = useMemo(() => deriveWrappedStats(selectedPolicies), [selectedPolicies]);
   const displayName = getDisplayName(firstName);
-  const previewScale = previewOuterWidth > 0 ? Math.min(1, previewOuterWidth / EXPORT_SIZE) : 0.25;
+  const previewScale = availableSize.width / EXPORT_SIZE;
 
   const getStaticBlob = async (): Promise<Blob | null> => {
     if (!exportStaticRef.current) return null;
@@ -346,8 +368,8 @@ export default function ExportPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-8 flex items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-6 py-6">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <Link
           href="/profile"
           className="text-sm font-bold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
@@ -355,188 +377,157 @@ export default function ExportPage() {
           ← Back to profile
         </Link>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onCopyLink}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
-            type="button"
-          >
-            <Copy className="w-4 h-4" />
-            {copied ? 'Copied' : 'Copy link'}
-          </button>
-        </div>
+        <button
+          onClick={onCopyLink}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 text-black dark:text-white text-sm font-bold border-2 border-black dark:border-gray-600"
+          type="button"
+        >
+          <Copy className="w-3 h-3" />
+          {copied ? 'Copied' : 'Copy link'}
+        </button>
       </div>
 
-      <section className="mb-10">
-        <h1 className="font-display text-5xl sm:text-6xl font-black text-black dark:text-white mb-3 leading-tight">
+      <section className="mb-6">
+        <h1 className="font-display text-2xl sm:text-3xl font-black text-black dark:text-white mb-1">
           Export your Policy Profile
         </h1>
-        <p className="font-body text-lg text-gray-700 dark:text-gray-300 font-medium max-w-3xl">
-          Preview is rendered from an exact 1080×1080 source and scaled to fit your screen, so what you see matches what you export.
+        <p className="font-body text-sm text-gray-600 dark:text-gray-400">
+          Preview scaled to fit · Exports at {EXPORT_SIZE}×{EXPORT_SIZE}
         </p>
       </section>
 
       {/* Preview (front + center) */}
-      <div className="w-full max-w-md mx-auto">
+      <div ref={previewOuterRef} className="w-full max-w-4xl mx-auto flex justify-center">
         <div
-          ref={previewOuterRef}
-          className="relative border-4 border-black dark:border-gray-600 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(75,85,99,1)] overflow-hidden w-full aspect-square bg-black/5 dark:bg-white/5"
+          className="relative border-4 border-black dark:border-gray-600 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(75,85,99,1)] overflow-hidden"
+          style={{ width: EXPORT_SIZE * previewScale, height: EXPORT_SIZE * previewScale }}
         >
-          <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-            <div
-              style={{
-                width: EXPORT_SIZE,
-                height: EXPORT_SIZE,
-                minWidth: EXPORT_SIZE,
-                minHeight: EXPORT_SIZE,
-                transform: `scale(${previewScale})`,
-                transformOrigin: 'center',
-              }}
-            >
-              {exportKind === 'animated' ? (
-                <PolicyWrappedShareCardVideo
-                  displayName={displayName}
-                  label={stats.label}
-                  avgConsensusSupport={stats.avgConsensusSupport}
-                  policies={selectedPolicies}
-                  urlText={origin ? `${origin}/wrapped` : undefined}
-                  format="square"
-                  t={animT}
-                />
-              ) : (
-                <PolicyWrappedShareCard
-                  displayName={displayName}
-                  label={stats.label}
-                  avgConsensusSupport={stats.avgConsensusSupport}
-                  policies={selectedPolicies}
-                  urlText={origin ? `${origin}/wrapped` : undefined}
-                  format="square"
-                />
-              )}
-            </div>
+          <div
+            style={{
+              width: EXPORT_SIZE,
+              height: EXPORT_SIZE,
+              transform: `scale(${previewScale})`,
+              transformOrigin: 'top left',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
+          >
+            {exportKind === 'animated' ? (
+              <PolicyWrappedShareCardVideo
+                displayName={displayName}
+                label={stats.label}
+                avgConsensusSupport={stats.avgConsensusSupport}
+                policies={selectedPolicies}
+                urlText={origin ? `${origin}/wrapped` : undefined}
+                format="square"
+                t={animT}
+              />
+            ) : (
+              <PolicyWrappedShareCard
+                displayName={displayName}
+                label={stats.label}
+                avgConsensusSupport={stats.avgConsensusSupport}
+                policies={selectedPolicies}
+                urlText={origin ? `${origin}/wrapped` : undefined}
+                format="square"
+              />
+            )}
           </div>
-        </div>
-        <div className="mt-4 text-sm font-medium text-gray-600 dark:text-gray-400 text-center">
-          Export size: {EXPORT_SIZE}×{EXPORT_SIZE}
         </div>
       </div>
 
       {/* Options below preview */}
-      <div className="mt-10 max-w-3xl mx-auto bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-600 p-6">
-        <h2 className="font-display text-2xl font-black text-black dark:text-white mb-4">
-          Export options
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="mt-4 max-w-4xl mx-auto bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-600 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-bold text-black dark:text-white mr-2">Export:</span>
           <button
             type="button"
             onClick={() => setExportKind('static')}
-            className={`border-2 border-black dark:border-gray-600 p-4 text-left ${
-              exportKind === 'static' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            className={`text-sm font-bold px-3 py-1 border border-black dark:border-gray-600 ${
+              exportKind === 'static' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
             }`}
           >
-            <div className="font-black text-black dark:text-white">Static image</div>
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Export a PNG for Instagram/TikTok upload.
-            </div>
+            PNG
           </button>
           <button
             type="button"
             onClick={() => setExportKind('animated')}
-            className={`border-2 border-black dark:border-gray-600 p-4 text-left ${
-              exportKind === 'animated' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+            className={`text-sm font-bold px-3 py-1 border border-black dark:border-gray-600 flex items-center gap-1 ${
+              exportKind === 'animated' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
             }`}
           >
-            <div className="flex items-center gap-2 font-black text-black dark:text-white">
-              <Sparkles className="w-4 h-4" />
-              Animated video (HQ)
-            </div>
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Remotion exports crisp MP4 (H.264) via FFmpeg.
-            </div>
+            <Sparkles className="w-3 h-3" />
+            MP4
           </button>
-        </div>
 
-        <div className="mt-5 flex flex-col sm:flex-row gap-3">
+          <div className="flex-1" />
+
           {exportKind === 'animated' ? (
-            <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <>
               <button
                 onClick={exportHqMp4OneClick}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                className="inline-flex items-center gap-1 px-4 py-1.5 bg-[#C91A2B] text-white text-sm font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
                 type="button"
                 disabled={exporting}
-                title={RENDERER_URL ? 'Render and download an MP4' : 'Set NEXT_PUBLIC_RENDERER_URL to enable one-click render'}
               >
-                <Download className="w-4 h-4" />
-                {exporting ? 'Rendering…' : 'Export HQ MP4'}
+                <Download className="w-3 h-3" />
+                {exporting ? 'Rendering…' : 'Export MP4'}
               </button>
               <button
                 onClick={downloadRemotionPayload}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-900 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600 flex-1"
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-bold border border-black dark:border-gray-600"
                 type="button"
                 disabled={exporting}
-                title="Download JSON payload for manual Remotion rendering"
+                title="Download JSON payload"
               >
-                <Download className="w-4 h-4" />
-                {exporting ? 'Preparing…' : 'Download payload'}
+                JSON
               </button>
-            </div>
+            </>
           ) : (
             <>
               <button
                 onClick={sharePng}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#2F3BBD] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1 px-4 py-1.5 bg-[#2F3BBD] text-white text-sm font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
                 type="button"
                 disabled={exporting}
               >
-                <Share2 className="w-4 h-4" />
-                {exporting ? 'Preparing…' : 'Share image'}
+                <Share2 className="w-3 h-3" />
+                {exporting ? 'Preparing…' : 'Share'}
               </button>
               <button
                 onClick={downloadPng}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-900 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
+                className="inline-flex items-center gap-1 px-4 py-1.5 text-sm font-bold border-2 border-black dark:border-gray-600"
                 type="button"
                 disabled={exporting}
               >
-                <Download className="w-4 h-4" />
-                {exporting ? 'Exporting…' : 'Export PNG'}
+                <Download className="w-3 h-3" />
+                {exporting ? 'Exporting…' : 'Download'}
               </button>
             </>
           )}
         </div>
 
         {error && (
-          <p className="mt-4 text-sm font-bold text-[#C91A2B]">
-            {error}
-          </p>
+          <p className="mt-2 text-xs font-bold text-[#C91A2B]">{error}</p>
         )}
 
         {exportKind === 'animated' && exporting && (
-          <div className="mt-5">
-            <div className="flex items-center justify-between text-sm font-bold text-gray-700 dark:text-gray-300">
-              <span>
-                {renderStage === 'queueing' && 'Queueing…'}
-                {renderStage === 'queued' && 'Queued…'}
-                {renderStage === 'bundling' && 'Bundling…'}
-                {renderStage === 'rendering' && 'Rendering…'}
-                {renderStage === 'finalizing' && 'Finalizing…'}
-                {renderStage === 'downloading' && 'Downloading…'}
-                {renderStage === 'done' && 'Done'}
-                {['idle', 'error'].includes(renderStage) && 'Working…'}
-              </span>
-              <span>{Math.round(renderProgress * 100)}%</span>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-xs font-bold text-gray-600 dark:text-gray-400">
+              {renderStage === 'queueing' && 'Queueing…'}
+              {renderStage === 'queued' && 'Queued…'}
+              {renderStage === 'bundling' && 'Bundling…'}
+              {renderStage === 'rendering' && 'Rendering…'}
+              {renderStage === 'finalizing' && 'Finalizing…'}
+              {renderStage === 'downloading' && 'Downloading…'}
+              {renderStage === 'done' && 'Done'}
+              {['idle', 'error'].includes(renderStage) && 'Working…'}
+            </span>
+            <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600">
+              <div className="h-full bg-[#C91A2B] transition-[width]" style={{ width: `${Math.round(renderProgress * 100)}%` }} />
             </div>
-            <div className="mt-2 h-3 bg-gray-200 dark:bg-gray-700 border-2 border-black dark:border-gray-600">
-              <div
-                className="h-full bg-[#C91A2B] transition-[width] duration-300"
-                style={{ width: `${Math.round(renderProgress * 100)}%` }}
-              />
-            </div>
-            {renderJobId && (
-              <div className="mt-2 text-xs font-medium text-gray-600 dark:text-gray-400">
-                Job: {renderJobId}
-              </div>
-            )}
+            <span className="text-xs font-bold">{Math.round(renderProgress * 100)}%</span>
           </div>
         )}
 

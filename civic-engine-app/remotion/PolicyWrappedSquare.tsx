@@ -104,7 +104,7 @@ export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
           </div>
         </div>
 
-        <div style={{ marginTop: 24, flex: 1, minHeight: 0 }}>
+        <div style={{ marginTop: 24 }}>
           <div style={{ fontSize: 14, fontWeight: 900, opacity: 0.72, marginBottom: 8 }}>Your key issues</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {displayPolicies.map((p, idx) => {
@@ -124,7 +124,7 @@ export const PolicyWrappedSquare: React.FC<PolicyWrappedRenderProps> = ({
           </div>
         </div>
 
-        <div style={{ marginTop: 'auto', paddingTop: 24, opacity: interpolate(frame, [70, 95], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) }}>
+        <div style={{ marginTop: 32, paddingTop: 24, opacity: interpolate(frame, [70, 95], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) }}>
           <div style={{ fontSize: 16, fontWeight: 900, opacity: 0.72 }}>Build yours at</div>
           <div style={{ fontSize: 18, fontWeight: 900, wordBreak: 'break-all' }}>{urlText || '…'}</div>
         </div>
