@@ -16,7 +16,7 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           displayName: 'Your Key Issues',
           label: 'Consensus Seeker',
-          avgConsensusSupport: 75,
+          avgScore: 75,
           policies: [],
           urlText: 'example.com/wrapped',
         }}

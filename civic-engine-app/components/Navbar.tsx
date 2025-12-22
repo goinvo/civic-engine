@@ -36,6 +36,12 @@ export default function Navbar() {
               All Policies
             </Link>
             <Link
+              href="/models"
+              className="text-sm font-medium text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
+            >
+              Models
+            </Link>
+            <Link
               href="/wrapped"
               className="text-sm font-black text-white bg-[#2F3BBD] px-4 py-2 border-2 border-black hover:opacity-90 transition-opacity"
             >
@@ -74,6 +80,13 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 All Policies
+              </Link>
+              <Link
+                href="/models"
+                className="px-4 py-2 text-neutral-dark dark:text-gray-300 hover:bg-neutral-light dark:hover:bg-gray-800 rounded-lg transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Models
               </Link>
               <Link
                 href="/wrapped"

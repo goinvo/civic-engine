@@ -24,11 +24,6 @@ function getOurScore(policy: Policy): number {
   return Math.max(0, 101 - policy.rank);
 }
 
-const RENDERER_URL =
-  // In a static export, this must point to a separate server.
-  // Example: http://localhost:8787
-  process.env.NEXT_PUBLIC_RENDERER_URL;
-
 function useCurrentUrl(): string {
   const [url, setUrl] = useState('');
   useEffect(() => {
@@ -253,11 +248,6 @@ export default function ExportPage() {
   const exportHqMp4OneClick = async (): Promise<void> => {
     if (typeof window === 'undefined') return;
 
-    if (!RENDERER_URL) {
-      setError('HQ video rendering needs a render server. Set NEXT_PUBLIC_RENDERER_URL and try again.');
-      return;
-    }
-
     try {
       setExporting(true);
       setError(null);
@@ -281,9 +271,8 @@ export default function ExportPage() {
         urlText: origin ? `${origin}/wrapped` : undefined,
       };
 
-      // Use job endpoint so we can show progress while rendering.
-      const base = RENDERER_URL.replace(/\/$/, '');
-      const startRes = await fetch(`${base}/jobs/policy-wrapped-square`, {
+      // Start render via Lambda API
+      const startRes = await fetch('/api/render', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -294,76 +283,53 @@ export default function ExportPage() {
         throw new Error(json?.error || `Render failed (${startRes.status})`);
       }
 
-      const { jobId } = (await startRes.json()) as { jobId: string };
-      setRenderStage('bundling');
-      setRenderJobId(jobId);
+      const { renderId, bucketName } = (await startRes.json()) as { renderId: string; bucketName: string };
+      setRenderStage('rendering');
+      setRenderJobId(renderId);
 
-      // Listen for progress via SSE
-      const es = new EventSource(`${base}/jobs/${encodeURIComponent(jobId)}/events`);
-      await new Promise<void>((resolve, reject) => {
-        const handle = (evt: Event) => {
-          try {
-            const raw = (evt as MessageEvent).data;
-            if (typeof raw !== 'string') return;
-            const data = JSON.parse(raw) as { status: string; stage: string; progress: number; error?: string | null };
-            setRenderProgress(Math.max(0, Math.min(1, data.progress ?? 0)));
-            setRenderStage(data.stage || 'rendering');
-
-            if (data.status === 'done') {
-              es.close();
-              resolve();
-            }
-            if (data.status === 'error') {
-              es.close();
-              reject(new Error(data.error || 'Render failed'));
-            }
-          } catch {
-            // ignore parse errors
-          }
-        };
-
-        // Prefer explicit event name, but also handle default "message" just in case.
-        es.addEventListener('progress', handle);
-        es.addEventListener('message', handle);
-
-        es.onerror = () => {
-          // If SSE fails, fall back to polling.
-          es.close();
-          resolve();
-        };
-      });
-
-      // Polling fallback (or SSE unavailable): keep checking status until done.
-      if (renderStage !== 'done') {
-        for (;;) {
-          const statusRes = await fetch(`${base}/jobs/${encodeURIComponent(jobId)}`);
-          if (!statusRes.ok) break;
-          const data = (await statusRes.json()) as { status: string; stage: string; progress: number; error?: string | null };
-          setRenderProgress(Math.max(0, Math.min(1, data.progress ?? 0)));
-          setRenderStage(data.stage || 'rendering');
-          if (data.status === 'done') break;
-          if (data.status === 'error') throw new Error(data.error || 'Render failed');
-          await new Promise((r) => setTimeout(r, 1000));
+      // Poll for progress
+      let outputFile: string | null = null;
+      for (;;) {
+        const statusRes = await fetch(`/api/render/${encodeURIComponent(renderId)}?bucket=${encodeURIComponent(bucketName)}`);
+        if (!statusRes.ok) {
+          const json = (await statusRes.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(json?.error || `Progress check failed (${statusRes.status})`);
         }
+
+        const data = (await statusRes.json()) as {
+          done: boolean;
+          overallProgress: number;
+          outputFile: string | null;
+          fatalErrorEncountered: boolean;
+          errors: Array<{ message: string }>;
+        };
+
+        setRenderProgress(Math.max(0, Math.min(1, data.overallProgress ?? 0)));
+
+        if (data.fatalErrorEncountered) {
+          const errorMsg = data.errors?.[0]?.message || 'Render failed';
+          throw new Error(errorMsg);
+        }
+
+        if (data.done && data.outputFile) {
+          outputFile = data.outputFile;
+          break;
+        }
+
+        await new Promise((r) => setTimeout(r, 1500));
       }
 
-      // Download rendered file
+      // Download the rendered file
       setRenderStage('downloading');
-      const fileRes = await fetch(`${base}/jobs/${encodeURIComponent(jobId)}/file`);
-      if (!fileRes.ok) {
-        const json = (await fileRes.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(json?.error || `Download failed (${fileRes.status})`);
+      if (outputFile) {
+        const a = document.createElement('a');
+        a.href = outputFile;
+        a.download = 'policy-wrapped.mp4';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       }
-
-      const blob = await fileRes.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'policy-wrapped.mp4';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
 
       setRenderStage('done');
       setRenderProgress(1);

@@ -153,14 +153,14 @@ export default function ProfilePage() {
           </button>
           <Link
             href="/export"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
             title="Choose export format and export"
           >
             Export
           </Link>
           <button
             onClick={onCopyLink}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
             type="button"
           >
             <Copy className="w-4 h-4" />
@@ -168,7 +168,7 @@ export default function ProfilePage() {
           </button>
           <button
             onClick={onClear}
-            className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-2 border-black dark:border-gray-600"
+            className="inline-flex items-center justify-center w-10 h-10 bg-white dark:bg-gray-800 text-black dark:text-white font-bold border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
             type="button"
             title="Clear selections"
           >

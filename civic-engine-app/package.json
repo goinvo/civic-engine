@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@remotion/bundler": "4.0.390",
+    "@remotion/lambda": "^4.0.390",
     "@remotion/renderer": "4.0.390",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

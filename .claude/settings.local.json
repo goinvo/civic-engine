@@ -44,7 +44,11 @@
       "Bash(then sed -i \"s|from ''./index''|from ''../index''|g\" \"$file\")",
       "Bash(fi)",
       "Bash(git fetch:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:www.remotion.dev)",
+      "WebFetch(domain:www.remotion.pro)",
+      "Bash(npm uninstall:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
