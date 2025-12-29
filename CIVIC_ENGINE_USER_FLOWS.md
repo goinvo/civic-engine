@@ -367,30 +367,83 @@ This document maps the complete user experience for teachers and students using 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  EXPLORE POLICIES                                           │
+│  CHOOSE YOUR POLICIES                                       │
 │                                                             │
-│  Your class is discussing 8 policies.                       │
-│  Read about each one before forming your position.          │
+│  Your class has 8 policies to discuss. You don't have to    │
+│  engage deeply with all of them — pick the ones that        │
+│  matter to you.                                             │
+│                                                             │
+│  Choose at least 4 policies to focus on. For these, you'll  │
+│  read, answer a quick check, and share your position.       │
+│                                                             │
+│  ─────────────────────────────────────────────────────────  │
+│                                                             │
+│  Which policies do you want to focus on? (pick 4-8)         │
+│                                                             │
+│  ☑ $17 Minimum Wage                                         │
+│    "Affects my paycheck"                                    │
+│                                                             │
+│  ☑ Affordable Housing Supply                                │
+│    "Rent is wild right now"                                 │
+│                                                             │
+│  ☑ Universal Background Checks                              │
+│    "School safety matters to me"                            │
+│                                                             │
+│  ☑ Mental Health 988 Lifeline                               │
+│    "I know people who've needed this"                       │
+│                                                             │
+│  ☐ Right to Repair                                          │
+│  ☐ Junk Fee Prevention                                      │
+│  ☐ Clean Energy Investment                                  │
+│  ☐ Free Community College                                   │
+│                                                             │
+│  Selected: 4 of 8 (minimum met ✓)                           │
+│                                                             │
+│  [Confirm My Choices]                                       │
+│                                                             │
+│  Note: You can still browse the other policies, but you'll  │
+│  only be graded on the ones you choose.                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+After confirming:
+
+┌─────────────────────────────────────────────────────────────┐
+│  YOUR POLICIES                                              │
+│                                                             │
+│  Complete these 4 policies to move on:                      │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │  Universal Background Checks              [Explore] │    │
-│  │  ░░░░░░░░░░ Not started                             │    │
+│  │  $17 Minimum Wage                         [Start]   │    │
+│  │  ○ Read  ○ Quick check  ○ Position                  │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │  Medicare Drug Negotiation                [Explore] │    │
-│  │  ▓▓▓▓▓▓▓▓▓▓ Completed                               │    │
+│  │  Affordable Housing Supply                [Start]   │    │
+│  │  ○ Read  ○ Quick check  ○ Position                  │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │  $17 Minimum Wage                         [Explore] │    │
-│  │  ▓▓▓▓▓░░░░░ In progress                             │    │
+│  │  Universal Background Checks        [In Progress]   │    │
+│  │  ✓ Read  ✓ Quick check  ○ Position                  │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
-│  ... (more policies)                                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Mental Health 988 Lifeline               [Start]   │    │
+│  │  ○ Read  ○ Quick check  ○ Position                  │    │
+│  └─────────────────────────────────────────────────────┘    │
 │                                                             │
-│  Progress: 3/8 policies explored                            │
-│  [Continue to Position Statement] (unlocks after 5/8)       │
+│  ─────────────────────────────────────────────────────────  │
+│                                                             │
+│  OTHER POLICIES (optional — browse anytime)                 │
+│  • Right to Repair                                          │
+│  • Junk Fee Prevention                                      │
+│  • Clean Energy Investment                                  │
+│  • Free Community College                                   │
+│                                                             │
+│  Progress: 0/4 complete                                     │
+│  [Continue to Discussion] (unlocks when all 4 are done)     │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -535,11 +588,23 @@ When expanded:
 │  │     the reading. Explains HOW the policy would      │    │
 │  │     affect people. Shows you thought about it.      │    │
 │  │                                                     │    │
+│  │     Example: "I support raising the minimum wage    │    │
+│  │     because $7.25 hasn't changed since 2009, and    │    │
+│  │     according to the reading, 30 million workers    │    │
+│  │     would get a raise. My sister works two jobs     │    │
+│  │     and still can't afford rent."                   │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐⭐ Okay: Has a reason, but it's vague or doesn't  │    │
 │  │     connect to the actual policy details.           │    │
 │  │                                                     │    │
+│  │     Example: "I support this because workers        │    │
+│  │     deserve more money."                            │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐ Weak: No real reason, or just restates the      │    │
 │  │     position ("I support it because it's good").    │    │
+│  │                                                     │    │
+│  │     Example: "I picked this one because it          │    │
+│  │     seems right."                                   │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  STEELMAN (What's the other side's best argument?)          │
@@ -548,11 +613,23 @@ When expanded:
 │  │     someone might disagree. Uses their real         │    │
 │  │     concerns, not a made-up weak version.           │    │
 │  │                                                     │    │
+│  │     Example: "The strongest argument against is     │    │
+│  │     that $17/hr might work in NYC but could hurt    │    │
+│  │     small businesses in rural areas where cost of   │    │
+│  │     living is lower. A local coffee shop might      │    │
+│  │     have to cut hours or close."                    │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐⭐ Okay: Mentions a counterargument but doesn't   │    │
 │  │     explain it fully or makes it sound dumb.        │    │
 │  │                                                     │    │
+│  │     Example: "Some people say it's bad for          │    │
+│  │     businesses."                                    │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐ Weak: Doesn't engage with the other side, or    │    │
 │  │     just says "some people disagree."               │    │
+│  │                                                     │    │
+│  │     Example: "I don't know why anyone would         │    │
+│  │     disagree with this."                            │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  Note: You're graded on the QUALITY of your thinking,       │
@@ -736,11 +813,23 @@ When expanded:
 │  │     policy. Connects to your life, community, or    │    │
 │  │     values. Shows genuine thought.                  │    │
 │  │                                                     │    │
+│  │     Example: "These three are connected for me.     │    │
+│  │     My sister works full-time but can't afford      │    │
+│  │     her own place because rent is too high and      │    │
+│  │     wages are too low. The stress has really        │    │
+│  │     affected her mental health."                    │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐⭐ Okay: Gives reasons but they're generic or    │    │
 │  │     don't explain why these matter MORE than others.│    │
 │  │                                                     │    │
+│  │     Example: "These are important issues that       │    │
+│  │     affect a lot of people."                        │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐ Weak: No real reasons ("I just picked these")   │    │
 │  │     or joke answers.                                │    │
+│  │                                                     │    │
+│  │     Example: "I picked these because they were      │    │
+│  │     at the top of the list."                        │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  LEARNING REFLECTION (What changed? What did you learn?)    │
@@ -749,11 +838,22 @@ When expanded:
 │  │     your thinking changed. Names what you learned   │    │
 │  │     from a classmate or from the reading.           │    │
 │  │                                                     │    │
+│  │     Example: "I went from 'strongly support' to     │    │
+│  │     'somewhat support' on minimum wage after        │    │
+│  │     Jordan pointed out it might hurt small towns.   │    │
+│  │     I still support raising it, but now I think     │    │
+│  │     maybe it should vary by location."              │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐⭐ Okay: Says something changed but doesn't      │    │
 │  │     explain what or why.                            │    │
 │  │                                                     │    │
+│  │     Example: "I learned some new things and         │    │
+│  │     changed my mind a little."                      │    │
+│  │ ─────────────────────────────────────────────────── │    │
 │  │ ⭐ Weak: "Nothing changed" with no reflection, or  │    │
 │  │     clearly didn't engage with the process.         │    │
+│  │                                                     │    │
+│  │     Example: "I didn't learn anything new."         │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  Note: It's fine if your positions DIDN'T change — just     │
