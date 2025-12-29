@@ -14,4 +14,19 @@ export type PolicyWrappedRenderProps = {
   urlText?: string;
 };
 
+export type CivicProfileRenderProps = {
+  studentName: string;
+  topPriorities: Array<{
+    id: string;
+    title: string;
+  }>;
+  quote: string;
+  stats: {
+    policiesExplored: number;
+    discussionsJoined: number;
+    positionsRevised: number;
+  };
+  urlText?: string;
+};
+
 

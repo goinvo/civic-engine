@@ -48,7 +48,11 @@
       "WebFetch(domain:www.remotion.dev)",
       "WebFetch(domain:www.remotion.pro)",
       "Bash(npm uninstall:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npx remotion lambda --help:*)",
+      "Bash(npx remotion lambda sites --help:*)",
+      "Bash(npx remotion lambda)",
+      "Bash(npx remotion:*)"
     ],
     "deny": [],
     "ask": []

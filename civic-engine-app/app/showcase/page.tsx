@@ -1,0 +1,1034 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import {
+  ChevronRight,
+  Palette,
+  Users,
+  GraduationCap,
+  MessageSquare,
+  ClipboardCheck,
+  Award,
+  PieChart,
+  Play,
+  Pause,
+  RotateCcw,
+  Sparkles
+} from 'lucide-react';
+
+// UI Components
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  Input,
+  Textarea,
+  Modal,
+  ConfirmModal,
+  Tooltip,
+  DefinitionTooltip,
+  Badge,
+  Progress,
+  StepProgress,
+} from '@/components/education/ui';
+
+// Teacher Components
+import {
+  CohortCard,
+  CohortCardCompact,
+  CreateCohortModal,
+  PolicySetSelector,
+} from '@/components/education/teacher';
+
+// Student Components
+import {
+  JoinClassForm,
+  PolicyPicker,
+  PolicyProgress,
+  PolicyExplorer,
+  PositionForm,
+  PositionRevisionForm,
+  DiscussionView,
+  ReflectionForm,
+  CivicProfile,
+  CivicProfileShareCardVideo,
+} from '@/components/education/student';
+
+import { Cohort, DiscussionThread } from '@/types/education';
+import { cn } from '@/lib/utils';
+
+// Visualizations
+import { ArchetypeRadarChart } from '@/components/v2/ArchetypeRadarChart';
+import { V2FactorScores, V2WeightProfile } from '@/types/consensus';
+
+// Section navigation
+const SECTIONS = [
+  { id: 'primitives', label: 'UI Primitives', icon: Palette },
+  { id: 'visualizations', label: 'Visualizations', icon: PieChart },
+  { id: 'teacher', label: 'Teacher Flow', icon: Users },
+  { id: 'student-join', label: 'Student Join', icon: GraduationCap },
+  { id: 'student-explore', label: 'Policy Exploration', icon: ClipboardCheck },
+  { id: 'student-discuss', label: 'Discussion', icon: MessageSquare },
+  { id: 'student-reflect', label: 'Reflection', icon: Award },
+];
+
+export default function ShowcasePage() {
+  const [activeSection, setActiveSection] = useState('primitives');
+
+  return (
+    <div className="min-h-screen bg-neutral-light dark:bg-gray-950">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b-2 border-black dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-display text-2xl font-black text-neutral-dark dark:text-white">
+                Civic Engine Education
+              </h1>
+              <p className="text-sm text-neutral dark:text-gray-400">
+                Component Showcase
+              </p>
+            </div>
+            <Badge variant="outline">Portfolio Demo</Badge>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Section Navigation */}
+        <nav className="flex flex-wrap gap-2 mb-8">
+          {SECTIONS.map((section) => {
+            const Icon = section.icon;
+            return (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={cn(
+                  'flex items-center gap-2 px-4 py-2 font-medium transition-all',
+                  activeSection === section.id
+                    ? 'bg-[#2F3BBD] text-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                    : 'bg-white dark:bg-gray-800 text-neutral-dark dark:text-gray-300 border-2 border-black dark:border-gray-600 hover:bg-gray-50 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[1px] hover:-translate-y-[1px]'
+                )}
+              >
+                <Icon className="w-4 h-4" />
+                {section.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Content */}
+        <motion.div
+          key={activeSection}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {activeSection === 'primitives' && <PrimitivesSection />}
+          {activeSection === 'visualizations' && <VisualizationsSection />}
+          {activeSection === 'teacher' && <TeacherSection />}
+          {activeSection === 'student-join' && <StudentJoinSection />}
+          {activeSection === 'student-explore' && <StudentExploreSection />}
+          {activeSection === 'student-discuss' && <StudentDiscussSection />}
+          {activeSection === 'student-reflect' && <StudentReflectSection />}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: UI Primitives
+// ============================================
+
+function PrimitivesSection() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [textareaValue, setTextareaValue] = useState('');
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="UI Primitives"
+        description="Core building blocks that follow the neobrutalist design system"
+      />
+
+      {/* Buttons */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Buttons</h3>
+        <div className="flex flex-wrap gap-4">
+          <Button variant="primary">Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+          <Button variant="danger">Danger</Button>
+          <Button variant="primary" isLoading>Loading</Button>
+          <Button variant="primary" disabled>Disabled</Button>
+        </div>
+        <div className="flex flex-wrap gap-4 mt-4">
+          <Button size="sm">Small</Button>
+          <Button size="md">Medium</Button>
+          <Button size="lg">Large</Button>
+          <Button leftIcon={<ChevronRight className="w-4 h-4" />}>With Icon</Button>
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Cards</h3>
+        <div className="grid md:grid-cols-3 gap-4">
+          <Card variant="default" padding="md">
+            <CardHeader>
+              <CardTitle>Default Card</CardTitle>
+              <CardDescription>Standard shadow and border</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-neutral">Card content goes here.</p>
+            </CardContent>
+          </Card>
+          <Card variant="elevated" padding="md">
+            <CardHeader>
+              <CardTitle>Elevated Card</CardTitle>
+              <CardDescription>Larger shadow for emphasis</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-neutral">More prominent styling.</p>
+            </CardContent>
+          </Card>
+          <Card variant="outlined" padding="md">
+            <CardHeader>
+              <CardTitle>Outlined Card</CardTitle>
+              <CardDescription>Subtle border, no shadow</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-neutral">Lighter visual weight.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Inputs */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Form Inputs</h3>
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl">
+          <Input
+            label="Text Input"
+            placeholder="Enter something..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            hint="This is a helpful hint"
+          />
+          <Input
+            label="With Error"
+            placeholder="Invalid input"
+            error="This field is required"
+          />
+          <div className="md:col-span-2">
+            <Textarea
+              label="Textarea with Counter"
+              placeholder="Write your thoughts..."
+              value={textareaValue}
+              onChange={(e) => setTextareaValue(e.target.value)}
+              rows={3}
+              charCount
+              maxLength={500}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Badges */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Badges</h3>
+        <div className="flex flex-wrap gap-3">
+          <Badge variant="default">Default</Badge>
+          <Badge variant="primary">Primary</Badge>
+          <Badge variant="secondary">Secondary</Badge>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="warning">Warning</Badge>
+          <Badge variant="danger">Danger</Badge>
+          <Badge variant="outline">Outline</Badge>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Progress</h3>
+        <div className="space-y-4 max-w-md">
+          <Progress value={25} showLabel label="Getting started" />
+          <Progress value={50} variant="primary" showLabel label="Halfway there" />
+          <Progress value={75} variant="success" showLabel label="Almost done" />
+          <Progress value={100} variant="success" showLabel label="Complete!" />
+        </div>
+        <div className="mt-6 max-w-md">
+          <h4 className="font-medium mb-2">Step Progress</h4>
+          <StepProgress
+            currentStep={2}
+            totalSteps={5}
+            steps={['Read', 'Quiz', 'Position', 'Discuss', 'Reflect']}
+          />
+        </div>
+      </div>
+
+      {/* Tooltips */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Tooltips</h3>
+        <div className="flex flex-wrap gap-6">
+          <Tooltip content="This is a tooltip!">
+            <span className="underline cursor-help">Hover me</span>
+          </Tooltip>
+          <span>
+            The{' '}
+            <DefinitionTooltip
+              term="federal minimum wage"
+              definition="The lowest hourly pay allowed by U.S. law. States can set their own minimum wage higher, but not lower."
+            >
+              federal minimum wage
+            </DefinitionTooltip>{' '}
+            is currently $7.25.
+          </span>
+        </div>
+      </div>
+
+      {/* Modals */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Modals</h3>
+        <div className="flex gap-4">
+          <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
+          <Button variant="danger" onClick={() => setConfirmOpen(true)}>
+            Delete Something
+          </Button>
+        </div>
+
+        <Modal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title="Example Modal"
+          description="This is a modal dialog"
+        >
+          <p className="text-neutral mb-4">
+            Modal content goes here. You can put any components inside.
+          </p>
+          <Button onClick={() => setModalOpen(false)}>Close</Button>
+        </Modal>
+
+        <ConfirmModal
+          isOpen={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={() => setConfirmOpen(false)}
+          title="Confirm Deletion"
+          message="Are you sure you want to delete this? This action cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          variant="danger"
+        />
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Visualizations
+// ============================================
+
+function VisualizationsSection() {
+  // Sample policy factor scores (simulating a policy like Medicare Drug Negotiation)
+  const mockPolicyScores: V2FactorScores = {
+    hayek: 0.35,      // Moderate central coordination
+    ostrom: 0.70,     // Federal policy for federal issue
+    downs: 0.80,      // Fairly clear trade-offs
+    olson: 0.55,      // Pharma lobbying risk
+    keynes: 0.60,     // Some stabilizing effect
+    pettit: 0.75,     // Reduces dependence on employers
+    hirschman: 0.50,  // Mixed exit options
+    buchanan: 0.45,   // Pharma industry losers
+    polanyi: 0.85,    // Protects essential healthcare
+    rawls: 0.80,      // Benefits those struggling with costs
+    george: 0.70,     // Targets pharmaceutical rents
+    acemoglu: 0.60,   // Opens access somewhat
+    walzer: 0.75,     // Healthcare on need-basis
+  };
+
+  // Sample user weight profile (Progressive archetype)
+  const mockUserWeights: V2WeightProfile = {
+    hayek: 0.05,
+    ostrom: 0.08,
+    downs: 0.06,
+    olson: 0.07,
+    keynes: 0.08,
+    pettit: 0.10,
+    hirschman: 0.06,
+    buchanan: 0.05,
+    polanyi: 0.12,
+    rawls: 0.15,
+    george: 0.08,
+    acemoglu: 0.05,
+    walzer: 0.05,
+  };
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Visualizations"
+        description="Data visualizations for policy analysis and user profiles"
+      />
+
+      {/* Radar Chart */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Policy Radar Chart</h3>
+        <p className="text-neutral dark:text-gray-400 mb-4">
+          Shows policy scores across 13 economic/political factors, with optional user weight overlay.
+        </p>
+        <div className="grid md:grid-cols-2 gap-8">
+          <Card variant="default" padding="lg">
+            <h4 className="font-bold mb-2">Policy Scores Only</h4>
+            <p className="text-sm text-neutral mb-4">Medicare Drug Price Negotiation</p>
+            <ArchetypeRadarChart
+              factorScores={mockPolicyScores}
+              showWeights={false}
+            />
+          </Card>
+          <Card variant="default" padding="lg">
+            <h4 className="font-bold mb-2">With User Priorities Overlay</h4>
+            <p className="text-sm text-neutral mb-4">
+              <span className="inline-block w-3 h-3 bg-[#2F3BBD] mr-1" /> Policy Score
+              <span className="inline-block w-3 h-3 bg-[#C91A2B] ml-3 mr-1 opacity-50" /> Your Priorities
+            </p>
+            <ArchetypeRadarChart
+              factorScores={mockPolicyScores}
+              weights={mockUserWeights}
+              showWeights={true}
+            />
+          </Card>
+        </div>
+      </div>
+
+      {/* Factor Legend */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Factor Reference</h3>
+        <div className="grid md:grid-cols-3 gap-4">
+          <Card variant="outlined" padding="md">
+            <h4 className="font-bold text-[#2F3BBD] mb-2">Mechanics & Structure</h4>
+            <ul className="text-sm space-y-1 text-neutral dark:text-gray-400">
+              <li><strong>Hayek:</strong> Info Feasibility</li>
+              <li><strong>Ostrom:</strong> Scale Match</li>
+              <li><strong>Downs:</strong> Legibility</li>
+              <li><strong>Olson:</strong> Anti-Capture</li>
+              <li><strong>Keynes:</strong> Stability</li>
+            </ul>
+          </Card>
+          <Card variant="outlined" padding="md">
+            <h4 className="font-bold text-[#2F3BBD] mb-2">Rights & Dynamics</h4>
+            <ul className="text-sm space-y-1 text-neutral dark:text-gray-400">
+              <li><strong>Pettit:</strong> Non-Domination</li>
+              <li><strong>Hirschman:</strong> Exit/Voice</li>
+              <li><strong>Buchanan:</strong> Consent</li>
+              <li><strong>Polanyi:</strong> Protection</li>
+            </ul>
+          </Card>
+          <Card variant="outlined" padding="md">
+            <h4 className="font-bold text-[#2F3BBD] mb-2">Justice & Distribution</h4>
+            <ul className="text-sm space-y-1 text-neutral dark:text-gray-400">
+              <li><strong>Rawls:</strong> The Floor</li>
+              <li><strong>George:</strong> Rent Target</li>
+              <li><strong>Acemoglu:</strong> Inclusivity</li>
+              <li><strong>Walzer:</strong> Sphere Justice</li>
+            </ul>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Teacher Flow
+// ============================================
+
+function TeacherSection() {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  const mockCohorts: Cohort[] = [
+    {
+      id: '1',
+      teacherId: 't1',
+      name: 'Period 3 - US Government',
+      gradeLevel: '11-12',
+      joinCode: 'ABC-1234',
+      status: 'active',
+      currentPhase: 'discussion',
+      studentCount: 24,
+      createdAt: new Date(),
+      startDate: new Date('2024-01-15'),
+      endDate: new Date('2024-01-29'),
+    },
+    {
+      id: '2',
+      teacherId: 't1',
+      name: 'Period 5 - US Government',
+      gradeLevel: '11-12',
+      joinCode: 'XYZ-5678',
+      status: 'active',
+      currentPhase: 'not_started',
+      studentCount: 22,
+      createdAt: new Date(),
+    },
+  ];
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Teacher Flow"
+        description="Dashboard, class management, and policy configuration"
+      />
+
+      {/* Cohort Cards */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-lg">Class Cards</h3>
+          <Button onClick={() => setCreateModalOpen(true)}>+ New Class</Button>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          {mockCohorts.map((cohort) => (
+            <CohortCard
+              key={cohort.id}
+              cohort={cohort}
+              onViewClass={() => {}}
+              onConfigure={() => {}}
+              onViewAnalytics={() => {}}
+              onViewGuide={() => {}}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Compact Cards */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Compact Cards (for lists)</h3>
+        <div className="space-y-2 max-w-md">
+          {mockCohorts.map((cohort) => (
+            <CohortCardCompact key={cohort.id} cohort={cohort} onClick={() => {}} />
+          ))}
+        </div>
+      </div>
+
+      {/* Policy Set Selector */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Policy Set Selector</h3>
+        <PolicySetSelector onSelect={(ids) => console.log('Selected:', ids)} />
+      </div>
+
+      {/* Create Modal */}
+      <CreateCohortModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onCreateCohort={async (data) => {
+          console.log('Creating cohort:', data);
+          return { joinCode: 'NEW-1234', cohortId: 'new-id' };
+        }}
+      />
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Student Join
+// ============================================
+
+function StudentJoinSection() {
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Student Join Flow"
+        description="Join a class, create profile, and get started"
+      />
+
+      <div className="max-w-md mx-auto">
+        <JoinClassForm
+          onJoin={async (code, profile) => {
+            console.log('Joining with:', code, profile);
+            return { className: 'Period 3 - US Government', teacherName: 'Ms. Johnson' };
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Student Explore
+// ============================================
+
+function StudentExploreSection() {
+  const [view, setView] = useState<'picker' | 'progress' | 'explorer' | 'position'>('picker');
+
+  const mockPolicies = [
+    { id: 'min-wage', title: '$17 Minimum Wage', hook: 'Affects my paycheck', category: 'economy' },
+    { id: 'housing', title: 'Affordable Housing Supply', hook: 'Rent is wild right now', category: 'housing' },
+    { id: 'background-checks', title: 'Universal Background Checks', hook: 'School safety matters to me', category: 'safety' },
+    { id: 'mental-health', title: 'Mental Health 988 Lifeline', hook: 'I know people who\'ve needed this', category: 'health' },
+    { id: 'right-to-repair', title: 'Right to Repair', hook: 'My phone, my rules', category: 'tech' },
+    { id: 'junk-fees', title: 'Junk Fee Prevention', hook: 'Concert tickets are ridiculous', category: 'consumer' },
+    { id: 'clean-energy', title: 'Clean Energy Investment', hook: 'My future climate', category: 'environment' },
+    { id: 'community-college', title: 'Free Community College', hook: 'My next step', category: 'education' },
+  ];
+
+  const mockPolicyContent = {
+    id: 'min-wage',
+    title: '$17 Minimum Wage',
+    summary: {
+      simplified: 'This would make the lowest pay $17 per hour. Right now it\'s $7.25.',
+      standard: 'This policy would raise the federal minimum wage to $17 per hour. Right now, it\'s $7.25 — and hasn\'t changed since 2009. Some states already have higher minimums (like California at $16), but many states follow the federal floor.',
+      advanced: 'The proposed legislation would incrementally raise the federal minimum wage to $17/hour by 2028, indexed to median wage growth thereafter. The current federal minimum of $7.25/hour (unchanged since 2009) represents a 40-year inflation-adjusted low. Analysis suggests this would affect approximately 30 million workers, with varying regional impacts based on local cost-of-living differentials.',
+    },
+    supporters: [
+      'Workers in low-wage jobs',
+      'Labor unions',
+      'Many economists (argue it boosts spending)',
+    ],
+    opponents: [
+      'Some small business owners (worried about costs)',
+      'Some economists (argue it could reduce jobs)',
+      'Businesses in areas with lower cost of living',
+    ],
+    tradeoffs: {
+      benefits: [
+        'Higher pay for ~30 million workers',
+        'Less reliance on government assistance programs',
+        'More money flowing into local economies',
+      ],
+      concerns: [
+        'Some businesses might cut hours or jobs',
+        'Prices could rise to cover higher labor costs',
+        'Impact varies a lot by region (NYC vs. rural Ohio)',
+      ],
+    },
+    discussionPrompts: [
+      'Should the minimum wage be the same everywhere, or should it vary by cost of living?',
+      'If you work 40 hours a week, what should you be able to afford?',
+      'Who\'s responsible for making sure workers can live on their wages — employers, government, or both?',
+    ],
+    digDeeper: [
+      {
+        title: 'History of the minimum wage',
+        content: 'The federal minimum wage was first established in 1938 at $0.25/hour. It has been raised 22 times, most recently in 2009.',
+      },
+    ],
+    terms: [
+      { term: 'federal minimum wage', definition: 'The lowest hourly pay allowed by U.S. law. States can set their own minimum wage higher, but not lower.' },
+    ],
+  };
+
+  const mockQuestions = [
+    {
+      id: 'q1',
+      question: 'What is the current federal minimum wage?',
+      options: ['$7.25', '$12.00', '$15.00', '$17.00'],
+      correctIndex: 0,
+      explanation: 'The federal minimum wage is $7.25 and hasn\'t changed since 2009.',
+    },
+    {
+      id: 'q2',
+      question: 'One argument AGAINST raising the minimum wage is:',
+      options: [
+        'Workers would make more money',
+        'Some businesses might cut jobs or hours',
+        'It hasn\'t changed since 2009',
+      ],
+      correctIndex: 1,
+      explanation: 'Critics argue that higher labor costs could lead some businesses to reduce hours or positions.',
+    },
+    {
+      id: 'q3',
+      question: 'True or False: States can set their own minimum wage lower than the federal minimum.',
+      options: ['True', 'False'],
+      correctIndex: 1,
+      explanation: 'States can set their minimum wage higher than federal, but not lower.',
+    },
+  ];
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Policy Exploration"
+        description="Choose policies, read content, take comprehension checks, state positions"
+      />
+
+      {/* View switcher */}
+      <div className="flex gap-2 mb-6">
+        <Button
+          variant={view === 'picker' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('picker')}
+        >
+          Policy Picker
+        </Button>
+        <Button
+          variant={view === 'progress' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('progress')}
+        >
+          Progress Tracker
+        </Button>
+        <Button
+          variant={view === 'explorer' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('explorer')}
+        >
+          Policy Explorer
+        </Button>
+        <Button
+          variant={view === 'position' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('position')}
+        >
+          Position Form
+        </Button>
+      </div>
+
+      {view === 'picker' && (
+        <PolicyPicker
+          policies={mockPolicies}
+          onConfirm={(ids) => console.log('Selected:', ids)}
+        />
+      )}
+
+      {view === 'progress' && (
+        <PolicyProgress
+          policies={[
+            { id: 'min-wage', title: '$17 Minimum Wage', completed: { read: true, comprehension: true, position: true } },
+            { id: 'housing', title: 'Affordable Housing Supply', completed: { read: true, comprehension: true, position: false } },
+            { id: 'background-checks', title: 'Universal Background Checks', completed: { read: true, comprehension: false, position: false } },
+            { id: 'mental-health', title: 'Mental Health 988 Lifeline', completed: { read: false, comprehension: false, position: false } },
+          ]}
+          onPolicyClick={(id) => console.log('Clicked:', id)}
+        />
+      )}
+
+      {view === 'explorer' && (
+        <PolicyExplorer
+          policy={mockPolicyContent}
+          questions={mockQuestions}
+          onComplete={(score) => console.log('Completed with score:', score)}
+          onBack={() => setView('progress')}
+        />
+      )}
+
+      {view === 'position' && (
+        <PositionForm
+          policyId="min-wage"
+          policyTitle="$17 Minimum Wage"
+          onSubmit={(data) => console.log('Position submitted:', data)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Student Discuss
+// ============================================
+
+function StudentDiscussSection() {
+  const mockThreads: DiscussionThread[] = [
+    {
+      post: {
+        id: 'p1',
+        cohortId: 'c1',
+        policyId: 'min-wage',
+        authorId: 'u1',
+        authorName: 'Alex M.',
+        authorStance: 'somewhat_support',
+        content: 'I think this makes sense because we\'re already paying for Medicare with taxes, so why should we pay more than we have to? But I want to know more about the innovation argument.',
+        createdAt: new Date(Date.now() - 3600000),
+        isFlagged: false,
+        replyCount: 2,
+      },
+      replies: [
+        {
+          id: 'r1',
+          cohortId: 'c1',
+          policyId: 'min-wage',
+          authorId: 'u2',
+          authorName: 'Sam K.',
+          parentId: 'p1',
+          content: 'But doesn\'t the VA already negotiate and they still get new drugs? I read that somewhere.',
+          createdAt: new Date(Date.now() - 1800000),
+          isFlagged: false,
+          replyCount: 0,
+        },
+      ],
+    },
+    {
+      post: {
+        id: 'p2',
+        cohortId: 'c1',
+        policyId: 'min-wage',
+        authorId: 'u3',
+        authorName: 'Jordan T.',
+        authorStance: 'somewhat_oppose',
+        content: 'My uncle works in pharma research and he says that if drug prices go down, companies will cut research budgets first. I\'m not sure that\'s worth it even if prices go down.',
+        createdAt: new Date(Date.now() - 7200000),
+        isFlagged: false,
+        replyCount: 1,
+      },
+      replies: [],
+    },
+  ];
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Discussion"
+        description="Threaded conversations with stance visibility"
+      />
+
+      <DiscussionView
+        policyId="min-wage"
+        policyTitle="$17 Minimum Wage"
+        posts={mockThreads}
+        stanceDistribution={{ support: 72, neutral: 12, oppose: 16 }}
+        totalParticipants={23}
+        currentUserId="current-user"
+        onPostComment={async (content, parentId) => {
+          console.log('Posting:', content, parentId);
+        }}
+        onFlagPost={(postId) => console.log('Flagging:', postId)}
+      />
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Student Reflect
+// ============================================
+
+function StudentReflectSection() {
+  const [view, setView] = useState<'revision' | 'reflection' | 'profile'>('revision');
+  const [profileMode, setProfileMode] = useState<'static' | 'animated'>('animated');
+  const [animT, setAnimT] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true); // Autoplay
+
+  const mockPolicies = [
+    { id: 'min-wage', title: '$17 Minimum Wage' },
+    { id: 'housing', title: 'Affordable Housing Supply' },
+    { id: 'background-checks', title: 'Universal Background Checks' },
+    { id: 'mental-health', title: 'Mental Health 988 Lifeline' },
+  ];
+
+  const mockProfileData = {
+    studentName: 'Alex',
+    topPriorities: [
+      { id: 'min-wage', title: '$17 Minimum Wage' },
+      { id: 'housing', title: 'Affordable Housing Supply' },
+      { id: 'mental-health', title: 'Mental Health 988 Lifeline' },
+    ],
+    quote: "These three are connected for me. My older sister works full-time but can't afford her own place because rent is too high and wages are too low.",
+    stats: {
+      policiesExplored: 8,
+      discussionsJoined: 6,
+      positionsRevised: 2,
+    },
+  };
+
+  // Animation playback effect
+  useEffect(() => {
+    if (!isPlaying || profileMode !== 'animated') return;
+    const duration = 5000; // 5 seconds total animation
+    const startTime = Date.now() - animT * duration;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      setAnimT(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setIsPlaying(false);
+      }
+    };
+
+    const frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [isPlaying, animT, profileMode]);
+
+  // Autoplay when switching to profile view with animated mode
+  useEffect(() => {
+    if (view === 'profile' && profileMode === 'animated') {
+      setAnimT(0);
+      setIsPlaying(true);
+    }
+  }, [view, profileMode]);
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Reflection & Profile"
+        description="Revise positions, final reflection, shareable civic profile"
+      />
+
+      {/* View switcher */}
+      <div className="flex gap-2 mb-6">
+        <Button
+          variant={view === 'revision' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('revision')}
+        >
+          Position Revision
+        </Button>
+        <Button
+          variant={view === 'reflection' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('reflection')}
+        >
+          Final Reflection
+        </Button>
+        <Button
+          variant={view === 'profile' ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setView('profile')}
+        >
+          Civic Profile
+        </Button>
+      </div>
+
+      {view === 'revision' && (
+        <div className="max-w-2xl mx-auto">
+          <h3 className="font-display text-xl font-black mb-4">Reflect & Revise</h3>
+          <p className="text-neutral mb-6">
+            You&apos;ve discussed these policies with your classmates. Has your thinking changed?
+          </p>
+          <PositionRevisionForm
+            policyId="min-wage"
+            policyTitle="$17 Minimum Wage"
+            originalStance="strongly_support"
+            onSubmit={(data) => console.log('Revision:', data)}
+          />
+        </div>
+      )}
+
+      {view === 'reflection' && (
+        <ReflectionForm
+          policies={mockPolicies}
+          onSubmit={(data) => console.log('Reflection:', data)}
+        />
+      )}
+
+      {view === 'profile' && (
+        <div className="max-w-2xl mx-auto">
+          {/* Mode toggle */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-sm font-bold">Mode:</span>
+            <button
+              type="button"
+              onClick={() => setProfileMode('static')}
+              className={cn(
+                'text-sm font-bold px-3 py-1 border-2 border-black',
+                profileMode === 'static' ? 'bg-gray-200' : 'bg-white'
+              )}
+            >
+              Static
+            </button>
+            <button
+              type="button"
+              onClick={() => setProfileMode('animated')}
+              className={cn(
+                'text-sm font-bold px-3 py-1 border-2 border-black flex items-center gap-1',
+                profileMode === 'animated' ? 'bg-gray-200' : 'bg-white'
+              )}
+            >
+              <Sparkles className="w-3 h-3" />
+              Animated
+            </button>
+          </div>
+
+          {/* Profile display */}
+          {profileMode === 'static' ? (
+            <CivicProfile {...mockProfileData} />
+          ) : (
+            <div className="relative">
+              {/* Animated card container */}
+              <div className="border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden" style={{ aspectRatio: '1/1' }}>
+                <CivicProfileShareCardVideo
+                  {...mockProfileData}
+                  t={animT}
+                  urlText="civic-engine.app"
+                />
+              </div>
+
+              {/* Playback controls */}
+              <div className="mt-4 p-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (animT >= 1) setAnimT(0);
+                      setIsPlaying(!isPlaying);
+                    }}
+                    className="p-2 bg-[#2F3BBD] text-white border-2 border-black hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  >
+                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setAnimT(0);
+                      setTimeout(() => setIsPlaying(true), 50);
+                    }}
+                    className="p-2 bg-white border-2 border-black hover:bg-gray-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                    title="Restart"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 h-4 bg-gray-200 border-2 border-black relative">
+                    <div
+                      className="absolute inset-y-0 left-0 bg-[#2F3BBD]"
+                      style={{ width: `${animT * 100}%` }}
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={animT}
+                      onChange={(e) => {
+                        setIsPlaying(false);
+                        setAnimT(parseFloat(e.target.value));
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                  <span className="text-sm font-mono font-black text-black w-12 text-right">
+                    {(animT * 5).toFixed(1)}s
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================
+// Helper Components
+// ============================================
+
+function SectionHeader({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="border-b-2 border-black dark:border-gray-700 pb-4 mb-8">
+      <h2 className="font-display text-3xl font-black text-neutral-dark dark:text-white">
+        {title}
+      </h2>
+      <p className="text-neutral dark:text-gray-400 mt-1">{description}</p>
+    </div>
+  );
+}
