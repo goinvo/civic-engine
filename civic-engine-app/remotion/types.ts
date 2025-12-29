@@ -29,4 +29,19 @@ export type CivicProfileRenderProps = {
   urlText?: string;
 };
 
-
+export type ClassProfileRenderProps = {
+  teacherName: string;
+  className: string;
+  topPolicies: Array<{
+    id: string;
+    title: string;
+    studentCount: number;
+  }>;
+  stats: {
+    totalStudents: number;
+    positionsSubmitted: number;
+    discussionPosts: number;
+    positionsRevised: number;
+  };
+  urlText?: string;
+};

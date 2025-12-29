@@ -2,7 +2,8 @@ import React from 'react';
 import { Composition } from 'remotion';
 import { PolicyWrappedSquare } from './PolicyWrappedSquare';
 import { CivicProfileVideo } from './CivicProfileVideo';
-import type { PolicyWrappedRenderProps, CivicProfileRenderProps } from './types';
+import { ClassProfileVideo } from './ClassProfileVideo';
+import type { PolicyWrappedRenderProps, CivicProfileRenderProps, ClassProfileRenderProps } from './types';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -36,11 +37,35 @@ export const RemotionRoot: React.FC = () => {
             { id: '2', title: 'Affordable Housing Supply' },
             { id: '3', title: 'Mental Health 988 Lifeline' },
           ],
-          quote: 'These three are connected for me. My older sister works full-time but can\'t afford her own place.',
+          quote: 'These three issues are all connected for me. My older sister works full-time but still can\'t afford her own place. She has to juggle multiple jobs and still struggles to pay for healthcare. I think if we addressed housing and wages together, it would help so many families like mine.',
           stats: {
             policiesExplored: 8,
             discussionsJoined: 6,
             positionsRevised: 2,
+          },
+          urlText: 'civic-engine.app',
+        }}
+      />
+      <Composition
+        id="ClassProfile"
+        component={ClassProfileVideo}
+        durationInFrames={150}
+        fps={30}
+        width={1080}
+        height={1080}
+        defaultProps={{
+          teacherName: 'Ms. Johnson',
+          className: 'AP Government Period 3',
+          topPolicies: [
+            { id: '1', title: '$17 Minimum Wage', studentCount: 18 },
+            { id: '2', title: 'Universal Background Checks', studentCount: 15 },
+            { id: '3', title: 'Medicare Drug Negotiation', studentCount: 12 },
+          ],
+          stats: {
+            totalStudents: 28,
+            positionsSubmitted: 168,
+            discussionPosts: 94,
+            positionsRevised: 23,
           },
           urlText: 'civic-engine.app',
         }}

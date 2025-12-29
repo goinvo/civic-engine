@@ -34,6 +34,8 @@ import {
   Badge,
   Progress,
   StepProgress,
+  Banner,
+  InlineBanner,
 } from '@/components/education/ui';
 
 // Teacher Components
@@ -42,6 +44,7 @@ import {
   CohortCardCompact,
   CreateCohortModal,
   PolicySetSelector,
+  ClassProfileShareCardVideo,
 } from '@/components/education/teacher';
 
 // Student Components
@@ -74,6 +77,7 @@ const SECTIONS = [
   { id: 'student-explore', label: 'Policy Exploration', icon: ClipboardCheck },
   { id: 'student-discuss', label: 'Discussion', icon: MessageSquare },
   { id: 'student-reflect', label: 'Reflection', icon: Award },
+  { id: 'share-cards', label: 'Share Cards', icon: Sparkles },
 ];
 
 export default function ShowcasePage() {
@@ -104,19 +108,15 @@ export default function ShowcasePage() {
           {SECTIONS.map((section) => {
             const Icon = section.icon;
             return (
-              <button
+              <Button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2 font-medium transition-all',
-                  activeSection === section.id
-                    ? 'bg-[#2F3BBD] text-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
-                    : 'bg-white dark:bg-gray-800 text-neutral-dark dark:text-gray-300 border-2 border-black dark:border-gray-600 hover:bg-gray-50 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[1px] hover:-translate-y-[1px]'
-                )}
+                variant={activeSection === section.id ? 'primary' : 'secondary'}
+                size="sm"
+                leftIcon={<Icon className="w-4 h-4" />}
               >
-                <Icon className="w-4 h-4" />
                 {section.label}
-              </button>
+              </Button>
             );
           })}
         </nav>
@@ -135,6 +135,7 @@ export default function ShowcasePage() {
           {activeSection === 'student-explore' && <StudentExploreSection />}
           {activeSection === 'student-discuss' && <StudentDiscussSection />}
           {activeSection === 'student-reflect' && <StudentReflectSection />}
+          {activeSection === 'share-cards' && <ShareCardsSection />}
         </motion.div>
       </div>
     </div>
@@ -292,6 +293,36 @@ function PrimitivesSection() {
             </DefinitionTooltip>{' '}
             is currently $7.25.
           </span>
+        </div>
+      </div>
+
+      {/* Banners */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Banners</h3>
+        <div className="space-y-4 max-w-2xl">
+          <Banner variant="info" title="Information">
+            This is an informational banner for general updates or notices.
+          </Banner>
+          <Banner variant="tip">
+            <strong>Tip:</strong> See an underlined word? Tap or hover for a definition.
+          </Banner>
+          <Banner variant="warning" title="Warning">
+            Please save your work before continuing to the next section.
+          </Banner>
+          <Banner variant="success" title="Success">
+            Your position has been submitted successfully!
+          </Banner>
+          <Banner variant="error" title="Error">
+            Unable to save your response. Please try again.
+          </Banner>
+          <div className="pt-2">
+            <h4 className="font-medium mb-2">Inline Banners</h4>
+            <div className="flex flex-wrap gap-3">
+              <InlineBanner variant="info">3 new comments</InlineBanner>
+              <InlineBanner variant="success">Completed</InlineBanner>
+              <InlineBanner variant="warning">Needs review</InlineBanner>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -828,7 +859,7 @@ function StudentReflectSection() {
       { id: 'housing', title: 'Affordable Housing Supply' },
       { id: 'mental-health', title: 'Mental Health 988 Lifeline' },
     ],
-    quote: "These three are connected for me. My older sister works full-time but can't afford her own place because rent is too high and wages are too low.",
+    quote: "These three issues are all connected for me. My older sister works full-time but still can't afford her own place. She has to juggle multiple jobs and still struggles to pay for healthcare. I think if we addressed housing and wages together, it would help so many families like mine.",
     stats: {
       policiesExplored: 8,
       discussionsJoined: 6,
@@ -1014,6 +1045,229 @@ function StudentReflectSection() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Share Cards
+// ============================================
+
+function ShareCardsSection() {
+  const [studentAnimT, setStudentAnimT] = useState(0);
+  const [studentPlaying, setStudentPlaying] = useState(true);
+  const [teacherAnimT, setTeacherAnimT] = useState(0);
+  const [teacherPlaying, setTeacherPlaying] = useState(true);
+
+  const studentData = {
+    studentName: 'Alex',
+    topPriorities: [
+      { id: 'min-wage', title: '$17 Minimum Wage' },
+      { id: 'housing', title: 'Affordable Housing Supply' },
+      { id: 'mental-health', title: 'Mental Health 988 Lifeline' },
+    ],
+    quote: "These three issues are all connected for me. My older sister works full-time but still can't afford her own place. She has to juggle multiple jobs and still struggles to pay for healthcare. I think if we addressed housing and wages together, it would help so many families like mine.",
+    stats: {
+      policiesExplored: 8,
+      discussionsJoined: 6,
+      positionsRevised: 2,
+    },
+  };
+
+  const teacherData = {
+    teacherName: 'Ms. Johnson',
+    className: 'AP Government Period 3',
+    topPolicies: [
+      { id: 'min-wage', title: '$17 Minimum Wage', studentCount: 18 },
+      { id: 'background-checks', title: 'Universal Background Checks', studentCount: 15 },
+      { id: 'medicare-drugs', title: 'Medicare Drug Negotiation', studentCount: 12 },
+    ],
+    stats: {
+      totalStudents: 28,
+      positionsSubmitted: 168,
+      discussionPosts: 94,
+      positionsRevised: 23,
+    },
+  };
+
+  // Student animation effect
+  useEffect(() => {
+    if (!studentPlaying) return;
+    const duration = 5000;
+    const startTime = Date.now() - studentAnimT * duration;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      setStudentAnimT(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setStudentPlaying(false);
+      }
+    };
+
+    const frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [studentPlaying, studentAnimT]);
+
+  // Teacher animation effect
+  useEffect(() => {
+    if (!teacherPlaying) return;
+    const duration = 5000;
+    const startTime = Date.now() - teacherAnimT * duration;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      setTeacherAnimT(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setTeacherPlaying(false);
+      }
+    };
+
+    const frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [teacherPlaying, teacherAnimT]);
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Share Cards"
+        description="Animated shareable cards for students and teachers to share their civic profiles"
+      />
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Student Civic Profile */}
+        <div>
+          <h3 className="font-bold text-lg mb-4">Student Civic Profile</h3>
+          <div className="relative">
+            <div className="border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden" style={{ aspectRatio: '1/1' }}>
+              <CivicProfileShareCardVideo
+                {...studentData}
+                t={studentAnimT}
+                urlText="civic-engine.app"
+              />
+            </div>
+
+            {/* Playback controls */}
+            <div className="mt-4 p-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (studentAnimT >= 1) setStudentAnimT(0);
+                    setStudentPlaying(!studentPlaying);
+                  }}
+                  className="p-2 bg-[#2F3BBD] text-white border-2 border-black hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                >
+                  {studentPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudentPlaying(false);
+                    setStudentAnimT(0);
+                    setTimeout(() => setStudentPlaying(true), 50);
+                  }}
+                  className="p-2 bg-white border-2 border-black hover:bg-gray-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  title="Restart"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+                <div className="flex-1 h-4 bg-gray-200 border-2 border-black relative">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-[#2F3BBD]"
+                    style={{ width: `${studentAnimT * 100}%` }}
+                  />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={studentAnimT}
+                    onChange={(e) => {
+                      setStudentPlaying(false);
+                      setStudentAnimT(parseFloat(e.target.value));
+                    }}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+                <span className="text-sm font-mono font-black text-black w-12 text-right">
+                  {(studentAnimT * 5).toFixed(1)}s
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Teacher Class Profile */}
+        <div>
+          <h3 className="font-bold text-lg mb-4">Teacher Class Profile</h3>
+          <div className="relative">
+            <div className="border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden" style={{ aspectRatio: '1/1' }}>
+              <ClassProfileShareCardVideo
+                {...teacherData}
+                t={teacherAnimT}
+                urlText="civic-engine.app"
+              />
+            </div>
+
+            {/* Playback controls */}
+            <div className="mt-4 p-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (teacherAnimT >= 1) setTeacherAnimT(0);
+                    setTeacherPlaying(!teacherPlaying);
+                  }}
+                  className="p-2 bg-[#2F3BBD] text-white border-2 border-black hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                >
+                  {teacherPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTeacherPlaying(false);
+                    setTeacherAnimT(0);
+                    setTimeout(() => setTeacherPlaying(true), 50);
+                  }}
+                  className="p-2 bg-white border-2 border-black hover:bg-gray-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  title="Restart"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+                <div className="flex-1 h-4 bg-gray-200 border-2 border-black relative">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-[#2F3BBD]"
+                    style={{ width: `${teacherAnimT * 100}%` }}
+                  />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={teacherAnimT}
+                    onChange={(e) => {
+                      setTeacherPlaying(false);
+                      setTeacherAnimT(parseFloat(e.target.value));
+                    }}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+                <span className="text-sm font-mono font-black text-black w-12 text-right">
+                  {(teacherAnimT * 5).toFixed(1)}s
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
