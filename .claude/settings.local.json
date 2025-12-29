@@ -52,7 +52,8 @@
       "Bash(npx remotion lambda --help:*)",
       "Bash(npx remotion lambda sites --help:*)",
       "Bash(npx remotion lambda)",
-      "Bash(npx remotion:*)"
+      "Bash(npx remotion:*)",
+      "Bash(npm run synth:*)"
     ],
     "deny": [],
     "ask": []

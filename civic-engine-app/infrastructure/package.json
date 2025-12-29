@@ -1,0 +1,21 @@
+{
+  "name": "civic-engine-infrastructure",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy",
+    "diff": "cdk diff",
+    "destroy": "cdk destroy",
+    "bootstrap": "cdk bootstrap"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.172.0",
+    "aws-cdk-lib": "^2.172.0",
+    "constructs": "^10.4.2",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2"
+  }
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,16 @@ interface ModalProps {
   closeOnBackdropClick?: boolean;
 }
 
+// Get all focusable elements within a container
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const elements = container.querySelectorAll<HTMLElement>(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  return Array.from(elements).filter(
+    (el) => !el.hasAttribute('disabled') && el.offsetParent !== null
+  );
+}
+
 export function Modal({
   isOpen,
   onClose,
@@ -27,12 +37,85 @@ export function Modal({
   showCloseButton = true,
   closeOnBackdropClick = true,
 }: ModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-xl',
   };
+
+  // Handle escape key
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  // Focus trap
+  const handleTabKey = useCallback((event: KeyboardEvent) => {
+    if (event.key !== 'Tab' || !modalRef.current) return;
+
+    const focusableElements = getFocusableElements(modalRef.current);
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey) {
+      if (document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+    } else {
+      if (document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, []);
+
+  // Set up focus management and event listeners
+  useEffect(() => {
+    if (isOpen) {
+      // Store the currently focused element
+      previousActiveElement.current = document.activeElement as HTMLElement;
+
+      // Add event listeners
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keydown', handleTabKey);
+
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+
+      // Focus first focusable element in modal after animation
+      const timer = setTimeout(() => {
+        if (modalRef.current) {
+          const focusableElements = getFocusableElements(modalRef.current);
+          if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+          }
+        }
+      }, 100);
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keydown', handleTabKey);
+        document.body.style.overflow = '';
+        clearTimeout(timer);
+
+        // Return focus to previous element
+        if (previousActiveElement.current) {
+          previousActiveElement.current.focus();
+        }
+      };
+    }
+  }, [isOpen, handleKeyDown, handleTabKey]);
 
   return (
     <AnimatePresence>
@@ -52,6 +135,7 @@ export function Modal({
           {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
+              ref={modalRef}
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -92,7 +176,7 @@ export function Modal({
                   {showCloseButton && (
                     <button
                       onClick={onClose}
-                      className="p-1.5 hover:bg-neutral-light dark:hover:bg-gray-800 transition-colors"
+                      className="p-1.5 hover:bg-neutral-light dark:hover:bg-gray-800 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-1"
                       aria-label="Close modal"
                     >
                       <X className="w-5 h-5 text-neutral-dark dark:text-gray-400" />

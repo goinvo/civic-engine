@@ -1,0 +1,21 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "6191b2263b15ab59d267910bac4ab57bc8c729efc8d33cf765240a75343a5410": {
+      "displayName": "CivicEngineStack Template",
+      "source": {
+        "path": "CivicEngineStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-us-east-1-6f995668": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "6191b2263b15ab59d267910bac4ab57bc8c729efc8d33cf765240a75343a5410.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

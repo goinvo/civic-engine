@@ -1,0 +1,392 @@
+{
+ "Description": "Civic Engine Education Platform - Cognito Auth + DynamoDB",
+ "Resources": {
+  "CivicEngineTable874E3C02": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI3PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI3SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI1PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI1SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI2PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI2SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI3",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI3PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI3SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "CivicEngineEducation"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/CivicEngineTable/Resource"
+   }
+  },
+  "CivicEngineUserPool4347F3AA": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "EnabledMfas": [
+     "SOFTWARE_TOKEN_MFA"
+    ],
+    "MfaConfiguration": "OPTIONAL",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "RequireUppercase": true,
+      "TemporaryPasswordValidityDays": 7
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "role"
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "schoolName"
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "state"
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "civic-engine-education",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/CivicEngineUserPool/Resource"
+   }
+  },
+  "CivicEngineUserPoolCivicEngineDomain098EB895": {
+   "Type": "AWS::Cognito::UserPoolDomain",
+   "Properties": {
+    "Domain": "civic-engine-edu",
+    "UserPoolId": {
+     "Ref": "CivicEngineUserPool4347F3AA"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/CivicEngineUserPool/CivicEngineDomain/Resource"
+   }
+  },
+  "CivicEngineUserPoolWebClient41BB11BF": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AccessTokenValidity": 60,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "email",
+     "openid",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "http://localhost:3000/api/auth/callback",
+     "https://civic-engine.app/api/auth/callback"
+    ],
+    "ClientName": "civic-engine-web",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "IdTokenValidity": 60,
+    "LogoutURLs": [
+     "http://localhost:3000",
+     "https://civic-engine.app"
+    ],
+    "ReadAttributes": [
+     "custom:role",
+     "custom:schoolName",
+     "custom:state",
+     "email"
+    ],
+    "RefreshTokenValidity": 43200,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    },
+    "UserPoolId": {
+     "Ref": "CivicEngineUserPool4347F3AA"
+    },
+    "WriteAttributes": [
+     "custom:schoolName",
+     "custom:state",
+     "email"
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/CivicEngineUserPool/WebClient/Resource"
+   }
+  },
+  "TeacherGroup": {
+   "Type": "AWS::Cognito::UserPoolGroup",
+   "Properties": {
+    "Description": "Teachers who create and manage cohorts",
+    "GroupName": "teachers",
+    "Precedence": 1,
+    "UserPoolId": {
+     "Ref": "CivicEngineUserPool4347F3AA"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/TeacherGroup"
+   }
+  },
+  "StudentGroup": {
+   "Type": "AWS::Cognito::UserPoolGroup",
+   "Properties": {
+    "Description": "Students who participate in cohorts",
+    "GroupName": "students",
+    "Precedence": 2,
+    "UserPoolId": {
+     "Ref": "CivicEngineUserPool4347F3AA"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/StudentGroup"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WOOw+CMBSFfwt7uSIs7pg4alBnU9pqiuVe0ofENP3vRhRD4nS+8xhOCWVVQZHx0eVC3nOjW4hHz8Wd8dFdonwi70m2EE+8NYrVV5wgMUE31J4gnp2yByLz7n48w5Z6rnFZfZPZ1kYr9MvBf7KzFIaUWKMcBSumF/vgh+ATQ5IKOrd6lAWsN1BkndM6twG97hU0H30Bh5VozOYAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "CivicEngineStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "UserPoolId": {
+   "Description": "Cognito User Pool ID",
+   "Value": {
+    "Ref": "CivicEngineUserPool4347F3AA"
+   },
+   "Export": {
+    "Name": "CivicEngineUserPoolId"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "Cognito User Pool Client ID",
+   "Value": {
+    "Ref": "CivicEngineUserPoolWebClient41BB11BF"
+   },
+   "Export": {
+    "Name": "CivicEngineUserPoolClientId"
+   }
+  },
+  "UserPoolDomain": {
+   "Description": "Cognito Hosted UI Domain",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Ref": "CivicEngineUserPoolCivicEngineDomain098EB895"
+      },
+      ".auth.us-east-1.amazoncognito.com"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "CivicEngineCognitoDomain"
+   }
+  },
+  "DynamoDBTableName": {
+   "Description": "DynamoDB Table Name",
+   "Value": {
+    "Ref": "CivicEngineTable874E3C02"
+   },
+   "Export": {
+    "Name": "CivicEngineDynamoTableName"
+   }
+  },
+  "DynamoDBTableArn": {
+   "Description": "DynamoDB Table ARN",
+   "Value": {
+    "Fn::GetAtt": [
+     "CivicEngineTable874E3C02",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "CivicEngineDynamoTableArn"
+   }
+  },
+  "Region": {
+   "Description": "AWS Region",
+   "Value": "us-east-1"
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

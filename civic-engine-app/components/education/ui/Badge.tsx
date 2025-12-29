@@ -12,14 +12,15 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant = 'default', size = 'md', ...props }, ref) => {
     const baseStyles = 'inline-flex items-center font-bold rounded-full';
 
+    // Colors updated for WCAG AA contrast (4.5:1 minimum)
     const variants = {
-      default: 'bg-neutral-light text-neutral-dark border border-gray-300',
-      primary: 'bg-[#AFC5F5] text-[#2F3BBD] border border-[#2F3BBD]',
-      secondary: 'bg-gray-100 text-gray-700 border border-gray-300',
-      success: 'bg-green-100 text-green-700 border border-green-300',
-      warning: 'bg-yellow-100 text-yellow-700 border border-yellow-300',
-      danger: 'bg-[#FEB0B4] text-[#C91A2B] border border-[#C91A2B]',
-      outline: 'bg-transparent text-neutral-dark border-2 border-black',
+      default: 'bg-neutral-light text-neutral-dark border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600',
+      primary: 'bg-[#E8EEFF] text-[#1E2A78] border border-[#1E2A78] dark:bg-[#1E2A78] dark:text-[#E8EEFF] dark:border-[#4F5FBD]',
+      secondary: 'bg-gray-100 text-gray-800 border border-gray-400 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-500',
+      success: 'bg-green-50 text-green-800 border border-green-600 dark:bg-green-900 dark:text-green-100 dark:border-green-500',
+      warning: 'bg-yellow-50 text-yellow-800 border border-yellow-600 dark:bg-yellow-900 dark:text-yellow-100 dark:border-yellow-500',
+      danger: 'bg-red-50 text-red-800 border border-red-600 dark:bg-red-900 dark:text-red-100 dark:border-red-500',
+      outline: 'bg-transparent text-neutral-dark border-2 border-black dark:text-white dark:border-white',
     };
 
     const sizes = {

@@ -87,37 +87,50 @@ export function JoinClassForm({ onJoin, initialCode }: JoinClassFormProps) {
               </p>
 
               <form onSubmit={handleCodeSubmit}>
-                <div className="flex items-center justify-center gap-2 mb-6">
-                  <input
-                    type="text"
-                    value={codeLeft}
-                    onChange={(e) => setCodeLeft(e.target.value.toUpperCase().slice(0, 3))}
-                    placeholder="ABC"
-                    maxLength={3}
-                    className={cn(
-                      'w-24 h-16 text-center text-2xl font-mono font-black',
-                      'border-2 border-black dark:border-gray-600',
-                      'focus:outline-none focus:ring-2 focus:ring-[#2F3BBD]',
-                      'uppercase tracking-widest'
-                    )}
-                  />
-                  <span className="text-3xl font-bold text-neutral-dark dark:text-white">
-                    -
-                  </span>
-                  <input
-                    type="text"
-                    value={codeRight}
-                    onChange={(e) => setCodeRight(e.target.value.toUpperCase().slice(0, 4))}
-                    placeholder="1234"
-                    maxLength={4}
-                    className={cn(
-                      'w-28 h-16 text-center text-2xl font-mono font-black',
-                      'border-2 border-black dark:border-gray-600',
-                      'focus:outline-none focus:ring-2 focus:ring-[#2F3BBD]',
-                      'uppercase tracking-widest'
-                    )}
-                  />
-                </div>
+                <fieldset>
+                  <legend className="sr-only">Enter your class join code</legend>
+                  <div className="flex items-center justify-center gap-2 mb-6">
+                    <div>
+                      <label htmlFor="code-left" className="sr-only">First 3 characters of code</label>
+                      <input
+                        id="code-left"
+                        type="text"
+                        value={codeLeft}
+                        onChange={(e) => setCodeLeft(e.target.value.toUpperCase().slice(0, 3))}
+                        placeholder="ABC"
+                        maxLength={3}
+                        autoComplete="off"
+                        className={cn(
+                          'w-24 h-16 text-center text-2xl font-mono font-black',
+                          'border-2 border-black dark:border-gray-600',
+                          'focus:outline-none focus:ring-2 focus:ring-[#2F3BBD]',
+                          'uppercase tracking-widest'
+                        )}
+                      />
+                    </div>
+                    <span className="text-3xl font-bold text-neutral-dark dark:text-white" aria-hidden="true">
+                      -
+                    </span>
+                    <div>
+                      <label htmlFor="code-right" className="sr-only">Last 4 characters of code</label>
+                      <input
+                        id="code-right"
+                        type="text"
+                        value={codeRight}
+                        onChange={(e) => setCodeRight(e.target.value.toUpperCase().slice(0, 4))}
+                        placeholder="1234"
+                        maxLength={4}
+                        autoComplete="off"
+                        className={cn(
+                          'w-28 h-16 text-center text-2xl font-mono font-black',
+                          'border-2 border-black dark:border-gray-600',
+                          'focus:outline-none focus:ring-2 focus:ring-[#2F3BBD]',
+                          'uppercase tracking-widest'
+                        )}
+                      />
+                    </div>
+                  </div>
+                </fieldset>
 
                 <Button
                   type="submit"
@@ -187,12 +200,14 @@ export function JoinClassForm({ onJoin, initialCode }: JoinClassFormProps) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-neutral hover:text-neutral-dark"
+                    className="absolute right-3 top-9 text-neutral hover:text-neutral-dark dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] rounded"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-5 h-5" aria-hidden="true" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-5 h-5" aria-hidden="true" />
                     )}
                   </button>
                 </div>
@@ -218,7 +233,13 @@ export function JoinClassForm({ onJoin, initialCode }: JoinClassFormProps) {
                 </div>
 
                 {error && (
-                  <p className="text-sm text-[#C91A2B] font-medium">{error}</p>
+                  <p role="alert" className="text-sm text-[#C91A2B] font-medium">{error}</p>
+                )}
+
+                {isLoading && (
+                  <p role="status" aria-live="polite" className="sr-only">
+                    Joining class, please wait...
+                  </p>
                 )}
 
                 <div className="flex gap-3">

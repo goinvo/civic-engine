@@ -10,8 +10,11 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, hint, id, ...props }, ref) => {
+  ({ className, label, error, hint, id, required, ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+    const errorId = error ? `${inputId}-error` : undefined;
+    const hintId = hint && !error ? `${inputId}-hint` : undefined;
+    const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
 
     return (
       <div className="w-full">
@@ -21,11 +24,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className="block text-sm font-bold text-neutral-dark dark:text-white mb-1.5"
           >
             {label}
+            {required && <span className="text-[#C91A2B] ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <input
           ref={ref}
           id={inputId}
+          required={required}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={describedBy}
           className={cn(
             'w-full px-4 py-2.5 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-600',
             'text-neutral-dark dark:text-white placeholder:text-gray-400',
@@ -38,10 +45,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {hint && !error && (
-          <p className="mt-1.5 text-sm text-neutral dark:text-gray-400">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-neutral dark:text-gray-400">{hint}</p>
         )}
         {error && (
-          <p className="mt-1.5 text-sm text-[#C91A2B] font-medium">{error}</p>
+          <p id={errorId} role="alert" className="mt-1.5 text-sm text-[#C91A2B] font-medium">{error}</p>
         )}
       </div>
     );
@@ -59,9 +66,13 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, error, hint, charCount, maxLength, value, id, ...props }, ref) => {
+  ({ className, label, error, hint, charCount, maxLength, value, id, required, ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
     const currentLength = typeof value === 'string' ? value.length : 0;
+    const errorId = error ? `${inputId}-error` : undefined;
+    const hintId = hint && !error ? `${inputId}-hint` : undefined;
+    const countId = charCount && maxLength ? `${inputId}-count` : undefined;
+    const describedBy = [errorId, hintId, countId].filter(Boolean).join(' ') || undefined;
 
     return (
       <div className="w-full">
@@ -71,6 +82,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             className="block text-sm font-bold text-neutral-dark dark:text-white mb-1.5"
           >
             {label}
+            {required && <span className="text-[#C91A2B] ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <textarea
@@ -78,6 +90,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={inputId}
           value={value}
           maxLength={maxLength}
+          required={required}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={describedBy}
           className={cn(
             'w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-600',
             'text-neutral-dark dark:text-white placeholder:text-gray-400',
@@ -92,14 +107,17 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <div className="flex justify-between mt-1.5">
           <div>
             {hint && !error && (
-              <p className="text-sm text-neutral dark:text-gray-400">{hint}</p>
+              <p id={hintId} className="text-sm text-neutral dark:text-gray-400">{hint}</p>
             )}
             {error && (
-              <p className="text-sm text-[#C91A2B] font-medium">{error}</p>
+              <p id={errorId} role="alert" className="text-sm text-[#C91A2B] font-medium">{error}</p>
             )}
           </div>
           {charCount && maxLength && (
             <p
+              id={countId}
+              aria-live="polite"
+              aria-atomic="true"
               className={cn(
                 'text-sm',
                 currentLength >= maxLength
@@ -107,7 +125,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                   : 'text-neutral dark:text-gray-400'
               )}
             >
-              {currentLength}/{maxLength}
+              <span className="sr-only">{currentLength} of {maxLength} characters</span>
+              <span aria-hidden="true">{currentLength}/{maxLength}</span>
             </p>
           )}
         </div>
