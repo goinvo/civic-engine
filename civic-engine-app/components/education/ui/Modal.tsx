@@ -80,15 +80,24 @@ export function Modal({
     }
   }, []);
 
-  // Set up focus management and event listeners
+  // Set up event listeners (separate from focus management)
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keydown', handleTabKey);
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keydown', handleTabKey);
+      };
+    }
+  }, [isOpen, handleKeyDown, handleTabKey]);
+
+  // Focus management - only runs when modal opens/closes, not when handlers change
   useEffect(() => {
     if (isOpen) {
       // Store the currently focused element
       previousActiveElement.current = document.activeElement as HTMLElement;
-
-      // Add event listeners
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keydown', handleTabKey);
 
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
@@ -104,8 +113,6 @@ export function Modal({
       }, 100);
 
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keydown', handleTabKey);
         document.body.style.overflow = '';
         clearTimeout(timer);
 
@@ -115,7 +122,7 @@ export function Modal({
         }
       };
     }
-  }, [isOpen, handleKeyDown, handleTabKey]);
+  }, [isOpen]);
 
   return (
     <AnimatePresence>

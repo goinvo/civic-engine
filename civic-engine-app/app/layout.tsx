@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { DemoAuthProvider } from "@/lib/auth/demo-auth-context";
+import { ClassProvider } from "@/lib/auth/class-context";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -34,11 +36,15 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
       >
         <AuthProvider>
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <DemoAuthProvider>
+            <ClassProvider>
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </ClassProvider>
+          </DemoAuthProvider>
         </AuthProvider>
       </body>
     </html>

@@ -18,5 +18,8 @@ export type { BadgeProps } from './Badge';
 export { Progress, StepProgress } from './Progress';
 export type { ProgressProps } from './Progress';
 
+export { AnimatedStepProgress, AnimatedStepProgressDemo } from './AnimatedStepProgress';
+export type { AnimatedStepProgressProps, Step } from './AnimatedStepProgress';
+
 export { Banner, InlineBanner } from './Banner';
 export type { BannerProps, BannerVariant, InlineBannerProps } from './Banner';

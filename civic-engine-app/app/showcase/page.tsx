@@ -34,9 +34,11 @@ import {
   Badge,
   Progress,
   StepProgress,
+  AnimatedStepProgress,
   Banner,
   InlineBanner,
 } from '@/components/education/ui';
+import type { Step } from '@/components/education/ui';
 
 // Teacher Components
 import {
@@ -151,6 +153,8 @@ function PrimitivesSection() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [textareaValue, setTextareaValue] = useState('');
+  const [animatedProgressMode, setAnimatedProgressMode] = useState<'vertical' | 'horizontal'>('vertical');
+  const [animatedProgressStep, setAnimatedProgressStep] = useState(0);
 
   return (
     <div className="space-y-12">
@@ -273,6 +277,50 @@ function PrimitivesSection() {
             totalSteps={5}
             steps={['Read', 'Quiz', 'Position', 'Discuss', 'Reflect']}
           />
+        </div>
+
+        {/* Animated Step Progress */}
+        <div className="mt-8">
+          <h4 className="font-medium mb-2">Animated Step Progress</h4>
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">
+            Transforms from vertical list to horizontal dots with Framer Motion
+          </p>
+          <div className="flex gap-2 mb-4">
+            <Button
+              size="sm"
+              variant={animatedProgressMode === 'vertical' ? 'primary' : 'outline'}
+              onClick={() => setAnimatedProgressMode('vertical')}
+            >
+              Vertical
+            </Button>
+            <Button
+              size="sm"
+              variant={animatedProgressMode === 'horizontal' ? 'primary' : 'outline'}
+              onClick={() => setAnimatedProgressMode('horizontal')}
+            >
+              Horizontal
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setAnimatedProgressStep((prev) => (prev + 1) % 5)}
+            >
+              Next Step
+            </Button>
+          </div>
+          <div className="bg-white dark:bg-gray-800 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 max-w-md">
+            <AnimatedStepProgress
+              steps={[
+                { id: 'explore', label: 'Explore Policies', description: 'Read about civic issues' },
+                { id: 'position', label: 'Share Opinion', description: 'Tell us what you think' },
+                { id: 'discuss', label: 'Discuss', description: 'Engage with classmates' },
+                { id: 'revise', label: 'Reflect & Revise', description: 'Update your views' },
+                { id: 'profile', label: 'Get Profile', description: 'Share your journey' },
+              ]}
+              currentStep={animatedProgressStep}
+              mode={animatedProgressMode}
+            />
+          </div>
         </div>
       </div>
 

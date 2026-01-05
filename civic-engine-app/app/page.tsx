@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, GraduationCap, Users, MessageSquare, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ExpandablePolicyCard from '@/components/ExpandablePolicyCard';
 import ParticleWave from '@/components/ParticleWave';
@@ -174,6 +174,88 @@ export default function Home() {
           <span>Explore the Data Source</span>
           <ArrowRight className="w-5 h-5" />
         </a>
+      </section>
+
+      {/* Education Section */}
+      <section className="bg-[#2F3BBD] py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white border-4 border-black mb-6">
+              <GraduationCap className="w-8 h-8 text-[#2F3BBD]" />
+            </div>
+            <h2 className="font-display text-4xl sm:text-5xl font-black text-white mb-4">
+              For Educators
+            </h2>
+            <p className="font-body text-xl text-white/90 max-w-2xl mx-auto">
+              Bring civic engagement to your classroom. Help students form evidence-based opinions and engage in respectful discourse.
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="w-12 h-12 bg-[#E8EEFF] border-2 border-black flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-[#2F3BBD]" aria-hidden="true" />
+              </div>
+              <h3 className="font-display font-black text-lg text-black mb-2">Class Cohorts</h3>
+              <p className="text-gray-600 text-sm">
+                Create private spaces for your classes with simple join codes.
+              </p>
+            </div>
+
+            <div className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="w-12 h-12 bg-[#E8EEFF] border-2 border-black flex items-center justify-center mb-4">
+                <MessageSquare className="w-6 h-6 text-[#2F3BBD]" aria-hidden="true" />
+              </div>
+              <h3 className="font-display font-black text-lg text-black mb-2">Guided Discussion</h3>
+              <p className="text-gray-600 text-sm">
+                Structured discussions with steelman arguments and evidence.
+              </p>
+            </div>
+
+            <div className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="w-12 h-12 bg-[#E8EEFF] border-2 border-black flex items-center justify-center mb-4">
+                <Award className="w-6 h-6 text-[#2F3BBD]" aria-hidden="true" />
+              </div>
+              <h3 className="font-display font-black text-lg text-black mb-2">Anonymous Grading</h3>
+              <p className="text-gray-600 text-sm">
+                Grade reasoning quality without knowing students' positions.
+              </p>
+            </div>
+
+            <div className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="w-12 h-12 bg-[#E8EEFF] border-2 border-black flex items-center justify-center mb-4">
+                <GraduationCap className="w-6 h-6 text-[#2F3BBD]" aria-hidden="true" />
+              </div>
+              <h3 className="font-display font-black text-lg text-black mb-2">Civic Profiles</h3>
+              <p className="text-gray-600 text-sm">
+                Students create shareable profiles showing their civic engagement.
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/education/teacher"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-[#2F3BBD] font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-150 text-lg"
+            >
+              <span>Teacher Demo</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/education/student/onboard"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-[#C91A2B] text-white font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-150 text-lg"
+            >
+              <span>Student Demo</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </Link>
+          </div>
+
+          <p className="text-center text-white/70 text-sm mt-6">
+            Try the demo with sample data — no account required
+          </p>
+        </div>
       </section>
     </>
   );
