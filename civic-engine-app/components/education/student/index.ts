@@ -13,3 +13,4 @@ export { default as CivicProfileShareCardVideo } from './CivicProfileShareCardVi
 export type { CivicProfileShareCardVideoProps } from './CivicProfileShareCardVideo';
 export { StudentProgressHeader, studentSteps } from './StudentProgressHeader';
 export type { StudentProgressHeaderProps } from './StudentProgressHeader';
+export { ElementaryCardDeck } from './ElementaryCardDeck';

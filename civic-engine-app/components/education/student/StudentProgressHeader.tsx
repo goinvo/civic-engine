@@ -8,7 +8,7 @@ import { AnimatedStepProgress, Step } from '@/components/education/ui';
 import { useDemoAuth } from '@/lib/auth/demo-auth-context';
 import type { GradeLevel } from '@/types/education';
 
-// Shared student journey steps
+// Shared student journey steps (default for older students)
 export const studentSteps: Step[] = [
   { id: 'join', label: 'Enter Class Code', description: 'Join your class with the code from your teacher' },
   { id: 'explore', label: 'Explore Policies', description: 'Read about policies that most Americans agree on' },
@@ -17,16 +17,26 @@ export const studentSteps: Step[] = [
   { id: 'reflect', label: 'Reflect & Finish', description: 'Get your civic profile to share' },
 ];
 
+// Elementary-specific steps (K-5)
+export const elementarySteps: Step[] = [
+  { id: 'join', label: 'Join Your Class', description: 'Enter the code from your teacher' },
+  { id: 'learn', label: 'What is a Policy?', description: 'Learn about rules and how they help us' },
+  { id: 'rubric', label: 'How to Share Ideas', description: 'Learn how to share your thoughts' },
+  { id: 'discuss', label: 'Share Your Ideas', description: 'Tell us what you think!' },
+  { id: 'reflect', label: 'All Done!', description: 'See what you learned' },
+];
+
 // Map step indices to routes
 const stepRoutes: Record<number, string> = {
   0: '/education/student/onboard',
   1: '/education/student/explore',
-  2: '/education/student/discuss',
+  2: '/education/student/rubric',
   3: '/education/student/discuss',
   4: '/education/student/reflect',
 };
 
 const gradeLevelLabels: Record<GradeLevel, string> = {
+  'K-5': 'Elementary (K-5)',
   '6-8': 'Middle School (6-8)',
   '9-10': 'High School (9-10)',
   '11-12': 'High School (11-12)',
@@ -46,6 +56,10 @@ export function StudentProgressHeader({
 }: StudentProgressHeaderProps) {
   const router = useRouter();
   const { gradeLevel, setGradeLevel } = useDemoAuth();
+
+  // Use elementary-specific steps for K-5
+  const isElementary = gradeLevel === 'K-5';
+  const steps = isElementary ? elementarySteps : studentSteps;
 
   const handleGradeLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGradeLevel(e.target.value as GradeLevel);
@@ -91,7 +105,7 @@ export function StudentProgressHeader({
       <div className="py-4 px-6 border-t border-gray-100 dark:border-gray-800">
         <div className="max-w-2xl mx-auto">
           <AnimatedStepProgress
-            steps={studentSteps}
+            steps={steps}
             currentStep={currentStep}
             mode="horizontal"
             compact={true}

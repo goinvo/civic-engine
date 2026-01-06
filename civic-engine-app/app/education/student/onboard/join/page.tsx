@@ -54,7 +54,7 @@ export default function StudentOnboardJoinPage() {
 
   const handleContinue = () => {
     loginAsStudent(0);
-    router.push('/education/student');
+    router.push('/education/student/explore');
   };
 
   // Wait for all animations to complete before showing

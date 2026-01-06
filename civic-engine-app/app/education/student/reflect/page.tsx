@@ -94,7 +94,7 @@ export default function StudentReflectPage() {
       <StudentProgressHeader currentStep={4} />
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <h1 className="font-display text-2xl font-black text-neutral-dark dark:text-white mb-2 text-center">
           Your Civic Profile
         </h1>

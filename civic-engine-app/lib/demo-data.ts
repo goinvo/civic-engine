@@ -121,20 +121,107 @@ export const demoCohorts: Cohort[] = [
   },
 ];
 
-// Demo Policy Set
-export const demoPolicySet: PolicySet = {
-  id: 'policyset-demo-001',
-  name: 'Core Civic Issues',
-  description: 'A balanced set of 5 policies covering healthcare, economy, and governance',
-  isPreset: true,
-  policies: [
-    { policyId: 'medicare-drug-negotiation', order: 1 },
-    { policyId: 'congress-term-limits', order: 2 },
-    { policyId: 'universal-background-checks', order: 3 },
-    { policyId: 'raise-minimum-wage', order: 4 },
-    { policyId: 'congress-stock-ban', order: 5 },
-  ],
+// Demo Policy Sets by Grade Level
+export const demoPolicySets: Record<GradeLevel, PolicySet> = {
+  'K-5': {
+    id: 'policyset-elementary',
+    name: 'Big Ideas for Our Community',
+    description: 'Simple ideas that help everyone in our neighborhood and country',
+    isPreset: true,
+    policies: [
+      {
+        policyId: 'universal-pre-k',
+        order: 1,
+        displayTitle: 'School for All Kids',
+        displayDescription: 'Every kid gets to go to school before kindergarten, so everyone starts learning early and makes new friends!'
+      },
+      {
+        policyId: 'public-option-healthcare',
+        order: 2,
+        displayTitle: 'Doctors for Everyone',
+        displayDescription: 'Making sure every person can see a doctor when they\'re sick, without worrying about money.'
+      },
+      {
+        policyId: 'rural-broadband-access',
+        order: 3,
+        displayTitle: 'Internet for Everyone',
+        displayDescription: 'Helping people in small towns and farms get fast internet so they can learn and play online too!'
+      },
+      {
+        policyId: 'mental-health-988',
+        order: 4,
+        displayTitle: 'Helpers When You\'re Sad',
+        displayDescription: 'A special phone number (988) that anyone can call when they feel sad or worried, and kind helpers will listen.'
+      },
+      {
+        policyId: 'minimum-wage-17',
+        order: 5,
+        displayTitle: 'Fair Pay for Workers',
+        displayDescription: 'Making sure grown-ups get paid enough money at their jobs to buy food and take care of their families.'
+      },
+    ],
+  },
+  '6-8': {
+    id: 'policyset-middle-school',
+    name: 'Youth & Community Issues',
+    description: 'Policies that directly affect young people and their communities',
+    isPreset: true,
+    policies: [
+      { policyId: 'kids-online-safety', order: 1 },
+      { policyId: 'right-to-repair', order: 2 },
+      { policyId: 'junk-fee-prevention', order: 3 },
+      { policyId: 'mental-health-988', order: 4 },
+      { policyId: 'universal-pre-k', order: 5 },
+    ],
+  },
+  '9-10': {
+    id: 'policyset-high-school-intro',
+    name: 'Civic Foundations',
+    description: 'Introduction to major civic issues with broad bipartisan support',
+    isPreset: true,
+    policies: [
+      { policyId: 'universal-background-checks', order: 1 },
+      { policyId: 'minimum-wage-17', order: 2 },
+      { policyId: 'rural-broadband-access', order: 3 },
+      { policyId: 'campaign-finance-disclosure', order: 4 },
+      { policyId: 'congress-stock-ban', order: 5 },
+    ],
+  },
+  '11-12': {
+    id: 'policyset-high-school-advanced',
+    name: 'Core Civic Issues',
+    description: 'A balanced set of policies covering healthcare, economy, and governance',
+    isPreset: true,
+    policies: [
+      { policyId: 'medicare-drug-negotiation', order: 1 },
+      { policyId: 'congress-term-limits', order: 2 },
+      { policyId: 'universal-background-checks', order: 3 },
+      { policyId: 'minimum-wage-17', order: 4 },
+      { policyId: 'congress-stock-ban', order: 5 },
+    ],
+  },
+  'college': {
+    id: 'policyset-college',
+    name: 'Advanced Policy Analysis',
+    description: 'Complex policy issues requiring deeper economic and political analysis',
+    isPreset: true,
+    policies: [
+      { policyId: 'social-security-cap', order: 1 },
+      { policyId: 'immigration-grand-bargain', order: 2 },
+      { policyId: 'public-option-healthcare', order: 3 },
+      { policyId: 'ultra-millionaire-tax', order: 4 },
+      { policyId: 'ai-safety-regulation', order: 5 },
+    ],
+  },
 };
+
+// Default policy set (for backwards compatibility)
+export const demoPolicySet: PolicySet = demoPolicySets['11-12'];
+
+// Helper to get policy set by grade level
+export function getPolicySetByGradeLevel(gradeLevel: GradeLevel): PolicySet {
+  return demoPolicySets[gradeLevel] || demoPolicySet;
+}
 
 // Demo Positions
 export const demoPositions: Position[] = [

@@ -31,7 +31,7 @@ export interface StudentProfile {
 // COHORT TYPES
 // ============================================
 
-export type GradeLevel = '6-8' | '9-10' | '11-12' | 'college';
+export type GradeLevel = 'K-5' | '6-8' | '9-10' | '11-12' | 'college';
 export type CohortStatus = 'draft' | 'active' | 'archived';
 export type CohortPhase = 'not_started' | 'exploration' | 'positions' | 'discussion' | 'revision' | 'reflection' | 'completed';
 export type PacingMode = 'teacher_controlled' | 'self_paced';
@@ -75,6 +75,8 @@ export interface PolicySet {
 export interface PolicySetItem {
   policyId: string;
   order: number;
+  displayTitle?: string; // Optional override for kid-friendly names
+  displayDescription?: string; // Optional simplified description
 }
 
 export interface PolicySetPreset {

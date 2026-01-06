@@ -22,9 +22,9 @@ import { studentSteps } from '@/components/education/student';
 const phaseToStepIndex: Record<CohortPhase, number> = {
   not_started: 1,
   exploration: 1,
-  positions: 1,
-  discussion: 2,  // View Rubric & Examples
-  revision: 3,    // Class Discussion
+  positions: 2,
+  discussion: 3,  // Class Discussion
+  revision: 3,    // Class Discussion (revision happens in discussion)
   reflection: 4,
   completed: 4,
 };
@@ -33,9 +33,9 @@ const phaseToStepIndex: Record<CohortPhase, number> = {
 const phaseActions: Record<CohortPhase, { icon: typeof BookOpen; label: string; description: string; route: string }> = {
   not_started: { icon: BookOpen, label: 'View Policies', description: 'Get ready to explore the assigned policies', route: '/education/student/explore' },
   exploration: { icon: BookOpen, label: 'Explore Policies', description: 'Read and learn about each policy', route: '/education/student/explore' },
-  positions: { icon: PenTool, label: 'Submit Positions', description: 'Share your stance on each policy', route: '/education/student/explore' },
-  discussion: { icon: MessageSquare, label: 'View Rubric & Examples', description: 'See grading criteria and example responses', route: '/education/student/discuss' },
-  revision: { icon: PenTool, label: 'Revise Positions', description: 'Update your positions based on what you learned', route: '/education/student/explore' },
+  positions: { icon: PenTool, label: 'View Rubric & Examples', description: 'See grading criteria and example responses', route: '/education/student/rubric' },
+  discussion: { icon: MessageSquare, label: 'Join Discussion', description: 'Share your thoughts with classmates', route: '/education/student/discuss' },
+  revision: { icon: PenTool, label: 'Continue Discussion', description: 'Keep engaging with classmates', route: '/education/student/discuss' },
   reflection: { icon: CheckCircle, label: 'Complete Reflection', description: 'Reflect on your experience', route: '/education/student/reflect' },
   completed: { icon: CheckCircle, label: 'View Profile', description: 'See your completed civic profile', route: '/education/student/reflect' },
 };

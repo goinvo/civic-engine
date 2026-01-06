@@ -54,7 +54,8 @@
       "Bash(npx remotion lambda)",
       "Bash(npx remotion:*)",
       "Bash(npm run synth:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
