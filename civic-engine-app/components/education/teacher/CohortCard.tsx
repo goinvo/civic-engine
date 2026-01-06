@@ -169,18 +169,18 @@ export function CohortCard({
             <Button
               variant="primary"
               size="sm"
-              onClick={onConfigure}
-              leftIcon={<Settings className="w-4 h-4" />}
-            >
-              Configure
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               onClick={onViewClass}
               rightIcon={<ChevronRight className="w-4 h-4" />}
             >
               View Class
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onConfigure}
+              leftIcon={<Settings className="w-4 h-4" />}
+            >
+              Configure
             </Button>
           </>
         )}

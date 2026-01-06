@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { DemoAuthProvider } from "@/lib/auth/demo-auth-context";
 import { ClassProvider } from "@/lib/auth/class-context";
+import { ToastProvider } from "@/components/education/ui/Toast";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -38,11 +39,13 @@ export default function RootLayout({
         <AuthProvider>
           <DemoAuthProvider>
             <ClassProvider>
-              <Navbar />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
+              <ToastProvider>
+                <Navbar />
+                <main className="flex-grow">
+                  {children}
+                </main>
+                <Footer />
+              </ToastProvider>
             </ClassProvider>
           </DemoAuthProvider>
         </AuthProvider>

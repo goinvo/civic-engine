@@ -11,3 +11,5 @@ export type { ReflectionData } from './Reflection';
 export { CivicProfile, CivicProfileCard } from './CivicProfile';
 export { default as CivicProfileShareCardVideo } from './CivicProfileShareCardVideo';
 export type { CivicProfileShareCardVideoProps } from './CivicProfileShareCardVideo';
+export { StudentProgressHeader, studentSteps } from './StudentProgressHeader';
+export type { StudentProgressHeaderProps } from './StudentProgressHeader';

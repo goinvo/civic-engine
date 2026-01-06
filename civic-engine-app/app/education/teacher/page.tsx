@@ -49,7 +49,12 @@ export default function TeacherDemoPage() {
   };
 
   const handleClassCreated = () => {
+    // Modal will show toast, just close the modal
     setIsCreateModalOpen(false);
+  };
+
+  const handleConfigure = (cohortId: string) => {
+    router.push(`/education/teacher/cohort/${cohortId}/configure`);
   };
 
   if (!isAuthenticated || userType !== 'teacher') {
@@ -163,8 +168,8 @@ export default function TeacherDemoPage() {
                     key={cohort.id}
                     cohort={cohort}
                     onViewClass={() => handleViewClass(cohort.id)}
-                    onConfigure={() => alert('In a real app, this would open cohort configuration.')}
-                    onViewAnalytics={() => alert('In a real app, this would show detailed analytics.')}
+                    onConfigure={() => handleConfigure(cohort.id)}
+                    onViewAnalytics={() => router.push(`/education/teacher/cohort/${cohort.id}?tab=analytics`)}
                     onViewGuide={() => alert('In a real app, this would show a teaching guide.')}
                   />
                 ))}

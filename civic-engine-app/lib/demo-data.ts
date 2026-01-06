@@ -16,6 +16,9 @@ import type {
   CohortPhase,
 } from '@/types/education';
 
+// Re-export types that components might need
+export type { DiscussionPost } from '@/types/education';
+
 // Demo Users
 export const demoTeacher: User & { profile: TeacherProfile } = {
   id: 'teacher-demo-001',
@@ -83,6 +86,7 @@ export const demoCohort: Cohort = {
   joinCode: 'ABC-1234',
   status: 'active',
   currentPhase: 'discussion' as CohortPhase,
+  pacingMode: 'teacher_controlled',
   studentCount: 24,
   createdAt: new Date('2024-08-20'),
   startDate: new Date('2024-09-01'),
@@ -98,6 +102,7 @@ export const demoCohorts: Cohort[] = [
     joinCode: 'XYZ-5678',
     status: 'active',
     currentPhase: 'exploration' as CohortPhase,
+    pacingMode: 'self_paced',
     studentCount: 28,
     createdAt: new Date('2024-08-22'),
     startDate: new Date('2024-09-05'),
@@ -110,6 +115,7 @@ export const demoCohorts: Cohort[] = [
     joinCode: 'GOV-9999',
     status: 'draft',
     currentPhase: 'not_started' as CohortPhase,
+    pacingMode: 'teacher_controlled',
     studentCount: 0,
     createdAt: new Date('2024-12-01'),
   },

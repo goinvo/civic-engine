@@ -23,3 +23,11 @@ export type { AnimatedStepProgressProps, Step } from './AnimatedStepProgress';
 
 export { Banner, InlineBanner } from './Banner';
 export type { BannerProps, BannerVariant, InlineBannerProps } from './Banner';
+
+export { ToastProvider, useToast } from './Toast';
+
+export { Toggle } from './Toggle';
+export type { ToggleProps } from './Toggle';
+
+export { SegmentedControl } from './SegmentedControl';
+export type { SegmentedControlProps, SegmentedControlOption } from './SegmentedControl';

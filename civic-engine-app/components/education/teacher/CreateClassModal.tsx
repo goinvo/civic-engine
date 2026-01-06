@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { Copy, Check } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Card } from '../ui/Card';
-import { GradeLevel } from '@/types/education';
+import { useToast } from '../ui/Toast';
+import { GradeLevel, Cohort } from '@/types/education';
 import { useClasses } from '@/lib/auth/class-context';
 import { useDemoAuth } from '@/lib/auth/demo-auth-context';
 import { cn } from '@/lib/utils';
@@ -15,7 +17,7 @@ import { cn } from '@/lib/utils';
 interface CreateClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onClassCreated?: () => void;
+  onClassCreated?: (cohort: Cohort) => void;
 }
 
 type Step = 'form' | 'success';
@@ -28,25 +30,27 @@ const gradeLevelOptions: { value: GradeLevel; label: string }[] = [
 ];
 
 export function CreateClassModal({ isOpen, onClose, onClassCreated }: CreateClassModalProps) {
+  const router = useRouter();
   const { addCohort } = useClasses();
   const { user } = useDemoAuth();
+  const { showToast } = useToast();
   const [step, setStep] = useState<Step>('form');
   const [copied, setCopied] = useState<'code' | 'link' | null>(null);
+  const [createdCohort, setCreatedCohort] = useState<Cohort | null>(null);
 
   // Form state
   const [name, setName] = useState('');
   const [gradeLevel, setGradeLevel] = useState<GradeLevel>('9-10');
 
   // Success state
-  const [joinCode, setJoinCode] = useState('');
-  const [createdClassName, setCreatedClassName] = useState('');
+  const joinCode = createdCohort?.joinCode || '';
+  const createdClassName = createdCohort?.name || '';
 
   const resetForm = () => {
     setStep('form');
     setName('');
     setGradeLevel('9-10');
-    setJoinCode('');
-    setCreatedClassName('');
+    setCreatedCohort(null);
   };
 
   const handleClose = () => {
@@ -63,8 +67,7 @@ export function CreateClassModal({ isOpen, onClose, onClassCreated }: CreateClas
       gradeLevel,
     });
 
-    setJoinCode(newCohort.joinCode);
-    setCreatedClassName(name);
+    setCreatedCohort(newCohort);
     setStep('success');
   };
 
@@ -76,7 +79,27 @@ export function CreateClassModal({ isOpen, onClose, onClassCreated }: CreateClas
   };
 
   const handleDone = () => {
-    onClassCreated?.();
+    if (createdCohort) {
+      // Show toast notification with quick links
+      showToast({
+        type: 'success',
+        title: `"${createdCohort.name}" created!`,
+        message: `Join code: ${createdCohort.joinCode}`,
+        actions: [
+          {
+            label: 'View Class',
+            variant: 'primary',
+            onClick: () => router.push(`/education/teacher/cohort/${createdCohort.id}`),
+          },
+          {
+            label: 'Configure',
+            variant: 'secondary',
+            onClick: () => router.push(`/education/teacher/cohort/${createdCohort.id}/configure`),
+          },
+        ],
+      });
+      onClassCreated?.(createdCohort);
+    }
     handleClose();
   };
 

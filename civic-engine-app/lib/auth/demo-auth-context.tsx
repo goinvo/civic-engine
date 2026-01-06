@@ -8,13 +8,14 @@ import {
   demoCohort,
   type DemoUserType,
 } from '@/lib/demo-data';
-import type { User, Cohort } from '@/types/education';
+import type { User, Cohort, GradeLevel } from '@/types/education';
 
 interface DemoAuthState {
   isAuthenticated: boolean;
   userType: DemoUserType;
   user: (User & { profile?: unknown }) | null;
   currentCohort: Cohort | null;
+  gradeLevel: GradeLevel;
   isLoading: boolean;
 }
 
@@ -23,6 +24,7 @@ interface DemoAuthContextType extends DemoAuthState {
   loginAsStudent: (studentIndex?: number) => void;
   logout: () => void;
   selectCohort: (cohort: Cohort) => void;
+  setGradeLevel: (level: GradeLevel) => void;
   getCohorts: () => Cohort[];
 }
 
@@ -34,6 +36,7 @@ interface StoredDemoAuth {
   userType: DemoUserType;
   studentIndex?: number;
   cohortId?: string;
+  gradeLevel?: GradeLevel;
 }
 
 function getStoredAuth(): StoredDemoAuth | null {
@@ -59,6 +62,8 @@ export function DemoAuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<DemoAuthState>(() => {
     // Initialize from localStorage if available
     const stored = getStoredAuth();
+    const defaultGradeLevel: GradeLevel = stored?.gradeLevel || '9-10';
+
     if (stored) {
       if (stored.userType === 'teacher') {
         return {
@@ -68,6 +73,7 @@ export function DemoAuthProvider({ children }: { children: React.ReactNode }) {
           currentCohort: stored.cohortId
             ? demoCohorts.find(c => c.id === stored.cohortId) || null
             : null,
+          gradeLevel: defaultGradeLevel,
           isLoading: false,
         };
       } else if (stored.userType === 'student') {
@@ -77,6 +83,7 @@ export function DemoAuthProvider({ children }: { children: React.ReactNode }) {
           userType: 'student',
           user: student,
           currentCohort: demoCohort,
+          gradeLevel: defaultGradeLevel,
           isLoading: false,
         };
       }
@@ -86,42 +93,57 @@ export function DemoAuthProvider({ children }: { children: React.ReactNode }) {
       userType: 'none',
       user: null,
       currentCohort: null,
+      gradeLevel: defaultGradeLevel,
       isLoading: false,
     };
   });
 
   const loginAsTeacher = useCallback(() => {
-    setState({
+    setState(prev => ({
       isAuthenticated: true,
       userType: 'teacher',
       user: demoTeacher,
       currentCohort: null,
+      gradeLevel: prev.gradeLevel,
       isLoading: false,
-    });
+    }));
     setStoredAuth({ userType: 'teacher' });
   }, []);
 
   const loginAsStudent = useCallback((studentIndex: number = 0) => {
     const student = demoStudents[studentIndex % demoStudents.length];
-    setState({
+    setState(prev => ({
       isAuthenticated: true,
       userType: 'student',
       user: student,
       currentCohort: demoCohort,
+      gradeLevel: prev.gradeLevel,
       isLoading: false,
-    });
+    }));
     setStoredAuth({ userType: 'student', studentIndex, cohortId: demoCohort.id });
   }, []);
 
   const logout = useCallback(() => {
-    setState({
+    setState(prev => ({
       isAuthenticated: false,
       userType: 'none',
       user: null,
       currentCohort: null,
+      gradeLevel: prev.gradeLevel,
       isLoading: false,
-    });
+    }));
     setStoredAuth(null);
+  }, []);
+
+  const setGradeLevel = useCallback((level: GradeLevel) => {
+    setState(prev => ({ ...prev, gradeLevel: level }));
+    const stored = getStoredAuth();
+    if (stored) {
+      setStoredAuth({ ...stored, gradeLevel: level });
+    } else {
+      // Store grade level even when not logged in
+      localStorage.setItem('civic_engine_grade_level', level);
+    }
   }, []);
 
   const selectCohort = useCallback((cohort: Cohort) => {
@@ -142,6 +164,7 @@ export function DemoAuthProvider({ children }: { children: React.ReactNode }) {
     loginAsStudent,
     logout,
     selectCohort,
+    setGradeLevel,
     getCohorts,
   };
 

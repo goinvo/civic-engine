@@ -90,10 +90,64 @@ interface StepProgressProps {
   currentStep: number;
   totalSteps: number;
   steps?: string[];
+  descriptions?: string[];
   className?: string;
+  /** When true, all steps are styled uniformly without highlighting current/completed */
+  previewMode?: boolean;
+  /** Show steps vertically with labels */
+  vertical?: boolean;
 }
 
-export function StepProgress({ currentStep, totalSteps, steps, className }: StepProgressProps) {
+export function StepProgress({
+  currentStep,
+  totalSteps,
+  steps,
+  descriptions,
+  className,
+  previewMode = false,
+  vertical = false,
+}: StepProgressProps) {
+  if (vertical) {
+    return (
+      <div className={cn('w-full', className)}>
+        <div className="space-y-4">
+          {Array.from({ length: totalSteps }).map((_, index) => (
+            <div key={index} className="flex items-start gap-4">
+              {/* Circle */}
+              <div
+                className={cn(
+                  'w-10 h-10 aspect-square flex items-center justify-center border-2 border-black font-bold text-sm shrink-0',
+                  previewMode
+                    ? 'bg-[#2F3BBD] text-white'
+                    : index < currentStep
+                    ? 'bg-[#2F3BBD] text-white'
+                    : index === currentStep
+                    ? 'bg-white text-[#2F3BBD]'
+                    : 'bg-gray-100 text-gray-400'
+                )}
+              >
+                {index + 1}
+              </div>
+              {/* Content */}
+              <div className="flex-1 pt-1">
+                {steps && steps[index] && (
+                  <p className="font-bold text-neutral-dark dark:text-white">
+                    {steps[index]}
+                  </p>
+                )}
+                {descriptions && descriptions[index] && (
+                  <p className="text-sm text-neutral dark:text-gray-400">
+                    {descriptions[index]}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn('w-full', className)}>
       <div className="flex items-center mb-2">
@@ -103,7 +157,9 @@ export function StepProgress({ currentStep, totalSteps, steps, className }: Step
             <div
               className={cn(
                 'w-8 h-8 aspect-square rounded-full flex items-center justify-center border-2 border-black font-bold text-sm transition-colors',
-                index < currentStep
+                previewMode
+                  ? 'bg-[#2F3BBD] text-white'
+                  : index < currentStep
                   ? 'bg-[#2F3BBD] text-white'
                   : index === currentStep
                   ? 'bg-white text-[#2F3BBD]'
@@ -117,14 +173,14 @@ export function StepProgress({ currentStep, totalSteps, steps, className }: Step
               <div
                 className={cn(
                   'h-0.5 flex-1 mx-2 transition-colors',
-                  index < currentStep ? 'bg-[#2F3BBD]' : 'bg-gray-200'
+                  previewMode ? 'bg-[#2F3BBD]' : index < currentStep ? 'bg-[#2F3BBD]' : 'bg-gray-200'
                 )}
               />
             )}
           </div>
         ))}
       </div>
-      {steps && steps[currentStep] && (
+      {steps && steps[currentStep] && !previewMode && (
         <p className="text-sm text-center font-medium text-neutral-dark dark:text-white">
           {steps[currentStep]}
         </p>

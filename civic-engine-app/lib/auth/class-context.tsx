@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import type { Cohort, GradeLevel, CohortPhase } from '@/types/education';
+import type { Cohort, GradeLevel, CohortPhase, PacingMode } from '@/types/education';
 
 interface ClassContextType {
   cohorts: Cohort[];
-  addCohort: (cohort: Omit<Cohort, 'id' | 'joinCode' | 'createdAt' | 'studentCount' | 'currentPhase' | 'status'>) => Cohort;
+  addCohort: (cohort: Omit<Cohort, 'id' | 'joinCode' | 'createdAt' | 'studentCount' | 'currentPhase' | 'status' | 'pacingMode'> & { pacingMode?: PacingMode }) => Cohort;
   updateCohort: (id: string, updates: Partial<Cohort>) => void;
   deleteCohort: (id: string) => void;
   getCohortById: (id: string) => Cohort | undefined;
@@ -57,7 +57,7 @@ function setStoredClasses(classes: Cohort[]): void {
 export function ClassProvider({ children }: { children: React.ReactNode }) {
   const [cohorts, setCohorts] = useState<Cohort[]>(() => getStoredClasses());
 
-  const addCohort = useCallback((cohortData: Omit<Cohort, 'id' | 'joinCode' | 'createdAt' | 'studentCount' | 'currentPhase' | 'status'>) => {
+  const addCohort = useCallback((cohortData: Omit<Cohort, 'id' | 'joinCode' | 'createdAt' | 'studentCount' | 'currentPhase' | 'status' | 'pacingMode'> & { pacingMode?: PacingMode }) => {
     const newCohort: Cohort = {
       ...cohortData,
       id: generateId(),
@@ -66,6 +66,7 @@ export function ClassProvider({ children }: { children: React.ReactNode }) {
       studentCount: 0,
       currentPhase: 'not_started' as CohortPhase,
       status: 'draft',
+      pacingMode: cohortData.pacingMode || 'teacher_controlled',
     };
 
     setCohorts(prev => {

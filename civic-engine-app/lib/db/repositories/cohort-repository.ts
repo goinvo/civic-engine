@@ -26,6 +26,7 @@ interface CohortItem {
   joinCode: string;
   status: CohortStatus;
   currentPhase: CohortPhase;
+  pacingMode: 'teacher_controlled' | 'self_paced';
   studentCount: number;
   policySetId?: string;
   createdAt: string;
@@ -43,6 +44,7 @@ function toCohort(item: CohortItem): Cohort {
     joinCode: item.joinCode,
     status: item.status,
     currentPhase: item.currentPhase,
+    pacingMode: item.pacingMode || 'teacher_controlled',
     studentCount: item.studentCount,
     createdAt: new Date(item.createdAt),
     startDate: item.startDate ? new Date(item.startDate) : undefined,
@@ -56,6 +58,7 @@ export interface CreateCohortInput {
   name: string;
   gradeLevel: GradeLevel;
   policySetId?: string;
+  pacingMode?: 'teacher_controlled' | 'self_paced';
 }
 
 // Repository functions
@@ -79,6 +82,7 @@ export async function createCohort(input: CreateCohortInput): Promise<Cohort> {
     joinCode,
     status: 'draft',
     currentPhase: 'not_started',
+    pacingMode: input.pacingMode || 'teacher_controlled',
     studentCount: 0,
     policySetId: input.policySetId,
     createdAt: now.toISOString(),

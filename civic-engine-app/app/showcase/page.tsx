@@ -37,6 +37,8 @@ import {
   AnimatedStepProgress,
   Banner,
   InlineBanner,
+  Toggle,
+  SegmentedControl,
 } from '@/components/education/ui';
 import type { Step } from '@/components/education/ui';
 
@@ -155,6 +157,7 @@ function PrimitivesSection() {
   const [textareaValue, setTextareaValue] = useState('');
   const [animatedProgressMode, setAnimatedProgressMode] = useState<'vertical' | 'horizontal'>('vertical');
   const [animatedProgressStep, setAnimatedProgressStep] = useState(0);
+  const [animatedProgressSelectable, setAnimatedProgressSelectable] = useState(true);
 
   return (
     <div className="space-y-12">
@@ -247,6 +250,83 @@ function PrimitivesSection() {
         </div>
       </div>
 
+      {/* Toggles */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Toggles</h3>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-6">
+            <Toggle checked={false} onChange={() => {}} label="Off" />
+            <Toggle checked={true} onChange={() => {}} label="On" />
+            <Toggle checked={true} onChange={() => {}} label="Disabled" disabled />
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <Toggle checked={true} onChange={() => {}} label="Small" size="sm" />
+            <Toggle checked={true} onChange={() => {}} label="Medium" size="md" />
+            <Toggle checked={true} onChange={() => {}} label="Large" size="lg" />
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <Toggle checked={true} onChange={() => {}} label="Label Right" labelPosition="right" />
+            <Toggle checked={true} onChange={() => {}} label="Label Left" labelPosition="left" />
+          </div>
+        </div>
+      </div>
+
+      {/* Segmented Controls */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Segmented Controls</h3>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-6">
+            <SegmentedControl
+              options={[
+                { value: 'a', label: 'Option A' },
+                { value: 'b', label: 'Option B' },
+              ]}
+              value="a"
+              onChange={() => {}}
+              size="sm"
+            />
+            <SegmentedControl
+              options={[
+                { value: 'a', label: 'Option A' },
+                { value: 'b', label: 'Option B' },
+              ]}
+              value="b"
+              onChange={() => {}}
+              size="md"
+            />
+            <SegmentedControl
+              options={[
+                { value: 'a', label: 'Option A' },
+                { value: 'b', label: 'Option B' },
+              ]}
+              value="a"
+              onChange={() => {}}
+              size="lg"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <SegmentedControl
+              options={[
+                { value: 'day', label: 'Day' },
+                { value: 'week', label: 'Week' },
+                { value: 'month', label: 'Month' },
+              ]}
+              value="week"
+              onChange={() => {}}
+            />
+            <SegmentedControl
+              options={[
+                { value: 'a', label: 'Disabled' },
+                { value: 'b', label: 'Control' },
+              ]}
+              value="a"
+              onChange={() => {}}
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Badges */}
       <div>
         <h3 className="font-bold text-lg mb-4">Badges</h3>
@@ -285,21 +365,16 @@ function PrimitivesSection() {
           <p className="text-sm text-neutral dark:text-gray-400 mb-4">
             Transforms from vertical list to horizontal dots with Framer Motion
           </p>
-          <div className="flex gap-2 mb-4">
-            <Button
+          <div className="flex items-center gap-2 mb-4">
+            <SegmentedControl
+              options={[
+                { value: 'vertical', label: 'Vertical' },
+                { value: 'horizontal', label: 'Horizontal' },
+              ]}
+              value={animatedProgressMode}
+              onChange={setAnimatedProgressMode}
               size="sm"
-              variant={animatedProgressMode === 'vertical' ? 'primary' : 'outline'}
-              onClick={() => setAnimatedProgressMode('vertical')}
-            >
-              Vertical
-            </Button>
-            <Button
-              size="sm"
-              variant={animatedProgressMode === 'horizontal' ? 'primary' : 'outline'}
-              onClick={() => setAnimatedProgressMode('horizontal')}
-            >
-              Horizontal
-            </Button>
+            />
             <Button
               size="sm"
               variant="secondary"
@@ -307,6 +382,15 @@ function PrimitivesSection() {
             >
               Next Step
             </Button>
+            <div className="ml-2">
+              <Toggle
+                checked={animatedProgressSelectable}
+                onChange={setAnimatedProgressSelectable}
+                label="Selectable"
+                labelPosition="left"
+                size="sm"
+              />
+            </div>
           </div>
           <div className="bg-white dark:bg-gray-800 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 max-w-md">
             <AnimatedStepProgress
@@ -319,6 +403,8 @@ function PrimitivesSection() {
               ]}
               currentStep={animatedProgressStep}
               mode={animatedProgressMode}
+              selectable={animatedProgressSelectable}
+              onStepClick={(index) => setAnimatedProgressStep(index)}
             />
           </div>
         </div>
@@ -541,6 +627,7 @@ function TeacherSection() {
       joinCode: 'ABC-1234',
       status: 'active',
       currentPhase: 'discussion',
+      pacingMode: 'teacher_controlled',
       studentCount: 24,
       createdAt: new Date(),
       startDate: new Date('2024-01-15'),
@@ -554,6 +641,7 @@ function TeacherSection() {
       joinCode: 'XYZ-5678',
       status: 'active',
       currentPhase: 'not_started',
+      pacingMode: 'self_paced',
       studentCount: 22,
       createdAt: new Date(),
     },

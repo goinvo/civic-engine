@@ -34,6 +34,7 @@ export interface StudentProfile {
 export type GradeLevel = '6-8' | '9-10' | '11-12' | 'college';
 export type CohortStatus = 'draft' | 'active' | 'archived';
 export type CohortPhase = 'not_started' | 'exploration' | 'positions' | 'discussion' | 'revision' | 'reflection' | 'completed';
+export type PacingMode = 'teacher_controlled' | 'self_paced';
 
 export interface Cohort {
   id: string;
@@ -43,6 +44,7 @@ export interface Cohort {
   joinCode: string;
   status: CohortStatus;
   currentPhase: CohortPhase;
+  pacingMode: PacingMode;
   studentCount: number;
   createdAt: Date;
   startDate?: Date;

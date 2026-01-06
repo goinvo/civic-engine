@@ -12,9 +12,12 @@ import {
   ChevronRight,
   Play,
   Pause,
-  CheckCircle
+  CheckCircle,
+  Copy,
+  Check
 } from 'lucide-react';
 import { useDemoAuth } from '@/lib/auth/demo-auth-context';
+import { useClasses } from '@/lib/auth/class-context';
 import {
   demoCohorts,
   demoStudents,
@@ -24,7 +27,7 @@ import {
   demoPolicySet,
   phaseDescriptions
 } from '@/lib/demo-data';
-import { CohortPhase } from '@/types/education';
+import { Cohort, CohortPhase } from '@/types/education';
 import { Card } from '@/components/education/ui/Card';
 import { Button } from '@/components/education/ui/Button';
 import { Badge } from '@/components/education/ui/Badge';
@@ -36,10 +39,22 @@ export default function CohortDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { isAuthenticated, userType, loginAsTeacher, selectCohort } = useDemoAuth();
+  const { cohorts: userCohorts, updateCohort } = useClasses();
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'positions' | 'discussions' | 'analytics'>('overview');
+  const [copied, setCopied] = useState(false);
 
   const cohortId = params.cohortId as string;
-  const cohort = demoCohorts.find(c => c.id === cohortId);
+  // Check user-created cohorts first, then fall back to demo cohorts
+  const cohort: Cohort | undefined = userCohorts.find(c => c.id === cohortId) || demoCohorts.find(c => c.id === cohortId);
+  const isUserCreatedCohort = userCohorts.some(c => c.id === cohortId);
+
+  const copyJoinCode = async () => {
+    if (cohort) {
+      await navigator.clipboard.writeText(cohort.joinCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   // Auto-login as teacher
   useEffect(() => {
@@ -78,7 +93,25 @@ export default function CohortDetailPage() {
   const cohortDiscussions = demoDiscussions.filter(d => d.cohortId === cohort.id);
 
   const handleAdvancePhase = () => {
-    alert(`In a real app, this would advance from "${cohort.currentPhase}" to the next phase.`);
+    if (!cohort) return;
+
+    const currentIndex = phaseOrder.indexOf(cohort.currentPhase);
+    if (currentIndex < phaseOrder.length - 1) {
+      const nextPhase = phaseOrder[currentIndex + 1];
+      if (isUserCreatedCohort) {
+        updateCohort(cohort.id, {
+          currentPhase: nextPhase,
+          status: 'active',
+          startDate: cohort.currentPhase === 'not_started' ? new Date() : cohort.startDate,
+        });
+      } else {
+        alert(`Demo mode: Would advance from "${cohort.currentPhase}" to "${nextPhase}".`);
+      }
+    }
+  };
+
+  const handleConfigure = () => {
+    router.push(`/education/teacher/cohort/${cohortId}/configure`);
   };
 
   return (
@@ -112,7 +145,13 @@ export default function CohortDetailPage() {
                   <Users className="w-4 h-4" />
                   {cohort.studentCount} students
                 </span>
-                <span>Join code: <span className="font-mono font-bold">{cohort.joinCode}</span></span>
+                <button
+                  onClick={copyJoinCode}
+                  className="flex items-center gap-1 hover:text-white transition-colors"
+                >
+                  Join code: <span className="font-mono font-bold">{cohort.joinCode}</span>
+                  {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                </button>
               </div>
             </div>
 
@@ -142,7 +181,7 @@ export default function CohortDetailPage() {
                 size="sm"
                 leftIcon={<Settings className="w-4 h-4" />}
                 className="bg-transparent text-white border-white hover:bg-white/10"
-                onClick={() => alert('Configuration options would appear here.')}
+                onClick={handleConfigure}
               >
                 Configure
               </Button>
@@ -154,6 +193,13 @@ export default function CohortDetailPage() {
       {/* Phase Progress */}
       <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 py-4 px-6">
         <div className="max-w-6xl mx-auto">
+          {/* Pacing Mode Indicator */}
+          <div className="flex items-center gap-2 mb-3 text-sm text-neutral dark:text-gray-400">
+            <span className="font-medium">Pacing:</span>
+            <Badge variant={cohort.pacingMode === 'self_paced' ? 'primary' : 'default'} size="sm">
+              {cohort.pacingMode === 'self_paced' ? 'Self-Paced' : 'Teacher-Controlled'}
+            </Badge>
+          </div>
           <div className="flex items-center gap-2 overflow-x-auto">
             {phaseOrder.slice(1, -1).map((phase, index) => {
               const isComplete = phaseOrder.indexOf(phase) < currentPhaseIndex;
@@ -161,11 +207,11 @@ export default function CohortDetailPage() {
               return (
                 <div key={phase} className="flex items-center shrink-0">
                   <div
-                    className={`px-3 py-1.5 text-xs font-bold border-2 ${
-                      isComplete
-                        ? 'bg-green-500 text-white border-green-600'
-                        : isCurrent
-                        ? 'bg-[#2F3BBD] text-white border-black'
+                    className={`px-3 py-1.5 text-xs font-bold border-2 transition-all ${
+                      isCurrent
+                        ? 'bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-black shadow-lg scale-110 ring-2 ring-[#2F3BBD]/30 ring-offset-2'
+                        : isComplete
+                        ? 'bg-[#2F3BBD] text-white border-[#2F3BBD]'
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700'
                     }`}
                   >
@@ -175,7 +221,7 @@ export default function CohortDetailPage() {
                   {index < 4 && (
                     <div
                       className={`w-6 h-0.5 ${
-                        isComplete ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
+                        isComplete ? 'bg-[#2F3BBD]' : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                     />
                   )}
