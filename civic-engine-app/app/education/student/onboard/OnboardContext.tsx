@@ -50,8 +50,11 @@ export function OnboardProvider({ children }: { children: ReactNode }) {
   const onLayoutTransitionComplete = useCallback(() => {
     if (waitingForLayout.current) {
       waitingForLayout.current = false;
-      // Now trigger the step change (which starts the step animation)
-      setCurrentStep(1);
+      // Stay on step 0 (Enter Class Code) - don't advance yet
+      // Step advances when user completes the join form
+      setPhase('joined');
+      setShowContent(true);
+      waitingForStep.current = false;
     }
   }, []);
 

@@ -12,16 +12,16 @@ import type { GradeLevel } from '@/types/education';
 export const studentSteps: Step[] = [
   { id: 'join', label: 'Enter Class Code', description: 'Join your class with the code from your teacher' },
   { id: 'explore', label: 'Explore Policies', description: 'Read about policies that most Americans agree on' },
-  { id: 'position', label: 'Share Your Opinion', description: 'Tell us what you think and why' },
-  { id: 'discuss', label: 'Rubric & Examples', description: 'See grading criteria and example responses' },
+  { id: 'rubric', label: 'View Rubric & Examples', description: 'See grading criteria and example responses' },
+  { id: 'discuss', label: 'Class Discussion', description: 'Discuss with your classmates' },
   { id: 'reflect', label: 'Reflect & Finish', description: 'Get your civic profile to share' },
 ];
 
 // Map step indices to routes
 const stepRoutes: Record<number, string> = {
-  0: '/education/student/onboard/join',
+  0: '/education/student/onboard',
   1: '/education/student/explore',
-  2: '/education/student/explore',
+  2: '/education/student/discuss',
   3: '/education/student/discuss',
   4: '/education/student/reflect',
 };

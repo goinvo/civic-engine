@@ -18,13 +18,13 @@ import { Badge } from '@/components/education/ui/Badge';
 import { AnimatedStepProgress } from '@/components/education/ui';
 import { studentSteps } from '@/components/education/student';
 
-// Map cohort phases to step indices
+// Map cohort phases to step indices (0-indexed: 0=Enter Code, 1=Explore, 2=Rubric, 3=Discussion, 4=Reflect)
 const phaseToStepIndex: Record<CohortPhase, number> = {
   not_started: 1,
   exploration: 1,
-  positions: 2,
-  discussion: 3,
-  revision: 3,
+  positions: 1,
+  discussion: 2,  // View Rubric & Examples
+  revision: 3,    // Class Discussion
   reflection: 4,
   completed: 4,
 };
