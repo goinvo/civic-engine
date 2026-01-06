@@ -346,30 +346,17 @@ export default function StudentDiscussPage() {
                 Post about each policy to share your perspective with the class.
               </p>
             </Card>
-
-            {/* Continue button on desktop */}
-            <div className="hidden lg:block mt-4">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => router.push('/education/student/reflect')}
-                rightIcon={<ChevronRight className="w-5 h-5" />}
-                className="w-full"
-              >
-                Continue to Reflection
-              </Button>
-            </div>
           </div>
         </div>
 
-        {/* Continue button on mobile */}
-        <div className="lg:hidden mt-8">
+        {/* Continue button - always visible at bottom */}
+        <div className="mt-8 flex justify-center">
           <Button
             variant="primary"
             size="lg"
             onClick={() => router.push('/education/student/reflect')}
             rightIcon={<ChevronRight className="w-5 h-5" />}
-            className="w-full"
+            className="w-full max-w-md"
           >
             Continue to Reflection
           </Button>

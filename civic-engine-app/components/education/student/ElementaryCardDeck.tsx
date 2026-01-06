@@ -1,19 +1,38 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Shuffle, Send, Sparkles, MessageCircle, Check } from 'lucide-react';
-import { Card } from '@/components/education/ui/Card';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import {
+  ChevronRight,
+  Shuffle,
+  Send,
+  ThumbsUp,
+  Users,
+  HelpCircle,
+  Scale,
+  Sparkles,
+  MessageCircle,
+  Heart,
+  Check,
+  Lightbulb,
+  type LucideIcon,
+} from 'lucide-react';
 import { Button } from '@/components/education/ui/Button';
+import {
+  ShowcaseProgressDots,
+  ShowcaseCompleteCard,
+  cardThemes,
+  type CardTheme,
+} from './ElementaryShowcaseCard';
 
-// Prompt options for each type
-const prompts = [
-  { id: 'like', text: 'What do you like about this idea?', emoji: '😊' },
-  { id: 'help', text: 'Who would this help?', emoji: '🤝' },
-  { id: 'worry', text: 'Is there anything that worries you about this?', emoji: '🤔' },
-  { id: 'fair', text: 'Do you think this is fair for everyone?', emoji: '⚖️' },
-  { id: 'change', text: 'What would you change about this idea?', emoji: '✨' },
-  { id: 'feel', text: 'How does this idea make you feel?', emoji: '💭' },
+// Prompt options with Lucide icons
+const prompts: { id: string; text: string; icon: LucideIcon; theme: CardTheme }[] = [
+  { id: 'like', text: 'What do you like about this idea?', icon: ThumbsUp, theme: 'green' },
+  { id: 'help', text: 'Who would this help?', icon: Users, theme: 'blue' },
+  { id: 'worry', text: 'Is there anything that worries you about this?', icon: HelpCircle, theme: 'amber' },
+  { id: 'fair', text: 'Do you think this is fair for everyone?', icon: Scale, theme: 'purple' },
+  { id: 'change', text: 'What would you change about this idea?', icon: Sparkles, theme: 'rose' },
+  { id: 'feel', text: 'How does this idea make you feel?', icon: Heart, theme: 'teal' },
 ];
 
 interface PolicyTopic {
@@ -47,6 +66,84 @@ interface CardState {
   replyIndex: number;
 }
 
+// Animation variants with spring physics
+const cardVariants: Variants = {
+  enter: {
+    scale: 0.8,
+    y: 30,
+    opacity: 0,
+    rotateY: -10,
+  },
+  center: {
+    scale: 1,
+    y: 0,
+    opacity: 1,
+    rotateY: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 25,
+      mass: 0.8,
+    },
+  },
+  exit: {
+    scale: 0.8,
+    y: -30,
+    opacity: 0,
+    rotateY: 10,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+};
+
+// Icon animation with bounce
+const iconVariants: Variants = {
+  initial: { scale: 0, rotate: -180 },
+  animate: {
+    scale: 1,
+    rotate: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 260,
+      damping: 15,
+      delay: 0.1,
+    },
+  },
+  hover: {
+    scale: 1.1,
+    rotate: [0, -10, 10, -5, 5, 0],
+    transition: {
+      rotate: {
+        duration: 0.5,
+        ease: 'easeInOut',
+      },
+    },
+  },
+};
+
+// Button pulse animation for "try another"
+const pulseVariants: Variants = {
+  initial: { opacity: 0, x: -10, scale: 0.9 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 200,
+      damping: 15,
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: -10,
+    scale: 0.9,
+  },
+};
+
 export function ElementaryCardDeck({
   policies,
   existingResponses,
@@ -64,7 +161,6 @@ export function ElementaryCardDeck({
   const [response, setResponse] = useState('');
   const [showTryAnother, setShowTryAnother] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [completedPolicies, setCompletedPolicies] = useState<Set<string>>(new Set());
 
   const currentPolicy = policies[cardState.policyIndex];
   const currentPrompt = prompts[cardState.promptIndex];
@@ -83,18 +179,14 @@ export function ElementaryCardDeck({
 
   const handleNextCard = useCallback(() => {
     if (cardState.type === 'intro') {
-      // Move to prompt card
       setCardState(prev => ({ ...prev, type: 'prompt' }));
     } else if (cardState.type === 'prompt' && !cardState.showingReplies) {
-      // After responding, show replies if any exist
       if (policyResponses.length > 0) {
         setCardState(prev => ({ ...prev, showingReplies: true, replyIndex: 0 }));
       } else {
-        // No replies, move to next policy
         moveToNextPolicy();
       }
     } else if (cardState.showingReplies) {
-      // Show next reply or move to next policy
       if (cardState.replyIndex < policyResponses.length - 1) {
         setCardState(prev => ({ ...prev, replyIndex: prev.replyIndex + 1 }));
       } else {
@@ -130,7 +222,6 @@ export function ElementaryCardDeck({
 
     setIsSubmitting(true);
     onSubmitResponse(currentPolicy.id, response.trim(), currentPrompt.id);
-    setCompletedPolicies(prev => new Set(prev).add(currentPolicy.id));
 
     setTimeout(() => {
       setIsSubmitting(false);
@@ -145,88 +236,33 @@ export function ElementaryCardDeck({
     }
   };
 
-  // Card animation variants
-  const cardVariants = {
-    enter: {
-      scale: 0.95,
-      y: 20,
-      opacity: 0,
-      rotateY: -5,
-    },
-    center: {
-      scale: 1,
-      y: 0,
-      opacity: 1,
-      rotateY: 0,
-      transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }
-    },
-    exit: {
-      scale: 0.95,
-      y: -20,
-      opacity: 0,
-      rotateY: 5,
-      transition: { duration: 0.2 }
-    },
-  };
+  // Get theme config for current prompt
+  const getThemeConfig = (theme: CardTheme) => cardThemes[theme];
 
-  // Progress dots
-  const progressDots = (
-    <div className="flex justify-center gap-2 mb-4">
-      {policies.map((policy, index) => (
-        <div
-          key={policy.id}
-          className={`w-3 h-3 rounded-full border-2 border-black transition-colors ${
-            index < cardState.policyIndex
-              ? 'bg-green-500'
-              : index === cardState.policyIndex
-              ? 'bg-[#2F3BBD]'
-              : 'bg-gray-200'
-          }`}
-        />
-      ))}
-    </div>
-  );
-
-  // Render different card types
+  // Render card content based on state
   const renderCard = () => {
     const key = `${cardState.type}-${cardState.policyIndex}-${cardState.promptIndex}-${cardState.replyIndex}-${cardState.showingReplies}`;
 
     // Complete state
     if (cardState.type === 'complete') {
       return (
-        <motion.div
-          key="complete"
-          variants={cardVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          className="w-full"
-        >
-          <div className="bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 text-center">
-            <div className="w-20 h-20 mx-auto mb-4 bg-green-500 border-4 border-black rounded-full flex items-center justify-center">
-              <Sparkles className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="font-display text-2xl font-black text-neutral-dark mb-2">
-              Amazing Job, {userName}!
-            </h2>
-            <p className="text-neutral mb-6">
-              You shared your thoughts on {policies.length} big ideas!
-            </p>
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={onComplete}
-              rightIcon={<ChevronRight className="w-5 h-5" />}
-            >
-              Continue
-            </Button>
-          </div>
-        </motion.div>
+        <ShowcaseCompleteCard
+          title={`Amazing Job, ${userName}!`}
+          message={`You shared your thoughts on ${policies.length} big ideas!`}
+          bulletPoints={[
+            { icon: 'message', text: 'You shared your opinions' },
+            { icon: 'users', text: 'You thought about others' },
+            { icon: 'heart', text: 'You were kind and respectful' },
+          ]}
+          actionLabel="Continue"
+          onAction={onComplete}
+        />
       );
     }
 
     // Intro card
     if (cardState.type === 'intro') {
+      const theme = getThemeConfig('blue');
       return (
         <motion.div
           key={key}
@@ -234,19 +270,46 @@ export function ElementaryCardDeck({
           initial="enter"
           animate="center"
           exit="exit"
-          className="w-full"
+          className={`bg-gradient-to-br ${theme.gradient} border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-8 relative overflow-hidden`}
         >
-          <div className="bg-gradient-to-br from-blue-100 to-indigo-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8">
-            <div className="text-center">
-              <p className="text-sm font-bold text-[#2F3BBD] uppercase tracking-wide mb-2">
+          {/* Decorative corner */}
+          <div className="absolute top-0 right-0 w-24 h-24 opacity-20">
+            <div className={`absolute top-0 right-0 w-full h-full ${theme.iconBg} rounded-bl-full`} />
+          </div>
+
+          <div className="relative z-10 text-center">
+            <motion.div
+              variants={iconVariants}
+              initial="initial"
+              animate="animate"
+              className="flex justify-center mb-4"
+            >
+              <div className={`w-20 h-20 ${theme.iconBg} border-4 border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
+                <Lightbulb className="w-10 h-10 text-white" strokeWidth={2.5} />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <p className={`text-sm font-bold ${theme.accent} uppercase tracking-wide mb-1`}>
                 Topic {cardState.policyIndex + 1} of {policies.length}
               </p>
-              <h2 className="font-display text-3xl font-black text-neutral-dark mb-4">
+              <h2 className="font-display text-2xl font-black text-neutral-dark mb-4">
                 {currentPolicy?.title}
               </h2>
-              <p className="text-lg text-neutral mb-8">
+              <p className="text-lg text-neutral mb-6">
                 {currentPolicy?.description}
               </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <Button
                 variant="primary"
                 size="lg"
@@ -255,7 +318,7 @@ export function ElementaryCardDeck({
               >
                 Let&apos;s Think About It!
               </Button>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       );
@@ -264,6 +327,8 @@ export function ElementaryCardDeck({
     // Showing other students' replies
     if (cardState.showingReplies && policyResponses.length > 0) {
       const currentReply = policyResponses[cardState.replyIndex];
+      const theme = getThemeConfig('purple');
+
       return (
         <motion.div
           key={key}
@@ -271,20 +336,44 @@ export function ElementaryCardDeck({
           initial="enter"
           animate="center"
           exit="exit"
-          className="w-full"
+          className={`bg-gradient-to-br ${theme.gradient} border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-6 relative overflow-hidden`}
         >
-          <div className="bg-gradient-to-br from-purple-100 to-pink-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <MessageCircle className="w-5 h-5 text-purple-600" />
-              <p className="text-sm font-bold text-purple-600">
-                What {currentReply?.authorName} said:
-              </p>
-            </div>
-            <div className="bg-white border-2 border-black p-4 mb-4 min-h-[100px]">
-              <p className="text-lg text-neutral-dark">
+          <div className="absolute top-0 right-0 w-24 h-24 opacity-20">
+            <div className={`absolute top-0 right-0 w-full h-full ${theme.iconBg} rounded-bl-full`} />
+          </div>
+
+          <div className="relative z-10">
+            <motion.div
+              variants={iconVariants}
+              initial="initial"
+              animate="animate"
+              className="flex justify-center mb-4"
+            >
+              <div className={`w-16 h-16 ${theme.iconBg} border-4 border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
+                <MessageCircle className="w-8 h-8 text-white" strokeWidth={2.5} />
+              </div>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className={`text-sm font-bold ${theme.accent} text-center mb-3`}
+            >
+              What {currentReply?.authorName} said:
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="bg-white border-2 border-black p-4 mb-4 min-h-[100px] rounded-xl"
+            >
+              <p className="text-lg text-neutral-dark italic">
                 &ldquo;{currentReply?.content}&rdquo;
               </p>
-            </div>
+            </motion.div>
+
             <div className="flex items-center justify-between">
               <p className="text-sm text-neutral">
                 {cardState.replyIndex + 1} of {policyResponses.length} classmates
@@ -304,6 +393,9 @@ export function ElementaryCardDeck({
     }
 
     // Prompt card with response input
+    const theme = getThemeConfig(currentPrompt.theme);
+    const PromptIcon = currentPrompt.icon;
+
     return (
       <motion.div
         key={key}
@@ -311,37 +403,61 @@ export function ElementaryCardDeck({
         initial="enter"
         animate="center"
         exit="exit"
-        className="w-full"
+        className={`bg-gradient-to-br ${theme.gradient} border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-6 relative overflow-hidden`}
       >
-        <div className="bg-gradient-to-br from-amber-50 to-yellow-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
-          {/* Prompt */}
-          <div className="text-center mb-4">
-            <span className="text-4xl mb-2 block">{currentPrompt.emoji}</span>
-            <h3 className="font-display text-xl font-black text-neutral-dark">
-              {currentPrompt.text}
-            </h3>
-          </div>
+        <div className="absolute top-0 right-0 w-24 h-24 opacity-20">
+          <div className={`absolute top-0 right-0 w-full h-full ${theme.iconBg} rounded-bl-full`} />
+        </div>
+
+        <div className="relative z-10">
+          {/* Prompt icon and text */}
+          <motion.div
+            variants={iconVariants}
+            initial="initial"
+            animate="animate"
+            whileHover="hover"
+            className="flex justify-center mb-4"
+          >
+            <div className={`w-16 h-16 ${theme.iconBg} border-4 border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer`}>
+              <PromptIcon className="w-8 h-8 text-white" strokeWidth={2.5} />
+            </div>
+          </motion.div>
+
+          <motion.h3
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="font-display text-xl font-black text-neutral-dark text-center mb-4"
+          >
+            {currentPrompt.text}
+          </motion.h3>
 
           {/* Response input */}
-          <div className="mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mb-4"
+          >
             <textarea
               value={response}
               onChange={(e) => setResponse(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your answer here..."
-              className="w-full p-4 text-lg border-4 border-black bg-white focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] resize-none min-h-[120px]"
+              className="w-full p-4 text-lg border-4 border-black bg-white focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] resize-none min-h-[120px] rounded-xl"
               rows={4}
             />
-          </div>
+          </motion.div>
 
           {/* Actions */}
           <div className="flex items-center justify-between">
             <AnimatePresence>
               {showTryAnother && (
                 <motion.button
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0 }}
+                  variants={pulseVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   onClick={handleTryAnotherPrompt}
                   className="flex items-center gap-2 text-sm font-bold text-neutral hover:text-[#2F3BBD] transition-colors"
                 >
@@ -351,16 +467,22 @@ export function ElementaryCardDeck({
               )}
             </AnimatePresence>
 
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleSubmitResponse}
-              disabled={!response.trim() || isSubmitting}
-              rightIcon={isSubmitting ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
               className="ml-auto"
             >
-              {isSubmitting ? 'Sent!' : 'Share'}
-            </Button>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleSubmitResponse}
+                disabled={!response.trim() || isSubmitting}
+                rightIcon={isSubmitting ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+              >
+                {isSubmitting ? 'Sent!' : 'Share'}
+              </Button>
+            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -370,14 +492,34 @@ export function ElementaryCardDeck({
   return (
     <div className="max-w-lg mx-auto px-4">
       {/* Progress indicator */}
-      {cardState.type !== 'complete' && progressDots}
+      {cardState.type !== 'complete' && (
+        <div className="mb-4">
+          <ShowcaseProgressDots
+            total={policies.length}
+            current={cardState.policyIndex}
+            completed={cardState.policyIndex + (cardState.type !== 'intro' ? 1 : 0)}
+          />
+        </div>
+      )}
 
       {/* Card stack visual (decorative cards behind) */}
       <div className="relative">
         {cardState.type !== 'complete' && (
           <>
-            <div className="absolute inset-0 bg-gray-200 border-4 border-black transform translate-x-2 translate-y-2 -z-10" />
-            <div className="absolute inset-0 bg-gray-300 border-4 border-black transform translate-x-4 translate-y-4 -z-20" />
+            <motion.div
+              className="absolute inset-0 bg-gray-200 border-4 border-black rounded-2xl"
+              initial={{ x: 8, y: 8, opacity: 0 }}
+              animate={{ x: 8, y: 8, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              style={{ zIndex: -1 }}
+            />
+            <motion.div
+              className="absolute inset-0 bg-gray-300 border-4 border-black rounded-2xl"
+              initial={{ x: 16, y: 16, opacity: 0 }}
+              animate={{ x: 16, y: 16, opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              style={{ zIndex: -2 }}
+            />
           </>
         )}
 
@@ -389,9 +531,13 @@ export function ElementaryCardDeck({
 
       {/* Topic label */}
       {cardState.type !== 'complete' && (
-        <p className="text-center text-sm text-neutral mt-4">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center text-sm text-neutral mt-4"
+        >
           {currentPolicy?.title}
-        </p>
+        </motion.p>
       )}
     </div>
   );

@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, ChevronLeft, CheckCircle, Star, MessageSquare, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, ChevronLeft, CheckCircle, Star, MessageSquare, MessageCircle, Users, Heart, Pencil } from 'lucide-react';
 import { useDemoAuth } from '@/lib/auth/demo-auth-context';
 import { Card } from '@/components/education/ui/Card';
 import { Button } from '@/components/education/ui/Button';
 import { Badge } from '@/components/education/ui/Badge';
-import { StudentProgressHeader } from '@/components/education/student';
+import {
+  StudentProgressHeader,
+  ElementaryShowcaseCard,
+  ShowcaseProgressDots,
+  ShowcaseCompleteCard,
+  type ShowcaseIconName,
+  type CardTheme,
+} from '@/components/education/student';
 import type { GradeLevel } from '@/types/education';
 
 // Types for rubric data
@@ -336,43 +342,35 @@ const examplesByGrade: Record<GradeLevel, ExampleResponse[]> = {
   ],
 };
 
-// Elementary rubric intro cards
-const elementaryRubricIntroCards = [
+// Elementary rubric intro cards (using Lucide icons)
+const elementaryRubricIntroCards: {
+  id: string;
+  icon: ShowcaseIconName;
+  title: string;
+  content: string;
+  theme: CardTheme;
+}[] = [
   {
     id: 'intro',
-    emoji: '🌟',
+    icon: 'sparkles',
     title: 'How to Share Great Ideas!',
     content: 'Before we share our ideas, let\'s learn what makes a really good answer!',
-    color: 'from-amber-100 to-yellow-100',
+    theme: 'amber',
   },
   {
     id: 'tips',
-    emoji: '💡',
+    icon: 'idea',
     title: 'Three Things to Remember',
     content: 'We\'ll learn three important things: sharing your opinion, thinking about others, and being kind.',
-    color: 'from-blue-100 to-indigo-100',
+    theme: 'blue',
   },
 ];
 
-// Card animation variants
-const cardVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 200 : -200,
-    opacity: 0,
-    scale: 0.95,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }
-  },
-  exit: (direction: number) => ({
-    x: direction < 0 ? 200 : -200,
-    opacity: 0,
-    scale: 0.95,
-    transition: { duration: 0.2 }
-  }),
+// Rubric criteria icons mapping
+const rubricIcons: Record<string, ShowcaseIconName> = {
+  'opinion': 'opinion',
+  'other-side': 'users',
+  'kindness': 'heart',
 };
 
 export default function StudentRubricPage() {
@@ -488,13 +486,6 @@ export default function StudentRubricPage() {
     const currentRubricCard = rubricCriteria[cardIndex];
     const currentExampleCard = exampleResponses[cardIndex];
 
-    // Get emoji for rubric criteria
-    const rubricEmojis: Record<string, string> = {
-      'opinion': '💬',
-      'other-side': '🤔',
-      'kindness': '💖',
-    };
-
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 dark:from-gray-950 dark:to-gray-900">
         <StudentProgressHeader currentStep={2} />
@@ -518,199 +509,117 @@ export default function StudentRubricPage() {
           </p>
 
           {/* Progress dots */}
-          <div className="flex justify-center gap-1 mb-4 flex-wrap max-w-xs mx-auto">
-            {Array.from({ length: progress.total }).map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full border border-black transition-colors ${
-                  index < progress.current ? 'bg-[#2F3BBD]' : 'bg-gray-200'
-                }`}
-              />
-            ))}
+          <div className="mb-4">
+            <ShowcaseProgressDots
+              total={progress.total}
+              current={progress.current - 1}
+              completed={progress.current}
+            />
           </div>
 
-          {/* Card stack visual */}
-          <div className="relative">
-            {cardPhase !== 'complete' && (
-              <>
-                <div className="absolute inset-0 bg-gray-200 border-4 border-black transform translate-x-2 translate-y-2 -z-10 rounded-lg" />
-                <div className="absolute inset-0 bg-gray-300 border-4 border-black transform translate-x-4 translate-y-4 -z-20 rounded-lg" />
-              </>
-            )}
+          {/* Card content */}
+          {cardPhase === 'intro' && currentIntroCard && (
+            <ElementaryShowcaseCard
+              cardKey={`intro-${currentIntroCard.id}`}
+              icon={currentIntroCard.icon}
+              title={currentIntroCard.title}
+              theme={currentIntroCard.theme}
+              direction={direction}
+            >
+              <p className="text-lg text-neutral leading-relaxed text-center">
+                {currentIntroCard.content}
+              </p>
+            </ElementaryShowcaseCard>
+          )}
 
-            <AnimatePresence mode="wait" custom={direction}>
-              {/* Intro cards */}
-              {cardPhase === 'intro' && currentIntroCard && (
-                <motion.div
-                  key={`intro-${currentIntroCard.id}`}
-                  custom={direction}
-                  variants={cardVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className={`bg-gradient-to-br ${currentIntroCard.color} border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 rounded-lg`}
-                >
-                  <div className="text-center">
-                    <span className="text-6xl mb-4 block">{currentIntroCard.emoji}</span>
-                    <h2 className="font-display text-2xl font-black text-neutral-dark mb-4">
-                      {currentIntroCard.title}
-                    </h2>
-                    <p className="text-lg text-neutral leading-relaxed">
-                      {currentIntroCard.content}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Rubric criteria cards */}
-              {cardPhase === 'rubric' && currentRubricCard && (
-                <motion.div
-                  key={`rubric-${currentRubricCard.id}`}
-                  custom={direction}
-                  variants={cardVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 rounded-lg"
-                >
-                  <div className="text-center mb-4">
-                    <span className="text-5xl mb-3 block">{rubricEmojis[currentRubricCard.id] || '⭐'}</span>
-                    <p className="text-sm font-bold text-green-700 uppercase tracking-wide mb-1">
-                      Rule {cardIndex + 1} of {rubricCount}
-                    </p>
-                    <h2 className="font-display text-2xl font-black text-neutral-dark">
-                      {currentRubricCard.title}
-                    </h2>
-                    <p className="text-neutral mt-2">{currentRubricCard.description}</p>
-                  </div>
-
-                  <div className="bg-white border-2 border-black p-4 rounded">
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                      <Star className="w-5 h-5 text-amber-500" />
-                      <span className="font-bold text-neutral-dark">Worth up to {currentRubricCard.maxPoints} {currentRubricCard.maxPoints === 1 ? 'point' : 'points'}!</span>
-                    </div>
-                    <div className="space-y-2">
-                      {currentRubricCard.levels.map((level) => (
-                        <div key={level.score} className="flex items-start gap-2 text-sm">
-                          <span className="font-black text-[#2F3BBD] w-6 text-center">{level.score}</span>
-                          <div>
-                            <span className="font-bold text-green-600">{level.label}:</span>{' '}
-                            <span className="text-neutral">{level.description}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Example cards */}
-              {cardPhase === 'examples' && currentExampleCard && (
-                <motion.div
-                  key={`example-${currentExampleCard.id}`}
-                  custom={direction}
-                  variants={cardVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className={`bg-gradient-to-br ${
-                    currentExampleCard.quality === 'strong'
-                      ? 'from-green-50 to-emerald-50'
-                      : 'from-amber-50 to-yellow-50'
-                  } border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 rounded-lg`}
-                >
-                  <div className="text-center mb-4">
-                    <span className="text-4xl mb-2 block">
-                      {currentExampleCard.quality === 'strong' ? '🌟' : '📝'}
-                    </span>
-                    <Badge
-                      variant={currentExampleCard.quality === 'strong' ? 'success' : 'warning'}
-                      size="sm"
-                    >
-                      {currentExampleCard.quality === 'strong' ? 'Great Example!' : 'Keep Trying!'}
-                    </Badge>
-                    <p className="text-sm text-neutral mt-2">{currentExampleCard.policy}</p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="bg-white border-2 border-black p-3 rounded">
-                      <p className="text-xs font-bold text-[#2F3BBD] uppercase mb-1">What I Think & Why</p>
-                      <p className="text-sm text-neutral-dark">
-                        <span className="font-bold">{currentExampleCard.stance}:</span> {currentExampleCard.reasoning}
-                      </p>
-                    </div>
-
-                    <div className="bg-white border-2 border-black p-3 rounded">
-                      <p className="text-xs font-bold text-amber-600 uppercase mb-1">What Others Might Think</p>
-                      <p className="text-sm text-neutral-dark">
-                        {currentExampleCard.otherSide || currentExampleCard.steelman}
-                      </p>
-                    </div>
-
-                    <div className={`flex items-center gap-2 p-3 rounded border-2 ${
-                      currentExampleCard.quality === 'strong'
-                        ? 'bg-green-100 border-green-300'
-                        : 'bg-amber-100 border-amber-300'
-                    }`}>
-                      <CheckCircle className={`w-5 h-5 flex-shrink-0 ${
-                        currentExampleCard.quality === 'strong' ? 'text-green-600' : 'text-amber-600'
-                      }`} />
+          {cardPhase === 'rubric' && currentRubricCard && (
+            <ElementaryShowcaseCard
+              cardKey={`rubric-${currentRubricCard.id}`}
+              icon={rubricIcons[currentRubricCard.id] || 'star'}
+              title={currentRubricCard.title}
+              subtitle={`Rule ${cardIndex + 1} of ${rubricCount}`}
+              theme="green"
+              direction={direction}
+            >
+              <p className="text-center text-neutral mb-4">{currentRubricCard.description}</p>
+              <div className="bg-white border-2 border-black p-4 rounded-xl">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Star className="w-5 h-5 text-amber-500" />
+                  <span className="font-bold text-neutral-dark">
+                    Worth up to {currentRubricCard.maxPoints} {currentRubricCard.maxPoints === 1 ? 'point' : 'points'}!
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {currentRubricCard.levels.map((level) => (
+                    <div key={level.score} className="flex items-start gap-2 text-sm">
+                      <span className="font-black text-[#2F3BBD] w-6 text-center">{level.score}</span>
                       <div>
-                        <p className="text-xs font-bold text-neutral-dark">
-                          Score: {currentExampleCard.score}/{currentExampleCard.maxScore}
-                        </p>
-                        <p className="text-sm text-neutral">{currentExampleCard.feedback}</p>
+                        <span className="font-bold text-green-600">{level.label}:</span>{' '}
+                        <span className="text-neutral">{level.description}</span>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              )}
+                  ))}
+                </div>
+              </div>
+            </ElementaryShowcaseCard>
+          )}
 
-              {/* Complete card */}
-              {cardPhase === 'complete' && (
-                <motion.div
-                  key="complete"
-                  custom={direction}
-                  variants={cardVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="bg-gradient-to-br from-purple-100 to-pink-100 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 rounded-lg"
-                >
-                  <div className="text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-[#2F3BBD] border-4 border-black rounded-full flex items-center justify-center">
-                      <Sparkles className="w-10 h-10 text-white" />
-                    </div>
-                    <h2 className="font-display text-2xl font-black text-neutral-dark mb-2">
-                      You&apos;re Ready!
-                    </h2>
-                    <p className="text-neutral mb-4">
-                      Now you know how to share great ideas. Remember:
+          {cardPhase === 'examples' && currentExampleCard && (
+            <ElementaryShowcaseCard
+              cardKey={`example-${currentExampleCard.id}`}
+              icon={currentExampleCard.quality === 'strong' ? 'success' : 'write'}
+              title={currentExampleCard.quality === 'strong' ? 'Great Example!' : 'Keep Trying!'}
+              subtitle={currentExampleCard.policy}
+              theme={currentExampleCard.quality === 'strong' ? 'green' : 'amber'}
+              direction={direction}
+            >
+              <div className="space-y-3">
+                <div className="bg-white border-2 border-black p-3 rounded-xl">
+                  <p className="text-xs font-bold text-[#2F3BBD] uppercase mb-1">What I Think & Why</p>
+                  <p className="text-sm text-neutral-dark">
+                    <span className="font-bold">{currentExampleCard.stance}:</span> {currentExampleCard.reasoning}
+                  </p>
+                </div>
+
+                <div className="bg-white border-2 border-black p-3 rounded-xl">
+                  <p className="text-xs font-bold text-amber-600 uppercase mb-1">What Others Might Think</p>
+                  <p className="text-sm text-neutral-dark">
+                    {currentExampleCard.otherSide || currentExampleCard.steelman}
+                  </p>
+                </div>
+
+                <div className={`flex items-center gap-2 p-3 rounded-xl border-2 ${
+                  currentExampleCard.quality === 'strong'
+                    ? 'bg-green-100 border-green-300'
+                    : 'bg-amber-100 border-amber-300'
+                }`}>
+                  <CheckCircle className={`w-5 h-5 flex-shrink-0 ${
+                    currentExampleCard.quality === 'strong' ? 'text-green-600' : 'text-amber-600'
+                  }`} />
+                  <div>
+                    <p className="text-xs font-bold text-neutral-dark">
+                      Score: {currentExampleCard.score}/{currentExampleCard.maxScore}
                     </p>
-                    <div className="space-y-2 text-left bg-white border-2 border-black p-4 rounded mb-6">
-                      <p className="flex items-center gap-2 text-sm">
-                        <span className="text-lg">💬</span> Share your opinion and say why
-                      </p>
-                      <p className="flex items-center gap-2 text-sm">
-                        <span className="text-lg">🤔</span> Think about what others might say
-                      </p>
-                      <p className="flex items-center gap-2 text-sm">
-                        <span className="text-lg">💖</span> Be kind and respectful
-                      </p>
-                    </div>
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      onClick={() => router.push('/education/student/discuss')}
-                      rightIcon={<ChevronRight className="w-5 h-5" />}
-                    >
-                      Let&apos;s Share Ideas!
-                    </Button>
+                    <p className="text-sm text-neutral">{currentExampleCard.feedback}</p>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                </div>
+              </div>
+            </ElementaryShowcaseCard>
+          )}
+
+          {cardPhase === 'complete' && (
+            <ShowcaseCompleteCard
+              title="You're Ready!"
+              message="Now you know how to share great ideas. Remember:"
+              bulletPoints={[
+                { icon: 'opinion', text: 'Share your opinion and say why' },
+                { icon: 'users', text: 'Think about what others might say' },
+                { icon: 'heart', text: 'Be kind and respectful' },
+              ]}
+              actionLabel="Let's Share Ideas!"
+              onAction={() => router.push('/education/student/discuss')}
+            />
+          )}
 
           {/* Navigation */}
           {cardPhase !== 'complete' && (

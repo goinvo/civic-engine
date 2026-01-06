@@ -14,3 +14,18 @@ export type { CivicProfileShareCardVideoProps } from './CivicProfileShareCardVid
 export { StudentProgressHeader, studentSteps } from './StudentProgressHeader';
 export type { StudentProgressHeaderProps } from './StudentProgressHeader';
 export { ElementaryCardDeck } from './ElementaryCardDeck';
+export {
+  ElementaryShowcaseCard,
+  ShowcaseProgressDots,
+  ShowcaseCompleteCard,
+  ShowcaseCelebration,
+  showcaseIcons,
+  cardThemes,
+} from './ElementaryShowcaseCard';
+export type {
+  ElementaryShowcaseCardProps,
+  ShowcaseProgressDotsProps,
+  ShowcaseCompleteCardProps,
+  ShowcaseIconName,
+  CardTheme,
+} from './ElementaryShowcaseCard';
