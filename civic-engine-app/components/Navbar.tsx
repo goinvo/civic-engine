@@ -52,7 +52,7 @@ export default function Navbar() {
               href="/wrapped"
               className="text-sm font-black text-white bg-[#2F3BBD] px-4 py-2 border-2 border-black hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
             >
-              Policy Wrapped
+              Preview Tool
             </Link>
           </div>
 
