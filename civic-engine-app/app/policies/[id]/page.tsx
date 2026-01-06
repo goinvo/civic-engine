@@ -32,23 +32,23 @@ function PolicyContent({ policy }: { policy: typeof policies[0] }) {
           {policy.description}
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-yellow-300 border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-yellow-100 border-2 border-black p-4">
             <div className="text-4xl font-display font-black text-black">{policy.averageSupport}%</div>
-            <div className="text-xs font-body text-black font-bold">Avg Support</div>
+            <div className="text-xs font-body text-neutral font-bold uppercase">Avg Support</div>
           </div>
           {policy.partySupport && (
             <>
-              <div className="bg-blue-300 border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-blue-100 border-2 border-black p-4">
                 <div className="text-3xl font-display font-black text-black">{policy.partySupport.democrats}%</div>
-                <div className="text-xs font-body text-black font-bold">Democrats</div>
+                <div className="text-xs font-body text-neutral font-bold uppercase">Democrats</div>
               </div>
-              <div className="bg-red-300 border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-red-100 border-2 border-black p-4">
                 <div className="text-3xl font-display font-black text-black">{policy.partySupport.republicans}%</div>
-                <div className="text-xs font-body text-black font-bold">Republicans</div>
+                <div className="text-xs font-body text-neutral font-bold uppercase">Republicans</div>
               </div>
-              <div className="bg-green-300 border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-green-100 border-2 border-black p-4">
                 <div className="text-3xl font-display font-black text-black">{policy.partySupport.independents}%</div>
-                <div className="text-xs font-body text-black font-bold">Independents</div>
+                <div className="text-xs font-body text-neutral font-bold uppercase">Independents</div>
               </div>
             </>
           )}
@@ -72,18 +72,18 @@ function PolicyContent({ policy }: { policy: typeof policies[0] }) {
       {policy.resourceFlow && (
         <section className="mb-8 pb-8 border-b-4 border-black">
           <h2 className="font-display text-2xl font-black text-black mb-4">How It Works</h2>
-          <div className="bg-blue-200 border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-blue-100 border-2 border-black p-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
-                <div className="text-xs font-display font-black text-black uppercase mb-2">From</div>
+                <div className="text-xs font-display font-black text-neutral uppercase mb-2">From</div>
                 <div className="font-body font-bold text-black">{policy.resourceFlow.from}</div>
               </div>
               <div>
-                <div className="text-xs font-display font-black text-black uppercase mb-2">To</div>
+                <div className="text-xs font-display font-black text-neutral uppercase mb-2">To</div>
                 <div className="font-body font-bold text-black">{policy.resourceFlow.to}</div>
               </div>
               <div>
-                <div className="text-xs font-display font-black text-black uppercase mb-2">How</div>
+                <div className="text-xs font-display font-black text-neutral uppercase mb-2">How</div>
                 <div className="font-body font-bold text-black">{policy.resourceFlow.channel}</div>
               </div>
             </div>
@@ -110,14 +110,14 @@ function PolicyContent({ policy }: { policy: typeof policies[0] }) {
       {policy.causalChain && (
         <section className="mb-8 pb-8 border-b-4 border-black">
           <h2 className="font-display text-2xl font-black text-black mb-4">Policy Goal</h2>
-          <div className="bg-green-200 border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-green-100 border-2 border-black p-6">
             <div className="space-y-4">
               <div>
-                <div className="text-xs font-display font-black text-black uppercase mb-2">Immediate Action</div>
+                <div className="text-xs font-display font-black text-neutral uppercase mb-2">Immediate Action</div>
                 <p className="font-body font-bold text-black">{policy.causalChain.immediate}</p>
               </div>
               <div>
-                <div className="text-xs font-display font-black text-black uppercase mb-2">Intended Outcome</div>
+                <div className="text-xs font-display font-black text-neutral uppercase mb-2">Intended Outcome</div>
                 <p className="font-body font-bold text-black">{policy.causalChain.outcome}</p>
               </div>
             </div>
@@ -150,10 +150,10 @@ function PolicyContent({ policy }: { policy: typeof policies[0] }) {
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors font-medium group"
+                className="flex items-center space-x-2 text-[#2F3BBD] hover:underline transition-colors font-medium group"
               >
                 <ArrowUpRight className="w-4 h-4" />
-                <span className="group-hover:underline">
+                <span>
                   {source.organization} ({source.year})
                   {source.supportPercentage && ` - ${source.supportPercentage}% support`}
                 </span>
@@ -164,7 +164,7 @@ function PolicyContent({ policy }: { policy: typeof policies[0] }) {
       </section>
 
       {/* Last Updated */}
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-neutral">
         Last updated: {new Date(policy.lastUpdated).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
