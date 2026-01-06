@@ -1,18 +1,44 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 
-// Verifier for access tokens (API authorization)
-const accessTokenVerifier = CognitoJwtVerifier.create({
-  userPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
-  tokenUse: 'access',
-  clientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
-});
+// Lazy-initialized verifiers to avoid build-time errors when env vars aren't set
+let _accessTokenVerifier: ReturnType<typeof CognitoJwtVerifier.create> | null = null;
+let _idTokenVerifier: ReturnType<typeof CognitoJwtVerifier.create> | null = null;
 
-// Verifier for ID tokens (user identity)
-const idTokenVerifier = CognitoJwtVerifier.create({
-  userPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
-  tokenUse: 'id',
-  clientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
-});
+function getAccessTokenVerifier() {
+  if (!_accessTokenVerifier) {
+    const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID;
+    const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
+
+    if (!userPoolId || !clientId) {
+      throw new Error('Cognito configuration not available');
+    }
+
+    _accessTokenVerifier = CognitoJwtVerifier.create({
+      userPoolId,
+      tokenUse: 'access',
+      clientId,
+    });
+  }
+  return _accessTokenVerifier;
+}
+
+function getIdTokenVerifier() {
+  if (!_idTokenVerifier) {
+    const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID;
+    const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
+
+    if (!userPoolId || !clientId) {
+      throw new Error('Cognito configuration not available');
+    }
+
+    _idTokenVerifier = CognitoJwtVerifier.create({
+      userPoolId,
+      tokenUse: 'id',
+      clientId,
+    });
+  }
+  return _idTokenVerifier;
+}
 
 export interface VerifiedUser {
   userId: string;
@@ -23,11 +49,11 @@ export interface VerifiedUser {
 
 export async function verifyAccessToken(token: string): Promise<VerifiedUser> {
   try {
-    const payload = await accessTokenVerifier.verify(token);
+    const payload = await getAccessTokenVerifier().verify(token);
 
     return {
       userId: payload.sub,
-      email: payload.username || '',
+      email: (payload.username as string) || '',
       role: 'student', // Default, will be overridden by groups
       groups: (payload['cognito:groups'] as string[]) || [],
     };
@@ -38,7 +64,7 @@ export async function verifyAccessToken(token: string): Promise<VerifiedUser> {
 
 export async function verifyIdToken(token: string): Promise<VerifiedUser> {
   try {
-    const payload = await idTokenVerifier.verify(token);
+    const payload = await getIdTokenVerifier().verify(token);
 
     const role = (payload['custom:role'] as 'teacher' | 'student') || 'student';
     const groups = (payload['cognito:groups'] as string[]) || [];
