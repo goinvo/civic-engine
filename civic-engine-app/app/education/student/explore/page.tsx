@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, ChevronLeft, Hand, ClipboardList, ScrollText, Vote, Star, Lightbulb } from 'lucide-react';
 import { useDemoAuth } from '@/lib/auth/demo-auth-context';
-import { demoPositions, getPolicySetByGradeLevel } from '@/lib/demo-data';
+import { getPolicySetByGradeLevel } from '@/lib/demo-data';
 import { Card } from '@/components/education/ui/Card';
 import { Button } from '@/components/education/ui/Button';
-import { Badge } from '@/components/education/ui/Badge';
 import { getPolicyById } from '@/data/policies';
 import {
   StudentProgressHeader,
@@ -87,9 +86,6 @@ export default function StudentExplorePage() {
     policy: getPolicyById(policySetItem.policyId),
   })).filter(item => item.policy);
 
-  // Get current student's positions
-  const studentPositions = demoPositions.filter(p => p.studentId === user?.id);
-
   if (!isAuthenticated || userType !== 'student') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -97,10 +93,6 @@ export default function StudentExplorePage() {
       </div>
     );
   }
-
-  const allPositionsSubmitted = policiesWithOverrides.every(({ policy }) =>
-    studentPositions.some(p => p.policyId === policy?.id)
-  );
 
   // Handle intro card navigation
   const handleNextIntro = () => {
@@ -283,18 +275,12 @@ export default function StudentExplorePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {policiesWithOverrides.map(({ policySetItem, policy }, index) => {
-            const position = studentPositions.find(p => p.policyId === policy?.id);
             // Use display overrides if available (for kid-friendly names)
             const title = policySetItem.displayTitle || policy?.title || 'Unknown Policy';
             const description = policySetItem.displayDescription || policy?.description;
             return (
               <Card key={policy?.id || index} variant="default" padding="md" className="flex flex-col h-full">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant={position ? 'success' : 'default'} size="sm">
-                      {position ? 'Position Submitted' : 'Pending'}
-                    </Badge>
-                  </div>
                   <h3 className="font-bold text-neutral-dark dark:text-white mb-2">
                     {title}
                   </h3>
