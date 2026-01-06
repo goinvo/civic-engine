@@ -61,8 +61,8 @@ export interface AnimatedStepProgressProps {
   previewMode?: boolean;
 }
 
-// Animation phases when transitioning from vertical to horizontal
-type AnimationPhase = 'vertical' | 'collapsing-text' | 'repositioning' | 'horizontal';
+// Animation phases when transitioning between vertical and horizontal
+type AnimationPhase = 'vertical' | 'collapsing-text' | 'repositioning' | 'repositioning-reverse' | 'expanding-text' | 'horizontal';
 
 // Step completion animation phases
 type StepAnimationPhase = 'idle' | 'shrinking' | 'checkmark' | 'line-fill' | 'next-active' | 'show-label';
@@ -99,11 +99,8 @@ export function AnimatedStepProgress({
   const gap = 8; // gap-2 = 8px
   const lineWidth = 16;
 
-  // Calculate the horizontal position offset for each step during repositioning
-  // This calculates where each step should move to (relative to its current position)
-  const getRepositionTransform = (index: number) => {
-    if (animationPhase !== 'repositioning') return { x: 0, y: 0 };
-
+  // Calculate the horizontal position for each step (used during repositioning)
+  const getHorizontalPosition = (index: number) => {
     // Calculate the total width of horizontal layout
     const totalWidth = steps.length * indicatorSize + (steps.length - 1) * (gap + lineWidth + gap);
 
@@ -113,23 +110,50 @@ export function AnimatedStepProgress({
     // Starting X position for the first item (centered)
     const startX = (containerWidth - totalWidth) / 2;
 
-    // Target X position for this item
-    const targetX = startX + index * (indicatorSize + gap + lineWidth + gap);
+    // X position for this item in horizontal layout
+    const x = startX + index * (indicatorSize + gap + lineWidth + gap);
 
-    // Current X position (left-aligned, so it's 0 for the indicator)
-    // In vertical mode, items are full width, indicator is at left
-    const currentX = 0;
+    return { x, y: 0 };
+  };
 
-    // Calculate Y offset - all items should move to the same Y position
-    // In vertical mode, items are stacked with gap-5 (20px)
+  // Calculate vertical position for each step
+  const getVerticalPosition = (index: number) => {
     const verticalGap = 20; // gap-5
-    const currentY = index * (indicatorSize + verticalGap);
-    const targetY = 0; // All items at same Y in horizontal
+    return { x: 0, y: index * (indicatorSize + verticalGap) };
+  };
 
-    return {
-      x: targetX - currentX,
-      y: targetY - currentY,
-    };
+  // Get transform for repositioning phases
+  const getRepositionTransform = (index: number) => {
+    if (animationPhase === 'repositioning') {
+      // Forward: animate FROM vertical TO horizontal
+      const target = getHorizontalPosition(index);
+      const current = getVerticalPosition(index);
+      return {
+        x: target.x - current.x,
+        y: target.y - current.y,
+      };
+    } else if (animationPhase === 'repositioning-reverse') {
+      // Reverse: we're at horizontal positions, animate back to vertical (which means transform of 0)
+      return { x: 0, y: 0 };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  // Get initial position for repositioning phases (where items start)
+  const getRepositionInitial = (index: number) => {
+    if (animationPhase === 'repositioning') {
+      // Forward: start at vertical positions (no transform)
+      return { x: 0, y: 0 };
+    } else if (animationPhase === 'repositioning-reverse') {
+      // Reverse: start at horizontal positions
+      const target = getHorizontalPosition(index);
+      const current = getVerticalPosition(index);
+      return {
+        x: target.x - current.x,
+        y: target.y - current.y,
+      };
+    }
+    return { x: 0, y: 0 };
   };
 
   // Handle mode transitions
@@ -141,6 +165,7 @@ export function AnimatedStepProgress({
     isTransitioning.current = true;
 
     if (mode === 'horizontal' && prevMode === 'vertical') {
+      // Forward: vertical -> horizontal
       // Phase 1: Collapse text
       setAnimationPhase('collapsing-text');
       setShowCurrentLabel(false);
@@ -163,17 +188,26 @@ export function AnimatedStepProgress({
 
       return () => timers.forEach(t => clearTimeout(t));
     } else if (mode === 'vertical' && prevMode === 'horizontal') {
-      // Reverse transition: horizontal -> vertical
-      setAnimationPhase('collapsing-text');
-      setShowCurrentLabel(false);
+      // Reverse: horizontal -> vertical (play animation backwards)
+      const timers: NodeJS.Timeout[] = [];
 
-      const timer = setTimeout(() => {
+      // Phase 1: Hide label and start repositioning back to vertical positions
+      setShowCurrentLabel(false);
+      setAnimationPhase('repositioning-reverse');
+
+      // Phase 2: Switch to expanding text (flex-col layout, text animates in)
+      timers.push(setTimeout(() => {
+        setAnimationPhase('expanding-text');
+      }, 400));
+
+      // Phase 3: Final vertical state
+      timers.push(setTimeout(() => {
         setAnimationPhase('vertical');
         isTransitioning.current = false;
         onTransitionComplete?.();
-      }, 350);
+      }, 700));
 
-      return () => clearTimeout(timer);
+      return () => timers.forEach(t => clearTimeout(t));
     }
   }, [mode, onTransitionComplete]);
 
@@ -242,10 +276,11 @@ export function AnimatedStepProgress({
   }, [currentStep, animationPhase, onStepAnimationComplete]);
 
   // Determine visual states based on animation phase
-  const showText = animationPhase === 'vertical';
+  const showText = animationPhase === 'vertical' || animationPhase === 'expanding-text';
   const isHorizontalLayout = animationPhase === 'horizontal';
   const showLines = animationPhase === 'horizontal';
-  const isRepositioning = animationPhase === 'repositioning';
+  const isRepositioning = animationPhase === 'repositioning' || animationPhase === 'repositioning-reverse';
+  const isExpandingText = animationPhase === 'expanding-text';
 
   const handleStepClick = (index: number) => {
     if (selectable && onStepClick) {
@@ -301,8 +336,9 @@ export function AnimatedStepProgress({
         // Determine if we should show tooltip on hover for this step
         const showTooltip = isHorizontalLayout && !isCurrent && hoveredStep === index;
 
-        // Get transform for repositioning phase
+        // Get transform for repositioning phases
         const repoTransform = getRepositionTransform(index);
+        const repoInitial = getRepositionInitial(index);
 
         // Common props for the step container
         const stepContainerProps = {
@@ -326,8 +362,9 @@ export function AnimatedStepProgress({
             {...(isRepositioning ? {
               style: {
                 left: 0,
-                top: index * (indicatorSize + 20), // Initial vertical position
+                top: index * (indicatorSize + 20), // Vertical position baseline
               },
+              initial: repoInitial,
               animate: {
                 x: repoTransform.x,
                 y: repoTransform.y,
@@ -358,7 +395,11 @@ export function AnimatedStepProgress({
                 minHeight: indicatorSize,
                 maxWidth: indicatorSize,
                 maxHeight: indicatorSize,
+                // Set initial background to prevent flash from default
+                backgroundColor: getBgColor(),
+                borderColor: getBorderColor(),
               }}
+              initial={false}
               animate={{
                 backgroundColor: getBgColor(),
                 borderColor: getBorderColor(),
@@ -431,10 +472,11 @@ export function AnimatedStepProgress({
               </AnimatePresence>
             )}
 
-            {/* Step content - only render when not in horizontal mode and not repositioning */}
+            {/* Step content - render in vertical mode, collapsing-text, and expanding-text phases */}
             {!isHorizontalLayout && !isRepositioning && (
               <motion.div
                 className="overflow-hidden"
+                initial={isExpandingText ? { width: 0, opacity: 0 } : false} // Animate in during expanding-text
                 animate={{
                   width: showText ? 'auto' : 0,
                   opacity: showText ? 1 : 0,
