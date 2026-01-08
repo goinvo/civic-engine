@@ -55,7 +55,10 @@
       "Bash(npx remotion:*)",
       "Bash(npm run synth:*)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\quest\\\\Programming\\\\GoInvo\\\\civic-engine\\\\civic-engine-app\\\\app\" -Recurse -Filter \"*.tsx\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\quest\\\\Programming\\\\GoInvo\\\\civic-engine\\\\civic-engine-app\\\\components\" -Recurse -Filter \"*.tsx\")"
     ],
     "deny": [],
     "ask": []

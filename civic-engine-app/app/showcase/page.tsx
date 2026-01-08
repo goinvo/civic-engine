@@ -72,9 +72,21 @@ import { cn } from '@/lib/utils';
 import { ArchetypeRadarChart } from '@/components/v2/ArchetypeRadarChart';
 import { V2FactorScores, V2WeightProfile } from '@/types/consensus';
 
+// Problem Areas Components
+import {
+  RatingScale,
+  RatingInput,
+  RatingBadge,
+  TradeoffsDisplay,
+  VoicesList,
+  PreferenceRadar,
+} from '@/components/problem-areas';
+import type { ImplementationRating, Voice, Tradeoffs } from '@/types/problem-areas';
+
 // Section navigation
 const SECTIONS = [
   { id: 'primitives', label: 'UI Primitives', icon: Palette },
+  { id: 'problem-areas', label: 'Problem Areas', icon: ClipboardCheck },
   { id: 'visualizations', label: 'Visualizations', icon: PieChart },
   { id: 'teacher', label: 'Teacher Flow', icon: Users },
   { id: 'student-join', label: 'Student Join', icon: GraduationCap },
@@ -133,6 +145,7 @@ export default function ShowcasePage() {
           transition={{ duration: 0.3 }}
         >
           {activeSection === 'primitives' && <PrimitivesSection />}
+          {activeSection === 'problem-areas' && <ProblemAreasSection />}
           {activeSection === 'visualizations' && <VisualizationsSection />}
           {activeSection === 'teacher' && <TeacherSection />}
           {activeSection === 'student-join' && <StudentJoinSection />}
@@ -492,6 +505,142 @@ function PrimitivesSection() {
           cancelText="Cancel"
           variant="danger"
         />
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION: Problem Areas
+// ============================================
+
+function ProblemAreasSection() {
+  const [selectedRating, setSelectedRating] = useState<ImplementationRating | undefined>(undefined);
+  const [selectedRating2, setSelectedRating2] = useState<ImplementationRating | undefined>(1);
+
+  const mockTradeoffs: Tradeoffs = {
+    benefits: [
+      'Higher pay for approximately 30 million workers',
+      'Less reliance on government assistance programs',
+      'More money flowing into local economies',
+    ],
+    costs: [
+      'Some businesses might cut hours or jobs',
+      'Prices could rise to cover higher labor costs',
+      'Impact varies significantly by region',
+    ],
+  };
+
+  const mockVoicesSupport: Voice[] = [
+    { persona: 'Fast Food Worker', argument: 'I work 40 hours a week and still can\'t afford rent. This would change my life.' },
+    { persona: 'Labor Economist', argument: 'Studies show moderate minimum wage increases boost consumer spending without significant job losses.' },
+    { persona: 'Small Business Owner', argument: 'When my workers earn more, they spend more in our community. It\'s good for everyone.' },
+  ];
+
+  const mockVoicesOpposition: Voice[] = [
+    { persona: 'Restaurant Owner', argument: 'I\'m already operating on thin margins. I\'d have to raise prices or cut staff.' },
+    { persona: 'Rural Business Advocate', argument: '$17 makes sense in NYC but would devastate small-town businesses where costs are lower.' },
+    { persona: 'Free Market Economist', argument: 'Price floors create inefficiencies. Let the market determine wages based on productivity.' },
+  ];
+
+  return (
+    <div className="space-y-12">
+      <SectionHeader
+        title="Problem Areas Components"
+        description="Components for the implementation approach explorer - neobrutalist style"
+      />
+
+      {/* Rating Scale */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Rating Scale</h3>
+        <p className="text-neutral dark:text-gray-400 mb-4">
+          Face-based rating scale for gauging user opinion without color bias.
+        </p>
+        <div className="max-w-xl">
+          <div className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h4 className="text-xs font-black uppercase tracking-widest text-black dark:text-white mb-4">
+              What do you think?
+            </h4>
+            <RatingScale
+              value={selectedRating}
+              onChange={setSelectedRating}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h4 className="font-medium mb-2">With selection</h4>
+          <div className="max-w-xl">
+            <div className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6">
+              <RatingScale
+                value={selectedRating2}
+                onChange={setSelectedRating2}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rating Input (text labels) */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Rating Input (Pills)</h3>
+        <div className="flex flex-wrap gap-3">
+          <RatingInput value={undefined} onChange={() => {}} />
+        </div>
+        <div className="flex flex-wrap gap-3 mt-4">
+          <RatingInput value={1} onChange={() => {}} />
+        </div>
+      </div>
+
+      {/* Tradeoffs Display */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Tradeoffs Display</h3>
+        <div className="max-w-2xl">
+          <TradeoffsDisplay tradeoffs={mockTradeoffs} defaultExpanded />
+        </div>
+      </div>
+
+      {/* Voices / Perspectives */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Voices / Perspectives (2x3 Grid)</h3>
+        <p className="text-neutral dark:text-gray-400 mb-4">
+          Tabbed grid showing supporters and critics with neobrutalist cards.
+        </p>
+        <div className="max-w-2xl">
+          <VoicesList
+            voices_support={mockVoicesSupport}
+            voices_opposition={mockVoicesOpposition}
+            defaultExpanded
+          />
+        </div>
+      </div>
+
+      {/* Preference Radar */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Preference Radar</h3>
+        <p className="text-neutral dark:text-gray-400 mb-4">
+          Radar chart showing how an implementation approach scores across preference dimensions.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4">
+            <h4 className="font-bold mb-2">Single-Payer Medicare</h4>
+            <PreferenceRadar
+              focusedApproachId="healthcare-single-payer"
+              approachTitles={{ 'healthcare-single-payer': 'Single-Payer' }}
+              height={300}
+              primaryColor="#8B5CF6"
+            />
+          </div>
+          <div className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4">
+            <h4 className="font-bold mb-2">Market Reforms</h4>
+            <PreferenceRadar
+              focusedApproachId="healthcare-market-reforms"
+              approachTitles={{ 'healthcare-market-reforms': 'Market Reforms' }}
+              height={300}
+              primaryColor="#8B5CF6"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -49,10 +49,10 @@ export default function Navbar() {
               Models
             </Link>
             <Link
-              href="/wrapped"
+              href="/explore"
               className="text-sm font-black text-white bg-[#2F3BBD] px-4 py-2 border-2 border-black hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
             >
-              Preview Tool
+              Explore Issues
             </Link>
           </div>
 
@@ -101,11 +101,11 @@ export default function Navbar() {
                 Models
               </Link>
               <Link
-                href="/wrapped"
+                href="/explore"
                 className="mx-4 px-4 py-3 bg-[#2F3BBD] text-white border-2 border-black font-black text-center focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Policy Wrapped
+                Explore Issues
               </Link>
             </div>
           </div>
