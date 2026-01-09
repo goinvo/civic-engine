@@ -138,7 +138,6 @@ export function ApproachCard({
             <VoicesList
               voices_support={approach.voices_support}
               voices_opposition={approach.voices_opposition}
-              defaultExpanded
             />
           </section>
 

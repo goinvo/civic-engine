@@ -610,7 +610,6 @@ function ProblemAreasSection() {
           <VoicesList
             voices_support={mockVoicesSupport}
             voices_opposition={mockVoicesOpposition}
-            defaultExpanded
           />
         </div>
       </div>

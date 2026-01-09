@@ -8,6 +8,8 @@ interface RatingInputProps {
   onChange: (rating: ImplementationRating) => void;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  /** Compact mode hides labels and reduces padding */
+  compact?: boolean;
 }
 
 // Consistent red-blue gradient for all selected ratings (matches brand gradient)
@@ -111,6 +113,7 @@ export function RatingScale({
   value,
   onChange,
   disabled = false,
+  compact = false,
 }: RatingInputProps) {
   return (
     <div className="flex items-stretch gap-0" role="radiogroup" aria-label="Rate this approach">
@@ -134,7 +137,8 @@ export function RatingScale({
             whileTap={!disabled ? 'tap' : undefined}
             transition={springTransition}
             className={`
-              flex-1 py-3 flex flex-col items-center gap-1 border-2
+              flex-1 flex flex-col items-center border-2 transition-all duration-200
+              ${compact ? 'py-2 gap-0' : 'py-3 gap-1'}
               ${!isFirst ? '-ml-[2px]' : ''}
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               ${
@@ -154,9 +158,17 @@ export function RatingScale({
             >
               {RATING_FACES[rating]}
             </motion.span>
-            <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+            <motion.span
+              className={`text-xs font-bold overflow-hidden ${isSelected ? 'text-white' : 'text-gray-600 dark:text-gray-400'}`}
+              animate={{
+                height: compact ? 0 : 'auto',
+                opacity: compact ? 0 : 1,
+                marginTop: compact ? 0 : 4,
+              }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
               {RATING_LABELS[rating]}
-            </span>
+            </motion.span>
           </motion.button>
         );
       })}

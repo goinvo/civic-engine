@@ -20,100 +20,90 @@
 
 ### Typography
 
-Use semantic color classes from the theme (`text-neutral-dark`, `text-neutral`) for consistency.
+Keep typography simple. Use only these combinations:
 
-#### Text Hierarchy
-| Level | Usage | Classes |
-|-------|-------|---------|
-| **Page Title** | Main page heading | `font-display text-2xl md:text-3xl font-black text-neutral-dark` |
-| **Section Header** | Card titles, major sections | `font-display text-xl font-black text-neutral-dark` |
-| **Subsection Label** | Form labels, content headers | `text-sm font-bold text-neutral-dark` |
-| **Body Text** | Main content | `text-sm text-neutral-dark` or `text-base text-neutral-dark` |
-| **Secondary Text** | Descriptions, hints, metadata | `text-sm text-neutral` |
-| **Small Text** | Timestamps, counts | `text-xs text-neutral` or `text-xs font-bold text-neutral` |
+| Role | Classes | Example |
+|------|---------|---------|
+| **Hero** | `text-5xl md:text-6xl font-black` | Landing page title only |
+| **Page Title** | `text-2xl md:text-3xl font-bold` | Section headings |
+| **Card Title** | `text-lg font-bold` | Card headers, feature titles |
+| **Body** | `text-base` | Default paragraph text |
+| **Small** | `text-sm text-neutral` | Secondary info, descriptions |
+| **Tiny** | `text-xs text-neutral` | Timestamps, counts, captions |
+| **Button** | `font-bold` | All interactive buttons |
 
-#### Color Classes
-- `text-neutral-dark` - Primary text (dark in light mode, light in dark mode)
-- `text-neutral` - Secondary/muted text
-- Always include dark mode variants: `dark:text-white`, `dark:text-gray-400`
+#### Rules
+- **`font-black`** — Only for hero text (one per page max)
+- **`font-bold`** — Headings, labels, buttons, emphasis
+- **No weight** — All body text (let it breathe)
+- **`text-neutral-dark`** — Primary text color
+- **`text-neutral`** — Secondary/muted text
+- Always add dark mode: `dark:text-white`, `dark:text-gray-400`
 
 #### Do NOT Use
-- `text-gray-500`, `text-gray-600` directly - use `text-neutral` instead
-- `text-black` - use `text-neutral-dark` instead
-- `uppercase tracking-widest` for labels - use simple `font-bold` instead
-- Inconsistent font sizes - stick to `text-xs`, `text-sm`, `text-base`, `text-lg`
+- `font-display` or `font-body` — Use system default
+- `font-medium` or `font-semibold` — Stick to bold or regular
+- `text-gray-500`, `text-gray-600` — Use `text-neutral`
+- `text-black` — Use `text-neutral-dark`
+- More than 2 breakpoints for text size — Keep it simple
 
 ## Animation Guidelines
 
-**Always use Framer Motion for animations.** Do not use CSS keyframes or `@keyframes` in globals.css.
-
-### Why Framer Motion?
-- Consistent API across the codebase
-- Better control over animation timing and easing
-- Built-in gesture support
-- Easier to compose complex animations
-- Better performance with `useReducedMotion` support
+**Always use Framer Motion for animations.** Do not use CSS keyframes.
 
 ### Common Patterns
 
 ```tsx
-import { motion } from 'framer-motion';
+// Hover lift (buttons, cards)
+<motion.div whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
 
-// Basic animation
+// Entrance animation
 <motion.div
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.3 }}
 />
 
-// Interactive feedback (buttons, cards)
-<motion.button
-  whileHover={{ scale: 1.02 }}
-  whileTap={{ scale: 0.98 }}
-  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-/>
-
-// Satisfying selection animation
-<motion.div
-  animate={isSelected ? { scale: [1, 1.1, 1.02] } : { scale: 1 }}
-  transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
-/>
+// Staggered list
+{items.map((item, i) => (
+  <motion.div
+    key={item.id}
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ delay: i * 0.1 }}
+    viewport={{ once: true }}
+  />
+))}
 ```
 
-### Easing Presets
-- **Springy/bouncy**: `{ type: 'spring', stiffness: 400, damping: 17 }`
-- **Smooth overshoot**: `{ ease: [0.34, 1.56, 0.64, 1] }`
-- **Standard ease-out**: `{ ease: 'easeOut' }`
+### Easing
+- **Spring**: `{ type: 'spring', stiffness: 400, damping: 17 }`
+- **Smooth**: `{ ease: 'easeOut' }`
 
 ## Component Patterns
 
 ### Shared UI Components
-Use components from `@/components/education/ui` when possible:
+Use components from `@/components/education/ui`:
 - `Button` - Primary, secondary, ghost variants
 - `Card` - With neobrutalist borders
 - `Badge` - Status indicators
-- `Progress` - Progress bars
 
 ### Problem Area Components
 Located in `@/components/problem-areas`:
 - `RatingScale` - Voting interface with face emojis
-- `PreferenceRadar` - Radar chart for preference visualization
+- `PreferenceRadar` - Radar chart for preferences
 - `TradeoffsDisplay` - Benefits/costs display
 - `VoicesList` - Support/opposition personas
 
 ## Data Structure
 
 ### Personas Format
-All personas should have full names with ages:
 ```typescript
 persona: 'Role (Full Name, Age)'
 // Examples:
 persona: 'Economist (Dr. Carmen Vega, 44)'
 persona: 'Parent (Luis Herrera, 38)'
-persona: 'Teacher (Franklin Williams, 45)'
 ```
-
-Avoid stereotypical AI-generated names like "Marcus", "Chen", etc.
 
 ## File Organization
 ```

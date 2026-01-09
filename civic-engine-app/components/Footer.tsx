@@ -1,49 +1,51 @@
+'use client';
+
 import Link from 'next/link';
-import { Github, Mail, Info } from 'lucide-react';
+import { Github, Mail, ExternalLink, Compass } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 dark:bg-black text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-white dark:bg-gray-950 border-t-2 border-black dark:border-gray-600 mt-auto">
+      <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* About Section */}
+          {/* About */}
           <div>
-            <h3 className="font-bold text-lg mb-4 flex items-center space-x-2 text-white">
-              <Info className="w-5 h-5" />
-              <span>About Most of Us</span>
+            <h3 className="font-bold text-neutral-dark dark:text-white mb-3">
+              About Most of Us
             </h3>
-            <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed">
-              A platform highlighting policies that have broad bipartisan support
-              across America. All policies shown have 55%+ agreement among
-              Democrats, Republicans, and Independents.
+            <p className="text-sm text-neutral dark:text-gray-400 mb-4">
+              A platform highlighting policies with broad bipartisan support. All policies shown have 55%+ agreement among Democrats, Republicans, and Independents.
             </p>
-            <div className="mt-4 px-3 py-2 bg-red-900/30 dark:bg-red-950/50 border border-red-800/50 dark:border-red-900/50 rounded-lg">
-              <p className="text-xs text-gray-200 dark:text-gray-300">
-                <strong>Demo Version</strong> - Not for actual voting
+            <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-2 border-black px-3 py-2">
+              <p className="text-xs text-white font-bold">
+                Demo Version — Not for actual voting
               </p>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-bold text-lg mb-4 text-white">Quick Links</h3>
+            <h3 className="font-bold text-neutral-dark dark:text-white mb-3">
+              Quick Links
+            </h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/"
-                  className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors text-sm"
-                >
+                <Link href="/" className="text-sm text-neutral dark:text-gray-400 hover:text-neutral-dark dark:hover:text-white transition-colors">
                   Top 10 Policies
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/top20"
-                  className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors text-sm"
-                >
+                <Link href="/top20" className="text-sm text-neutral dark:text-gray-400 hover:text-neutral-dark dark:hover:text-white transition-colors">
                   All Policies
+                </Link>
+              </li>
+              <li>
+                <Link href="/explore" className="text-sm text-neutral dark:text-gray-400 hover:text-neutral-dark dark:hover:text-white transition-colors inline-flex items-center gap-1">
+                  <Compass className="w-3 h-3" />
+                  Explore Problem Areas
                 </Link>
               </li>
               <li>
@@ -51,53 +53,56 @@ export default function Footer() {
                   href="https://americans-agree.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors text-sm inline-flex items-center"
+                  className="text-sm text-neutral dark:text-gray-400 hover:text-neutral-dark dark:hover:text-white transition-colors inline-flex items-center gap-1"
                 >
-                  Data Source: Americans-Agree.org
-                  <span className="ml-1">↗</span>
+                  Data Source
+                  <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Data & Transparency */}
+          {/* Data Sources */}
           <div>
-            <h3 className="font-bold text-lg mb-4 text-white">Data & Transparency</h3>
-            <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-4">
-              All policy data sourced from reputable polling organizations including:
-            </p>
-            <ul className="text-gray-300 dark:text-gray-400 text-sm space-y-1">
-              <li>• YouGov</li>
-              <li>• Pew Research Center</li>
-              <li>• Associated Press-NORC</li>
-              <li>• The Economist/YouGov</li>
-            </ul>
+            <h3 className="font-bold text-neutral-dark dark:text-white mb-3">
+              Data Sources
+            </h3>
+            <div className="bg-gray-100 dark:bg-gray-900 border-2 border-black dark:border-gray-600 p-3">
+              <ul className="text-sm text-neutral-dark dark:text-gray-300 space-y-1">
+                <li>• YouGov</li>
+                <li>• Pew Research Center</li>
+                <li>• Associated Press-NORC</li>
+                <li>• The Economist/YouGov</li>
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-gray-700 dark:border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 dark:text-gray-500 text-sm">
-              © {currentYear} Most of Us. A civic engagement demo platform.
+        <div className="mt-8 pt-6 border-t-2 border-black dark:border-gray-600">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-neutral dark:text-gray-500">
+              © {currentYear} Most of Us
             </p>
-            <div className="flex items-center space-x-6">
-              <a
+            <div className="flex items-center gap-2">
+              <motion.a
                 href="mailto:contact@mostofus.org"
-                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
+                className="p-2 bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Contact us"
+                whileHover={{ y: -2 }}
               >
-                <Mail className="w-5 h-5" />
-              </a>
-              <a
+                <Mail className="w-4 h-4 text-neutral-dark dark:text-white" />
+              </motion.a>
+              <motion.a
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
+                className="p-2 bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="GitHub"
+                whileHover={{ y: -2 }}
               >
-                <Github className="w-5 h-5" />
-              </a>
+                <Github className="w-4 h-4 text-neutral-dark dark:text-white" />
+              </motion.a>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, use, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, BarChart3, ChevronLeft, ChevronRight, ChevronDown, MessageSquare, Send, Flag, CornerDownRight, Users, Maximize2, Minimize2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, BarChart3, ChevronLeft, ChevronRight, ChevronDown, MessageSquare, Send, Flag, CornerDownRight, Users, Maximize2, Minimize2, FileText, Cog, Scale, Quote } from 'lucide-react';
 import { DynamicIcon, TradeoffsDisplay, VoicesList, RatingScale } from '@/components/problem-areas';
 import { PreferenceRadar } from '@/components/problem-areas/PreferenceRadar';
 import { Button, Card, Badge } from '@/components/education/ui';
@@ -140,6 +140,12 @@ export default function ProblemAreaPage({
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
+  const [expandedSections, setExpandedSections] = useState({
+    summary: true,
+    howItWorks: true,
+    tradeoffs: true,
+    perspectives: true,
+  });
   const stickyRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -269,6 +275,10 @@ export default function ProblemAreaPage({
     setFocusedIndex((prev) => (prev + 1) % problemArea.approaches.length);
   };
 
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -316,13 +326,17 @@ export default function ProblemAreaPage({
 
       {/* Split layout container */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className={`grid gap-6 transition-all duration-300 ${
-          isDiscussionExpanded ? 'lg:grid-cols-5' : 'lg:grid-cols-5'
-        }`}>
+        <motion.div
+          className="grid gap-6 lg:grid-cols-5"
+          layout
+          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           {/* LEFT COLUMN: Focused Approach (shrinks when discussion expanded) */}
-          <div className={`transition-all duration-300 ${
-            isDiscussionExpanded ? 'lg:col-span-2' : 'lg:col-span-3'
-          }`}>
+          <motion.div
+            className={isDiscussionExpanded ? 'lg:col-span-2' : 'lg:col-span-3'}
+            layout
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
             {/* Sentinel element for detecting sticky state */}
             <div ref={sentinelRef} className="h-0" />
 
@@ -330,25 +344,40 @@ export default function ProblemAreaPage({
             {focusedApproach && (
               <motion.div
                 ref={stickyRef}
-                className="sticky top-[57px] z-30 bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 p-4"
+                className="sticky top-[57px] z-30 bg-white dark:bg-gray-900 border-black dark:border-gray-600 overflow-hidden"
                 animate={{
                   boxShadow: isSticky
                     ? '4px 0px 0px 0px rgba(0,0,0,1)' // No bottom shadow when stuck
-                    : '4px 4px 0px 0px rgba(0,0,0,1)', // Full shadow when not stuck
+                    : isDiscussionExpanded
+                      ? 'none'
+                      : '4px 4px 0px 0px rgba(0,0,0,1)', // Full shadow when not stuck
+                  borderWidth: isDiscussionExpanded ? 0 : 2,
                 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
               >
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-sm font-bold text-neutral-dark dark:text-white shrink-0">
+                {/* Label row - only shows when not expanded */}
+                <motion.div
+                  className="overflow-hidden"
+                  animate={{
+                    height: isDiscussionExpanded ? 0 : 'auto',
+                    opacity: isDiscussionExpanded ? 0 : 1,
+                    paddingTop: isDiscussionExpanded ? 0 : 12,
+                    paddingBottom: isDiscussionExpanded ? 0 : 8,
+                    paddingLeft: isDiscussionExpanded ? 0 : 16,
+                    paddingRight: isDiscussionExpanded ? 0 : 16,
+                  }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                >
+                  <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
                     What do you think?
                   </h3>
-                  <div className="flex-1">
-                    <RatingScale
-                      value={ratings[focusedApproach.id]}
-                      onChange={(r) => handleRatingChange(focusedApproach.id, r)}
-                    />
-                  </div>
-                </div>
+                </motion.div>
+                {/* Rating scale - full width, no padding */}
+                <RatingScale
+                  value={ratings[focusedApproach.id]}
+                  onChange={(r) => handleRatingChange(focusedApproach.id, r)}
+                  compact={isDiscussionExpanded}
+                />
               </motion.div>
             )}
 
@@ -361,51 +390,165 @@ export default function ProblemAreaPage({
                 </h2>
                 <p className="text-sm text-neutral dark:text-gray-400 mt-2 mb-6">{focusedApproach.source}</p>
 
-                {/* Summary */}
-                <p className="text-base text-neutral-dark dark:text-gray-300 leading-relaxed mb-8">
-                  {focusedApproach.summary}
-                </p>
-
-                {/* How it works */}
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold text-neutral-dark dark:text-white mb-3">
-                    How It Works
-                  </h3>
-                  <p className="text-sm text-neutral dark:text-gray-400 whitespace-pre-line leading-relaxed">
-                    {focusedApproach.mechanism}
-                  </p>
+                {/* Summary - Collapsible */}
+                <div className="mb-6">
+                  <button
+                    onClick={() => toggleSection('summary')}
+                    className="flex items-center gap-2 w-full text-left group"
+                  >
+                    <motion.div
+                      animate={{ rotate: expandedSections.summary ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4 text-neutral group-hover:text-neutral-dark dark:group-hover:text-white" />
+                    </motion.div>
+                    <FileText className="w-4 h-4 text-neutral-dark dark:text-white" />
+                    <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
+                      Summary
+                    </h3>
+                  </button>
+                  <AnimatePresence>
+                    {expandedSections.summary && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-base text-neutral-dark dark:text-gray-300 leading-relaxed mt-3 pl-6">
+                          {focusedApproach.summary}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                {/* Tradeoffs */}
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold text-neutral-dark dark:text-white mb-3">
-                    Tradeoffs
-                  </h3>
-                  <TradeoffsDisplay tradeoffs={focusedApproach.tradeoffs} />
+                {/* How it works - Collapsible */}
+                <div className="mb-6">
+                  <button
+                    onClick={() => toggleSection('howItWorks')}
+                    className="flex items-center gap-2 w-full text-left group"
+                  >
+                    <motion.div
+                      animate={{ rotate: expandedSections.howItWorks ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4 text-neutral group-hover:text-neutral-dark dark:group-hover:text-white" />
+                    </motion.div>
+                    <Cog className="w-4 h-4 text-neutral-dark dark:text-white" />
+                    <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
+                      How It Works
+                    </h3>
+                  </button>
+                  <AnimatePresence>
+                    {expandedSections.howItWorks && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-sm text-neutral dark:text-gray-400 whitespace-pre-line leading-relaxed mt-3 pl-6">
+                          {focusedApproach.mechanism}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                {/* Voices */}
+                {/* Tradeoffs - Collapsible */}
+                <div className="mb-6">
+                  <button
+                    onClick={() => toggleSection('tradeoffs')}
+                    className="flex items-center gap-2 w-full text-left group"
+                  >
+                    <motion.div
+                      animate={{ rotate: expandedSections.tradeoffs ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4 text-neutral group-hover:text-neutral-dark dark:group-hover:text-white" />
+                    </motion.div>
+                    <Scale className="w-4 h-4 text-neutral-dark dark:text-white" />
+                    <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
+                      Tradeoffs
+                    </h3>
+                  </button>
+                  <AnimatePresence>
+                    {expandedSections.tradeoffs && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 pl-6">
+                          <TradeoffsDisplay tradeoffs={focusedApproach.tradeoffs} />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Perspectives - Collapsible */}
                 <div>
-                  <h3 className="text-sm font-bold text-neutral-dark dark:text-white mb-3">
-                    Perspectives
-                  </h3>
-                  <VoicesList
-                    voices_support={focusedApproach.voices_support}
-                    voices_opposition={focusedApproach.voices_opposition}
-                    defaultExpanded={true}
-                  />
+                  <button
+                    onClick={() => toggleSection('perspectives')}
+                    className="flex items-center gap-2 w-full text-left group"
+                  >
+                    <motion.div
+                      animate={{ rotate: expandedSections.perspectives ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4 text-neutral group-hover:text-neutral-dark dark:group-hover:text-white" />
+                    </motion.div>
+                    <Quote className="w-4 h-4 text-neutral-dark dark:text-white" />
+                    <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
+                      Perspectives
+                    </h3>
+                  </button>
+                  <AnimatePresence>
+                    {expandedSections.perspectives && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 pl-6">
+                          <VoicesList
+                            voices_support={focusedApproach.voices_support}
+                            voices_opposition={focusedApproach.voices_opposition}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </Card>
             )}
-          </div>
+          </motion.div>
 
           {/* RIGHT COLUMN: Dropdown nav, Discussion, and Radar (expands when discussion expanded) */}
-          <div className={`transition-all duration-300 ${
-            isDiscussionExpanded ? 'lg:col-span-3' : 'lg:col-span-2'
-          }`}>
+          <motion.div
+            className={isDiscussionExpanded ? 'lg:col-span-3' : 'lg:col-span-2'}
+            layout
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
             {/* Sticky dropdown navigation - matches left column sticky height */}
             <div className="sticky top-[57px] z-30 bg-gray-50 dark:bg-gray-950">
-              <div className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <motion.div
+                className="bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600"
+                animate={{
+                  boxShadow: isSticky
+                    ? '4px 0px 0px 0px rgba(0,0,0,1)'
+                    : '4px 4px 0px 0px rgba(0,0,0,1)',
+                }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+              >
                 <div className="flex items-stretch">
                   {/* Previous button */}
                   <button
@@ -506,23 +649,24 @@ export default function ProblemAreaPage({
                     <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Collapsible Forum Discussion */}
-            <div className="mt-4 bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <motion.div
+              className="mt-4 bg-white dark:bg-gray-900 border-2 border-black dark:border-gray-600"
+              animate={{
+                boxShadow: isDiscussionExpanded
+                  ? '6px 6px 0px 0px rgba(0,0,0,1)'
+                  : '4px 4px 0px 0px rgba(0,0,0,1)',
+              }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              layout
+            >
               {/* Header with collapse/expand controls */}
               <div className="flex items-center justify-between px-4 py-3 border-b-0">
-                <button
-                  onClick={() => setIsDiscussionOpen(!isDiscussionOpen)}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                >
-                  <motion.div
-                    animate={{ rotate: isDiscussionOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </motion.div>
+                {/* Left side: icon, label, count */}
+                <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
                   <span className="text-sm font-bold text-neutral-dark dark:text-white">
                     Discussion
@@ -530,18 +674,46 @@ export default function ProblemAreaPage({
                   <span className="text-xs text-neutral dark:text-gray-400">
                     ({totalComments} comments)
                   </span>
-                </button>
-                <button
-                  onClick={() => setIsDiscussionExpanded(!isDiscussionExpanded)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
-                  aria-label={isDiscussionExpanded ? 'Shrink discussion' : 'Expand discussion'}
-                >
-                  {isDiscussionExpanded ? (
-                    <Minimize2 className="w-4 h-4" />
-                  ) : (
-                    <Maximize2 className="w-4 h-4" />
-                  )}
-                </button>
+                </div>
+
+                {/* Right side: expand icon (when open) + collapse caret */}
+                <div className="flex items-center gap-1">
+                  {/* Expand/shrink button - only visible when discussion is open */}
+                  <AnimatePresence>
+                    {isDiscussionOpen && (
+                      <motion.button
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        onClick={() => setIsDiscussionExpanded(!isDiscussionExpanded)}
+                        className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+                        aria-label={isDiscussionExpanded ? 'Shrink discussion' : 'Expand discussion'}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {isDiscussionExpanded ? (
+                          <Minimize2 className="w-4 h-4" />
+                        ) : (
+                          <Maximize2 className="w-4 h-4" />
+                        )}
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Collapse/expand caret - always visible */}
+                  <button
+                    onClick={() => setIsDiscussionOpen(!isDiscussionOpen)}
+                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+                    aria-label={isDiscussionOpen ? 'Collapse discussion' : 'Open discussion'}
+                  >
+                    <motion.div
+                      animate={{ rotate: isDiscussionOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.div>
+                  </button>
+                </div>
               </div>
 
               <AnimatePresence>
@@ -550,7 +722,7 @@ export default function ProblemAreaPage({
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
                     className="overflow-hidden"
                   >
                     <div className="border-t-2 border-black dark:border-gray-600">
@@ -576,7 +748,7 @@ export default function ProblemAreaPage({
                       </div>
 
                       {/* Discussion threads */}
-                      <div className={`overflow-y-auto ${isDiscussionExpanded ? 'max-h-[500px]' : 'max-h-72'} transition-all duration-300`}>
+                      <div className={`overflow-y-auto ${isDiscussionExpanded ? '' : 'max-h-72'} transition-all duration-300`}>
                         {discussionPosts.length === 0 ? (
                           <p className="text-sm text-neutral text-center py-8">
                             Be the first to comment on this approach
@@ -707,7 +879,7 @@ export default function ProblemAreaPage({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
 
             {/* Radar card */}
             <Card variant="default" padding="md" className="mt-4">
@@ -727,8 +899,8 @@ export default function ProblemAreaPage({
                 <p className="mt-3 text-sm text-neutral dark:text-gray-400 leading-relaxed">{problemArea.description}</p>
               </details>
             </Card>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Sticky footer - neobrutalist */}
