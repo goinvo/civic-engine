@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, ChevronRight, BarChart3 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, ChevronRight, BarChart3, Users, Megaphone, Eye } from 'lucide-react';
 import { DynamicIcon } from '@/components/problem-areas';
 import { Button, Card, Badge, Progress } from '@/components/education/ui';
 import {
   getProblemAreas,
   getProblemAreaProgress,
+  getNationalConsensus,
 } from '@/lib/problem-areas';
 
 export default function ExplorePage() {
@@ -15,6 +17,7 @@ export default function ExplorePage() {
   const [progress, setProgress] = useState<Record<string, { rated: number; total: number; isComplete: boolean }>>({});
 
   const problemAreas = getProblemAreas();
+  const nationalConsensus = getNationalConsensus();
 
   // Load progress on mount
   useEffect(() => {
@@ -39,34 +42,128 @@ export default function ExplorePage() {
 
   return (
     <main className="min-h-screen bg-neutral-light dark:bg-gray-950">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b-2 border-black dark:border-gray-700">
-        <div className="max-w-5xl mx-auto px-6 py-12">
-          <h1 className="font-display text-4xl md:text-5xl font-black text-black dark:text-white mb-4">
-            Explore the Issues
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
-            Choose a problem area to explore. Learn about different approaches,
-            weigh the tradeoffs, and share your perspective.
-          </p>
+      {/* Hero Header - The Hook */}
+      <div className="bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white">
+        <div className="max-w-5xl mx-auto px-6 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Eyebrow */}
+            <p className="text-white/80 text-sm font-bold uppercase tracking-wider mb-3">
+              The consensus they don't want you to see
+            </p>
 
-          {/* Progress summary */}
-          {hasAnyProgress && (
-            <div className="mt-6 flex items-center gap-4">
-              <Badge variant={completedCount === problemAreas.length ? 'success' : 'secondary'}>
-                {completedCount} of {problemAreas.length} completed
-              </Badge>
+            {/* Main headline */}
+            <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
+              Americans agree on more<br />than you think.
+            </h1>
+
+            {/* Subhead */}
+            <p className="text-xl text-white/90 max-w-2xl mb-8 leading-relaxed">
+              Politicians say we're divided. The media says we're enemies.
+              <span className="font-bold"> But what if most of us actually agree?</span>
+            </p>
+
+            {/* Live stats */}
+            <div className="flex flex-wrap gap-8 mb-8">
+              <div className="flex items-center gap-3">
+                <Users className="w-6 h-6 text-white/70" />
+                <div>
+                  <div className="text-2xl font-black">{nationalConsensus.totalParticipants.toLocaleString()}</div>
+                  <div className="text-sm text-white/70">Americans have weighed in</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Eye className="w-6 h-6 text-white/70" />
+                <div>
+                  <div className="text-2xl font-black">{nationalConsensus.averageConsensusPercent}%</div>
+                  <div className="text-sm text-white/70">average agreement</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Megaphone className="w-6 h-6 text-white/70" />
+                <div>
+                  <div className="text-2xl font-black">{nationalConsensus.statesRepresented}</div>
+                  <div className="text-sm text-white/70">states represented</div>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <p className="text-white/80 font-medium">
+              Explore the issues. See where you stand. Discover you're not alone.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Mirror/Megaphone explanation */}
+      <div className="bg-white dark:bg-gray-900 border-b-2 border-black dark:border-gray-700">
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          <div className="grid md:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="flex gap-4"
+            >
+              <div className="w-12 h-12 bg-[#2F3BBD]/10 border-2 border-black flex items-center justify-center shrink-0">
+                <Eye className="w-6 h-6 text-[#2F3BBD]" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-neutral-dark dark:text-white mb-1">The Mirror</h3>
+                <p className="text-sm text-neutral dark:text-gray-400">
+                  See what Americans actually believe — and discover that "most of us" agree on the big issues.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              className="flex gap-4"
+            >
+              <div className="w-12 h-12 bg-[#C91A2B]/10 border-2 border-black flex items-center justify-center shrink-0">
+                <Megaphone className="w-6 h-6 text-[#C91A2B]" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-neutral-dark dark:text-white mb-1">The Megaphone</h3>
+                <p className="text-sm text-neutral dark:text-gray-400">
+                  Add your voice to the consensus. Make it undeniable. Build pressure for change.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress summary (if any) */}
+      {hasAnyProgress && (
+        <div className="bg-neutral-light dark:bg-gray-900 border-b-2 border-black dark:border-gray-700">
+          <div className="max-w-5xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Badge variant={completedCount === problemAreas.length ? 'success' : 'secondary'}>
+                  {completedCount} of {problemAreas.length} completed
+                </Badge>
+                <span className="text-sm text-neutral dark:text-gray-400">
+                  Your voice is being counted
+                </span>
+              </div>
               {completedCount > 0 && (
                 <Link href="/explore/results">
                   <Button variant="ghost" size="sm" leftIcon={<BarChart3 className="w-4 h-4" />}>
-                    View your results
+                    View the Mandate
                   </Button>
                 </Link>
               )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Problem areas grid */}
       <div className="max-w-5xl mx-auto px-6 py-8">
@@ -138,16 +235,25 @@ export default function ExplorePage() {
 
       {/* Results CTA - show when at least one is complete */}
       {completedCount > 0 && (
-        <div className="sticky bottom-0 bg-white dark:bg-gray-900 border-t-2 border-black dark:border-gray-700 py-4">
+        <div className="sticky bottom-0 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-t-2 border-black py-4">
           <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
-            <p className="text-gray-600 dark:text-gray-400 font-medium">
-              {completedCount === problemAreas.length
-                ? 'You\'ve explored all problem areas!'
-                : `${completedCount} problem ${completedCount === 1 ? 'area' : 'areas'} completed`}
-            </p>
+            <div>
+              <p className="font-bold">
+                {completedCount === problemAreas.length
+                  ? 'Your voice has been added to the consensus'
+                  : `${completedCount} ${completedCount === 1 ? 'area' : 'areas'} completed — your voice is being counted`}
+              </p>
+              <p className="text-sm text-white/80">
+                See what most of us agree on
+              </p>
+            </div>
             <Link href="/explore/results">
-              <Button variant="primary" leftIcon={<BarChart3 className="w-5 h-5" />}>
-                See Your Results
+              <Button
+                variant="secondary"
+                className="bg-white text-[#2F3BBD] border-2 border-black hover:bg-gray-100"
+                leftIcon={<Megaphone className="w-5 h-5" />}
+              >
+                View the American Mandate
               </Button>
             </Link>
           </div>

@@ -4,7 +4,7 @@ import { useState, useEffect, use, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, BarChart3, ChevronLeft, ChevronRight, ChevronDown, MessageSquare, Send, Flag, CornerDownRight, Users, Maximize2, Minimize2, FileText, Cog, Scale, Quote } from 'lucide-react';
-import { DynamicIcon, TradeoffsDisplay, VoicesList, RatingScale } from '@/components/problem-areas';
+import { DynamicIcon, TradeoffsDisplay, VoicesList, RatingScale, ConsensusReveal } from '@/components/problem-areas';
 import { PreferenceRadar } from '@/components/problem-areas/PreferenceRadar';
 import { Button, Card, Badge } from '@/components/education/ui';
 import {
@@ -12,6 +12,7 @@ import {
   setImplementationRating,
   getImplementationRating,
   getProblemAreaProgress,
+  getApproachConsensus,
 } from '@/lib/problem-areas';
 import { calculatePreferenceProfile } from '@/lib/problem-areas/preference-profile';
 import type { ProblemAreaId, ImplementationRating } from '@/types/problem-areas';
@@ -369,7 +370,7 @@ export default function ProblemAreaPage({
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
                   <h3 className="text-sm font-bold text-neutral-dark dark:text-white">
-                    What do you think?
+                    What do you think? <span className="font-normal text-neutral">See where you stand — and where most of us stand.</span>
                   </h3>
                 </motion.div>
                 {/* Rating scale - full width, no padding */}
@@ -378,6 +379,15 @@ export default function ProblemAreaPage({
                   onChange={(r) => handleRatingChange(focusedApproach.id, r)}
                   compact={isDiscussionExpanded}
                 />
+                {/* Consensus reveal - shows after rating */}
+                {!isDiscussionExpanded && (
+                  <div className="px-4 pb-4">
+                    <ConsensusReveal
+                      consensus={getApproachConsensus(focusedApproach.id)}
+                      userRating={ratings[focusedApproach.id]}
+                    />
+                  </div>
+                )}
               </motion.div>
             )}
 

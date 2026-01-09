@@ -56,3 +56,13 @@ export {
   getApproachesByStance,
   searchApproaches,
 } from './helpers';
+
+// Consensus functions ("Most of Us")
+export {
+  getApproachConsensus,
+  getProblemAreaConsensus,
+  getNationalConsensus,
+  getAmericanMandate,
+  getUserConsensusAlignment,
+  getUserCivicIdentity,
+} from './consensus';
