@@ -132,7 +132,7 @@ export default function ProblemAreaPage({
 }) {
   const resolvedParams = use(params);
   const searchParams = useSearchParams();
-  const fromHome = searchParams.get('from') === 'home';
+  const cameFromHome = searchParams.get('from') === 'home';
   const [mounted, setMounted] = useState(false);
   const [ratings, setRatings] = useState<Record<string, ImplementationRating>>({});
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -298,11 +298,11 @@ export default function ProblemAreaPage({
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link
-              href={fromHome ? "/" : "/explore"}
+              href={cameFromHome ? "/" : "/explore"}
               className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             >
               <ArrowLeft className="w-4 h-4" />
-              {fromHome ? "Back" : "All Problems"}
+              {cameFromHome ? "Home" : "All Problems"}
             </Link>
 
             <div className="flex items-center gap-4">
@@ -933,9 +933,9 @@ export default function ProblemAreaPage({
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href={fromHome ? "/" : "/explore"}>
+            <Link href="/explore">
               <Button variant="ghost" size="sm">
-                {fromHome ? "Back" : "All Problems"}
+                All Problems
               </Button>
             </Link>
             {isComplete && (

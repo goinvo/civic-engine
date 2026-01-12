@@ -19,6 +19,7 @@ import {
 import { DynamicIcon } from '@/components/problem-areas';
 import { Button, Card, Badge, Progress, SegmentedControl } from '@/components/education/ui';
 import ExpandablePolicyCard from '@/components/ExpandablePolicyCard';
+import PolicyExpandedContent from '@/components/PolicyExpandedContent';
 import ParticleWave from '@/components/ParticleWave';
 import {
   getProblemAreas,
@@ -293,19 +294,43 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Policies grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              {/* Policies grid - switches to flex layout when a card is expanded */}
+              <motion.div
+                className={`
+                  ${expandedId
+                    ? 'flex flex-wrap gap-4 items-start'
+                    : 'grid grid-cols-1 md:grid-cols-2 gap-4 items-start'
+                  }
+                `}
+                layout
+                transition={{ duration: 0.3 }}
+              >
                 {topPolicies.map((policy, index) => (
-                  <ExpandablePolicyCard
+                  <motion.div
                     key={policy.id}
-                    policy={policy}
-                    rank={index + 1}
-                    isExpanded={expandedId === policy.id}
-                    isCollapsed={expandedId !== null && expandedId !== policy.id}
-                    onToggle={() => handleToggle(policy.id)}
-                  />
+                    layout
+                    className={`
+                      ${expandedId === policy.id
+                        ? 'w-full'
+                        : expandedId
+                          ? 'w-full md:w-[calc(25%-12px)]'
+                          : 'w-full'
+                      }
+                    `}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ExpandablePolicyCard
+                      policy={policy}
+                      rank={index + 1}
+                      isExpanded={expandedId === policy.id}
+                      isCollapsed={expandedId !== null && expandedId !== policy.id}
+                      onToggle={() => handleToggle(policy.id)}
+                    >
+                      {expandedId === policy.id && <PolicyExpandedContent policy={policy} />}
+                    </ExpandablePolicyCard>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               <div className="mt-10 text-center">
                 <motion.div className="inline-block" whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
