@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use, useMemo, useRef } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, BarChart3, ChevronLeft, ChevronRight, ChevronDown, MessageSquare, Send, Flag, CornerDownRight, Users, Maximize2, Minimize2, FileText, Cog, Scale, Quote } from 'lucide-react';
 import { DynamicIcon, TradeoffsDisplay, VoicesList, RatingScale, ConsensusReveal } from '@/components/problem-areas';
@@ -130,6 +131,8 @@ export default function ProblemAreaPage({
   params: Promise<{ problemAreaId: string }>;
 }) {
   const resolvedParams = use(params);
+  const searchParams = useSearchParams();
+  const fromHome = searchParams.get('from') === 'home';
   const [mounted, setMounted] = useState(false);
   const [ratings, setRatings] = useState<Record<string, ImplementationRating>>({});
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -295,11 +298,11 @@ export default function ProblemAreaPage({
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link
-              href="/explore"
+              href={fromHome ? "/" : "/explore"}
               className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             >
               <ArrowLeft className="w-4 h-4" />
-              All Problems
+              {fromHome ? "Back" : "All Problems"}
             </Link>
 
             <div className="flex items-center gap-4">
@@ -930,9 +933,9 @@ export default function ProblemAreaPage({
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/explore">
+            <Link href={fromHome ? "/" : "/explore"}>
               <Button variant="ghost" size="sm">
-                All Problems
+                {fromHome ? "Back" : "All Problems"}
               </Button>
             </Link>
             {isComplete && (
