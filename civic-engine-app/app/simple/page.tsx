@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ThumbsUp, ThumbsDown, Minus, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Check, ThumbsUp, ThumbsDown, Minus, Sparkles, Users } from 'lucide-react';
 import ParticleWave from '@/components/ParticleWave';
-import { getNationalConsensus } from '@/lib/problem-areas';
+import { DynamicIcon } from '@/components/problem-areas';
+import { getNationalConsensus, getProblemAreas } from '@/lib/problem-areas';
 import { getTopPolicies } from '@/data/policies';
 
 type Screen = 'intro' | 'reveal' | 'issues' | 'done';
 
-export default function Home() {
+export default function SimpleLanding() {
   const [screen, setScreen] = useState<Screen>('intro');
   const [currentIssueIndex, setCurrentIssueIndex] = useState(0);
   const [votes, setVotes] = useState<Record<string, 'yes' | 'no' | 'meh'>>({});
