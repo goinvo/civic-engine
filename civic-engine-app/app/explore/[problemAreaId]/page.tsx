@@ -137,6 +137,7 @@ export default function ProblemAreaPage({
   const [ratings, setRatings] = useState<Record<string, ImplementationRating>>({});
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
+  const [consensusStickyExpired, setConsensusStickyExpired] = useState(false);
   const [isDiscussionOpen, setIsDiscussionOpen] = useState(true);
   const [isDiscussionExpanded, setIsDiscussionExpanded] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -152,6 +153,7 @@ export default function ProblemAreaPage({
   });
   const stickyRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const consensusStickyTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const problemAreaId = resolvedParams.problemAreaId as ProblemAreaId;
   const problemArea = getProblemAreaWithApproaches(problemAreaId);
@@ -198,6 +200,40 @@ export default function ProblemAreaPage({
       return () => document.removeEventListener('click', handleClickOutside);
     }
   }, [isDropdownOpen]);
+
+  // Reset consensus sticky state when changing approaches
+  useEffect(() => {
+    setConsensusStickyExpired(false);
+    if (consensusStickyTimerRef.current) {
+      clearTimeout(consensusStickyTimerRef.current);
+      consensusStickyTimerRef.current = null;
+    }
+  }, [focusedIndex]);
+
+  // Start timer to expire consensus sticky when user has rated the current approach
+  useEffect(() => {
+    const currentApproachId = problemArea?.approaches[focusedIndex]?.id;
+    if (!currentApproachId) return;
+
+    const hasRating = ratings[currentApproachId] !== undefined;
+
+    if (hasRating && !consensusStickyExpired) {
+      // Clear any existing timer
+      if (consensusStickyTimerRef.current) {
+        clearTimeout(consensusStickyTimerRef.current);
+      }
+      // Start new timer - consensus will unstick after 3 seconds
+      consensusStickyTimerRef.current = setTimeout(() => {
+        setConsensusStickyExpired(true);
+      }, 3000);
+    }
+
+    return () => {
+      if (consensusStickyTimerRef.current) {
+        clearTimeout(consensusStickyTimerRef.current);
+      }
+    };
+  }, [ratings, problemArea?.approaches, focusedIndex, consensusStickyExpired]);
 
   // Discussion handlers
   const handlePostComment = (content: string, parentId?: string) => {
@@ -382,15 +418,36 @@ export default function ProblemAreaPage({
                   onChange={(r) => handleRatingChange(focusedApproach.id, r)}
                   compact={isDiscussionExpanded}
                 />
-                {/* Consensus reveal - shows after rating */}
-                {!isDiscussionExpanded && (
-                  <div className="px-4 pb-4">
+                {/* Consensus reveal - shows after rating, stays sticky for 3 seconds then collapses */}
+                {!isDiscussionExpanded && !consensusStickyExpired && (
+                  <motion.div
+                    className="px-4 pb-4"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                  >
                     <ConsensusReveal
                       consensus={getApproachConsensus(focusedApproach.id)}
                       userRating={ratings[focusedApproach.id]}
                     />
-                  </div>
+                  </motion.div>
                 )}
+              </motion.div>
+            )}
+
+            {/* Consensus reveal after sticky expires - scrolls with content */}
+            {focusedApproach && !isDiscussionExpanded && consensusStickyExpired && ratings[focusedApproach.id] !== undefined && (
+              <motion.div
+                className="px-4 py-4 bg-white dark:bg-gray-900 border-2 border-t-0 border-black dark:border-gray-600"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+              >
+                <ConsensusReveal
+                  consensus={getApproachConsensus(focusedApproach.id)}
+                  userRating={ratings[focusedApproach.id]}
+                />
               </motion.div>
             )}
 

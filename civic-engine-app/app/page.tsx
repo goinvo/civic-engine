@@ -8,18 +8,12 @@ import {
   ChevronDown,
   ChevronRight,
   BarChart3,
-  Users,
   Megaphone,
-  Eye,
-  GraduationCap,
-  MessageSquare,
-  Award,
   Compass,
 } from 'lucide-react';
 import { DynamicIcon } from '@/components/problem-areas';
 import { Button, Card, Badge, Progress, SegmentedControl } from '@/components/education/ui';
-import ExpandablePolicyCard from '@/components/ExpandablePolicyCard';
-import PolicyExpandedContent from '@/components/PolicyExpandedContent';
+import PolicyListItem from '@/components/PolicyListItem';
 import ParticleWave from '@/components/ParticleWave';
 import {
   getProblemAreas,
@@ -294,43 +288,18 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Policies grid - switches to flex layout when a card is expanded */}
-              <motion.div
-                className={`
-                  ${expandedId
-                    ? 'flex flex-wrap gap-4 items-start'
-                    : 'grid grid-cols-1 md:grid-cols-2 gap-4 items-start'
-                  }
-                `}
-                layout
-                transition={{ duration: 0.3 }}
-              >
+              {/* Policies list */}
+              <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(75,85,99,1)]">
                 {topPolicies.map((policy, index) => (
-                  <motion.div
+                  <PolicyListItem
                     key={policy.id}
-                    layout
-                    className={`
-                      ${expandedId === policy.id
-                        ? 'w-full'
-                        : expandedId
-                          ? 'w-full md:w-[calc(25%-12px)]'
-                          : 'w-full'
-                      }
-                    `}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ExpandablePolicyCard
-                      policy={policy}
-                      rank={index + 1}
-                      isExpanded={expandedId === policy.id}
-                      isCollapsed={expandedId !== null && expandedId !== policy.id}
-                      onToggle={() => handleToggle(policy.id)}
-                    >
-                      {expandedId === policy.id && <PolicyExpandedContent policy={policy} />}
-                    </ExpandablePolicyCard>
-                  </motion.div>
+                    policy={policy}
+                    displayRank={index + 1}
+                    isExpanded={expandedId === policy.id}
+                    onToggleExpand={() => handleToggle(policy.id)}
+                  />
                 ))}
-              </motion.div>
+              </div>
 
               <div className="mt-10 text-center">
                 <motion.div className="inline-block" whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
@@ -397,74 +366,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Education Section */}
-      <section className="bg-[#2F3BBD] py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-4">
-              <GraduationCap className="w-7 h-7 text-[#2F3BBD]" />
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              For Educators
-            </h2>
-            <p className="text-white/80 max-w-xl mx-auto">
-              Bring civic engagement to your classroom. Help students form evidence-based opinions and engage in respectful discourse.
-            </p>
-          </div>
-
-          {/* Features Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            {[
-              { icon: Users, title: 'Class Cohorts', desc: 'Private spaces with simple join codes' },
-              { icon: MessageSquare, title: 'Guided Discussion', desc: 'Structured debates with evidence' },
-              { icon: Award, title: 'Anonymous Grading', desc: 'Grade reasoning, not positions' },
-              { icon: GraduationCap, title: 'Civic Profiles', desc: 'Shareable engagement records' },
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className="bg-white border-2 border-black p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -2 }}
-              >
-                <div className="w-10 h-10 bg-[#E8EEFF] border-2 border-black flex items-center justify-center mb-3">
-                  <feature.icon className="w-5 h-5 text-[#2F3BBD]" />
-                </div>
-                <h3 className="font-bold text-neutral-dark mb-1">{feature.title}</h3>
-                <p className="text-sm text-neutral">{feature.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
-              <Link
-                href="/education/teacher"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#2F3BBD] font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-              >
-                Teacher Demo
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
-              <Link
-                href="/education/student/onboard"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#C91A2B] text-white font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-              >
-                Student Demo
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          </div>
-
-          <p className="text-center text-white/60 text-sm mt-4">
-            Try the demo — no account required
-          </p>
-        </div>
-      </section>
     </>
   );
 }

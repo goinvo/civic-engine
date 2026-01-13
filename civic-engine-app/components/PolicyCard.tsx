@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown,
@@ -8,6 +9,7 @@ import {
   TrendingDown,
   ThumbsUp,
   ExternalLink,
+  ArrowRight,
   type LucideIcon,
 } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -21,6 +23,7 @@ interface PolicyCardProps {
 
 export default function PolicyCard({ policy, showVoteButton = true, onCategoryClick }: PolicyCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const router = useRouter();
 
   // Get the icon component dynamically
   const IconComponent = policy.icon
@@ -311,36 +314,6 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
                 </div>
               )}
 
-              {/* Impact Section - Causal Chain */}
-              {policy.causalChain && (
-                <div className="mb-6 pb-6 border-b-2 border-gray-200">
-                  <h4 className="font-black text-neutral-dark mb-3 flex items-center space-x-2 text-lg">
-                    <span className="w-1 h-5 bg-primary rounded-full"></span>
-                    <span>Policy Goal</span>
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
-                        <span className="text-green-700 font-bold text-xs">1</span>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-green-700 uppercase mb-1">Immediate Action</p>
-                        <p className="text-sm font-bold text-neutral-dark">{policy.causalChain.immediate}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
-                        <span className="text-green-700 font-bold text-xs">2</span>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-green-700 uppercase mb-1">Intended Outcome</p>
-                        <p className="text-sm font-bold text-neutral-dark">{policy.causalChain.outcome}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Questions & Clarifications */}
               {policy.commonQuestions && policy.commonQuestions.length > 0 && (
                 <div className="mb-6 pb-6 border-b-2 border-gray-200">
@@ -391,6 +364,24 @@ export default function PolicyCard({ policy, showVoteButton = true, onCategoryCl
                   ))}
                 </ul>
               </div>
+
+              {/* Explore Problem Area Link */}
+              {policy.problemAreaId && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      const url = policy.approachId
+                        ? `/explore/${policy.problemAreaId}?approach=${policy.approachId}`
+                        : `/explore/${policy.problemAreaId}`;
+                      router.push(url);
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 px-5 py-3.5 bg-gradient-to-r from-primary to-secondary text-white rounded-lg transition-all hover:scale-[1.02] hover:shadow-lg font-bold"
+                  >
+                    <span>Explore This Topic</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
 
               {/* Last Updated */}
               <div className="mt-3 text-xs text-neutral">

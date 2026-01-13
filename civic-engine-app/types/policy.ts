@@ -2,6 +2,8 @@
  * Policy data types for Most of Us platform
  */
 
+import type { ProblemAreaId } from './problem-areas';
+
 export type PolicyScope = 'federal' | 'state' | 'territory' | 'multistate';
 
 export type PolicyCategory =
@@ -17,6 +19,8 @@ export type PolicyCategory =
   | 'technology'
   | 'security'
   | 'society'
+  | 'housing'
+  | 'family'
   | 'other';
 
 /**
@@ -122,6 +126,10 @@ export interface Policy {
 
   // V2 Methodology
   hasV2Methodology?: boolean; // Has detailed 13-factor evidence-based scoring
+
+  // Problem Area Linking
+  problemAreaId?: ProblemAreaId; // Link to related problem area (e.g., 'healthcare-costs')
+  approachId?: string; // Link to specific implementation approach (e.g., 'healthcare-single-payer')
 
   // Metadata
   lastUpdated: string; // ISO date string

@@ -43,14 +43,8 @@ export default function Navbar() {
               All Policies
             </Link>
             <Link
-              href="/models"
-              className="text-sm font-medium text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors rounded focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
-            >
-              Models
-            </Link>
-            <Link
               href="/explore"
-              className="text-sm font-black text-white bg-[#2F3BBD] px-4 py-2 border-2 border-black hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
+              className="inline-flex items-center justify-center text-sm font-bold text-white bg-[#2F3BBD] px-4 py-2.5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
             >
               Explore Issues
             </Link>
@@ -94,15 +88,8 @@ export default function Navbar() {
                 All Policies
               </Link>
               <Link
-                href="/models"
-                className="px-4 py-2 text-neutral-dark dark:text-gray-300 hover:bg-neutral-light dark:hover:bg-gray-800 rounded-lg transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-inset"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Models
-              </Link>
-              <Link
                 href="/explore"
-                className="mx-4 px-4 py-3 bg-[#2F3BBD] text-white border-2 border-black font-black text-center focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
+                className="mx-4 inline-flex items-center justify-center px-4 py-3 bg-[#2F3BBD] text-white border-2 border-black font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all focus:outline-none focus:ring-2 focus:ring-[#2F3BBD] focus:ring-offset-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Explore Issues

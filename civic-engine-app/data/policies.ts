@@ -7,75 +7,12 @@ import { Policy } from '../types/policy';
  */
 
 export const policies: Policy[] = [
-  // --- EXISTING TOP 10 (Verified) ---
-  {
-    id: 'social-security-cap',
-    rank: 1,
-    title: 'Shore Up Social Security ("Donut Hole")',
-    description: 'Ensure Social Security solvency by applying the payroll tax to earnings above $400,000, eliminating 60% of the shortfall without raising middle-class taxes.',
-    category: 'economy',
-    scope: 'federal',
-    icon: 'Umbrella',
-    averageSupport: 87,
-    partySupport: {
-      democrats: 91,
-      republicans: 86,
-      independents: 87,
-    },
-    sources: [
-      {
-        organization: 'Program for Public Consultation (PPC)',
-        title: 'Social Security Solvency Report',
-        url: 'https://publicconsultation.org',
-        year: 2025,
-        supportPercentage: 87,
-      },
-    ],
-    notes: [
-      'Refers specifically to the "donut hole" approach: taxing earnings above $400k while preserving the current cap for middle-income earners.',
-    ],
-    details: [
-      {
-        title: 'The "Donut Hole" Solution',
-        description: 'Retains the current cap ($169k) but reinstates taxes on earnings above $400k, protecting the middle class while capturing high-earner revenue.',
-      },
-      {
-        title: 'Solvency Impact',
-        description: 'This single measure eliminates approximately 60% of the program\'s long-term financial shortfall.',
-      },
-    ],
-    resourceFlow: {
-      from: 'High earners (wages >$400k)',
-      to: 'Social Security Trust Fund',
-      channel: 'Payroll tax expansion (Revenue-side fix)',
-    },
-    ifThen: [
-      'If you earn under $169,000, your taxes remain exactly the same',
-      'If you earn over $400,000, you contribute payroll tax on that excess amount',
-      'If enacted, future retirees avoid draconian benefit cuts projected for the 2030s',
-    ],
-    causalChain: {
-      immediate: 'Lift the payroll tax cap for earnings over $400,000',
-      outcome: 'Extends Social Security solvency for decades and restores public confidence in the safety net',
-    },
-    commonQuestions: [
-      {
-        question: 'Why $400,000?',
-        answer: 'It creates a protective buffer for the upper-middle class while ensuring the wealthy contribute more.',
-      },
-      {
-        question: 'Is this enough?',
-        answer: 'It solves most of the problem (60%). The public also supports a small, gradual rate increase to cover the remaining gap.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-03-01',
-  },
+  // --- POLICIES MAPPED TO PROBLEM AREAS ---
   {
     id: 'congress-stock-ban',
     rank: 2,
     title: 'Ban Congressional Stock Trading',
-    description: 'Prohibit Members of Congress, their spouses, and dependents from trading individual stocks to prevent insider trading and restore public trust.',
+    description: 'Members of Congress are making millions trading stocks while writing the laws that move markets. They vote on legislation affecting companies they own shares in. This isn\'t just unethical; it\'s corruption in plain sight. When both parties overwhelmingly agree on something, it should be law. Congress should serve the people, not their portfolios.',
     category: 'governance',
     scope: 'federal',
     icon: 'Ban',
@@ -133,12 +70,14 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-02-15',
+    problemAreaId: 'democratic-reform',
+    approachId: 'campaign-finance-reform',
   },
   {
     id: 'congress-term-limits',
     rank: 3,
     title: 'Congressional Term Limits',
-    description: 'A Constitutional Amendment establishing specific term limits: 4 terms (8 years) for the House and 2 terms (12 years) for the Senate.',
+    description: 'Career politicians have turned public service into a lifetime appointment. The average Senator is 65 years old. Some have held power for four decades while the country\'s problems only grow worse. Americans overwhelmingly want fresh voices and new ideas in Congress. Term limits ensure our representatives focus on solving problems, not protecting their seats.',
     category: 'governance',
     scope: 'federal',
     icon: 'Clock',
@@ -196,75 +135,13 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-01-20',
-  },
-  {
-    id: 'right-to-repair',
-    rank: 4,
-    title: 'National Right to Repair Act',
-    description: 'Mandate that manufacturers provide consumers and independent shops with the data, tools, and parts needed to repair vehicles and electronics.',
-    category: 'economy',
-    scope: 'federal',
-    icon: 'Wrench',
-    averageSupport: 83,
-    partySupport: {
-      democrats: 82,
-      republicans: 84,
-      independents: 83,
-    },
-    sources: [
-      {
-        organization: 'CAR Coalition / Consumer Reports',
-        title: 'National Right to Repair Survey',
-        url: 'https://carcoalition.com',
-        year: 2025,
-        supportPercentage: 83,
-      },
-    ],
-    notes: [
-      'Support is based on CAR Coalition data and explicitly includes access to vehicle telematics and repair information.',
-    ],
-    details: [
-      {
-        title: 'Vehicle Telematics',
-        description: 'Ensures independent mechanics can access the wireless diagnostic data currently locked by manufacturers.',
-      },
-      {
-        title: 'Consumer Choice',
-        description: '98% of Americans agree vehicle owners should be able to choose their repair shop.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Manufacturer Monopolies',
-      to: 'Independent Shops & Consumers',
-      channel: 'Legislative mandate (REPAIR Act)',
-    },
-    ifThen: [
-      'If your tractor breaks, you can fix it yourself without waiting for a dealer technician',
-      'If you go to an independent mechanic, they can access the same diagnostic codes as the dealership',
-      'If passed, repair costs likely decrease due to increased market competition',
-    ],
-    causalChain: {
-      immediate: 'Mandate release of repair tools, manuals, and software',
-      outcome: 'Ends "digital feudalism," lowers consumer costs, and supports small business repair shops',
-    },
-    commonQuestions: [
-      {
-        question: 'Is this safe?',
-        answer: 'Advocates argue that security standards (like those in banking) can protect data while still allowing repairs.',
-      },
-      {
-        question: 'Who supports this?',
-        answer: 'It unites rural farmers (who need to fix equipment) and urban tech users, garnering slightly higher support from Republicans than Democrats.',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-07-01',
+    problemAreaId: 'democratic-reform',
   },
   {
     id: 'medicare-drug-negotiation',
     rank: 5,
     title: 'Universal Drug Price Negotiation',
-    description: 'Expand Medicare\'s power to negotiate prices for ALL prescription drugs and cap annual price increases at the rate of inflation.',
+    description: 'Americans pay more for prescription drugs than any other country on Earth, often 2-3 times more for the exact same medication. Seniors are cutting pills in half. Families are rationing insulin. Meanwhile, pharmaceutical companies spend more on marketing than research. Every other developed nation negotiates drug prices. It\'s time America stopped being the world\'s piggy bank for Big Pharma.',
     category: 'healthcare',
     scope: 'federal',
     icon: 'Pill',
@@ -322,138 +199,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-09-01',
-  },
-  {
-    id: 'ai-safety-regulation',
-    rank: 6,
-    title: 'AI Safety & Deepfake Liability',
-    description: 'Establish federal liability for AI companies regarding deepfakes and mandate safety certification for high-risk models before release.',
-    category: 'technology',
-    scope: 'federal',
-    icon: 'Bot',
-    averageSupport: 79,
-    partySupport: {
-      democrats: 88,
-      republicans: 79,
-      independents: 79,
-    },
-    sources: [
-      {
-        organization: 'AI Policy Institute; Gallup/SCSP (combined polling)',
-        title: 'Americans on Regulating AI',
-        url: 'https://theaipi.org',
-        year: 2025,
-        supportPercentage: 79,
-      },
-    ],
-    notes: [
-      'Support based on AI Policy Institute polling on deepfake liability and Gallup-SCSP polling showing 80% prioritize safety over speed. Public support centers on mandatory safety testing and deepfake liability, not generic AI regulation.',
-    ],
-    details: [
-      {
-        title: 'Deepfake Liability',
-        description: 'Companies become liable for harmful non-consensual deepfakes produced by their tools.',
-      },
-      {
-        title: 'Safety First',
-        description: '80% of Americans prioritize safety regulations over the speed of AI development.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Tech Industry Unchecked Growth',
-      to: 'Public Safety & Truth',
-      channel: 'Federal regulation (FTC/NIST)',
-    },
-    ifThen: [
-      'If an AI model is "high risk," it must pass safety tests before public release',
-      'If a platform hosts political deepfakes, they lose immunity and can be sued',
-      'If you are victimized by AI content, you have legal recourse',
-    ],
-    causalChain: {
-      immediate: 'Mandate safety testing and remove Section 230 for AI',
-      outcome: 'Slows reckless deployment, protects election integrity, and ensures accountability for digital harms',
-    },
-    commonQuestions: [
-      {
-        question: 'Will this slow us down?',
-        answer: 'Likely yes. However, voters overwhelmingly (80%) prefer safety over speed, rejecting the "arms race" narrative.',
-      },
-      {
-        question: 'Is this partisan?',
-        answer: 'No. Republicans fear censorship/bias, Democrats fear discrimination/misinfo, but both agree on the need for strict guardrails.',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-08-20',
-  },
-  {
-    id: 'rural-broadband-access',
-    rank: 7,
-    title: 'Universal Broadband & Municipal Internet',
-    description: 'Fund universal high-speed internet for rural areas and legalize municipal (local government-run) broadband networks to spur competition.',
-    category: 'infrastructure',
-    scope: 'federal',
-    icon: 'Wifi',
-    averageSupport: 76,
-    partySupport: {
-      democrats: 80,
-      republicans: 68,
-      independents: 70,
-    },
-    sources: [
-      {
-        organization: 'Pew Research Center',
-        title: 'Broadband Access Survey',
-        url: 'https://pewresearch.org',
-        year: 2024,
-        supportPercentage: 76,
-      },
-    ],
-    notes: [
-      'Support reflects an aggregate of funding for rural access and legalization of municipal broadband to increase competition.',
-    ],
-    details: [
-      {
-        title: 'Right to Compete',
-        description: '70% support allowing cities/towns to build their own networks if private ISPs fail to serve them.',
-      },
-      {
-        title: 'Utility Mindset',
-        description: 'Broadband is viewed as essential infrastructure, akin to electricity or water.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Federal Grants & Local Bonds',
-      to: 'Underserved Communities',
-      channel: 'Infrastructure investment (ACP/ReConnect)',
-    },
-    ifThen: [
-      'If private cable ignores your town, your local government can build its own fiber network',
-      'If you live in a rural area, federal funds subsidize the cost of running lines to your home',
-      'If municipal broadband is legal, competition forces private ISPs to lower prices',
-    ],
-    causalChain: {
-      immediate: 'Fund rural buildout and ban state restrictions on municipal internet',
-      outcome: 'Closes the digital divide and enables economic participation for rural Americans',
-    },
-    commonQuestions: [
-      {
-        question: 'Is this socialism?',
-        answer: 'Voters see it as "local control." If the free market (private ISPs) won\'t serve a community, the community wants the right to serve itself.',
-      },
-      {
-        question: 'Why the bipartisan support?',
-        answer: 'It benefits key constituencies of both parties: rural Republican districts and low-income Democratic urban areas.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-04-10',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-price-regulation',
   },
   {
     id: 'campaign-finance-disclosure',
     rank: 8,
     title: 'Mandate "Dark Money" Disclosure',
-    description: 'Pass the DISCLOSE Act to require Super PACs to make major donors public and ban foreign spending on ballot measures.',
+    description: 'Billions of dollars flow into our elections from anonymous donors. You have no idea who\'s trying to buy your vote. Foreign money is seeping into state ballot initiatives. This isn\'t democracy; it\'s an auction. Americans across the political spectrum believe you have the right to know who\'s paying for political ads. Transparency isn\'t partisan; it\'s patriotic.',
     category: 'governance',
     scope: 'federal',
     icon: 'Eye',
@@ -511,75 +264,14 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-05-01',
-  },
-  {
-    id: 'immigration-grand-bargain',
-    rank: 9,
-    title: 'Immigration Grand Bargain',
-    description: 'A comprehensive deal pairing mandatory E-Verify for all employers (to stop illegal hiring) with a path to citizenship for "Dreamers".',
-    category: 'justice',
-    scope: 'federal',
-    icon: 'Scale',
-    averageSupport: 76,
-    partySupport: {
-      democrats: 88,
-      republicans: 75,
-      independents: 84,
-    },
-    sources: [
-      {
-        organization: 'Composite estimate (Gallup, NIF, Pew)',
-        title: 'Immigration Policy Surveys (2023-2025)',
-        url: 'https://immigrationforum.org',
-        year: 2025,
-        supportPercentage: 76,
-      },
-    ],
-    notes: [
-      'Composite estimate based on separate polling for E-Verify (~75-80% support) and Dreamer citizenship (~80-85% support). Represents the "Grand Bargain": pairing mandatory E-Verify (enforcement) with a path to citizenship for Dreamers (legalization).',
-    ],
-    details: [
-      {
-        title: 'The Trade-Off',
-        description: 'Combines the GOP priority (E-Verify/Enforcement) with the Dem priority (Dreamer legalization).',
-      },
-      {
-        title: 'E-Verify Support',
-        description: '78% of voters support mandatory electronic verification of all new hires to deter illegal immigration.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Illegal Labor Market',
-      to: 'Legal Workforce',
-      channel: 'DHS Enforcement & USCIS Legalization',
-    },
-    ifThen: [
-      'If you apply for a job, the employer must digitally verify your legal status',
-      'If you are a Dreamer, you can earn citizenship through work or education',
-      'If businesses hire undocumented workers, they face automatic detection',
-    ],
-    causalChain: {
-      immediate: 'Mandate E-Verify and pass the Dream Act',
-      outcome: 'Turns off the "jobs magnet" for illegal crossings while solving the status of long-term residents',
-    },
-    commonQuestions: [
-      {
-        question: 'Why hasn\'t this passed?',
-        answer: 'Primary politics: The GOP base resists "amnesty" and the Dem base resists "enforcement," despite the general public supporting the combination.',
-      },
-      {
-        question: 'Does E-Verify work?',
-        answer: 'It is over 98% accurate and is viewed as the most effective tool to stop the employment of unauthorized workers.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-08-15',
+    problemAreaId: 'democratic-reform',
+    approachId: 'campaign-finance-reform',
   },
   {
     id: 'vocational-training',
     rank: 10,
     title: 'Invest in Vocational Training',
-    description: 'Shift federal funding toward apprenticeships and trade schools, and mandate "skills-based hiring" (dropping degree requirements) for federal contractors.',
+    description: 'We\'ve spent decades telling every kid they need a four-year degree while ignoring the electricians, welders, and technicians who keep this country running. The result? Crushing student debt and millions of unfilled skilled jobs. It\'s time to honor work again. Trade schools and apprenticeships deserve the same investment and respect as universities.',
     category: 'education',
     scope: 'federal',
     icon: 'Hammer',
@@ -637,141 +329,15 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-06-01',
+    problemAreaId: 'economic-opportunity',
+    approachId: 'economy-job-training',
   },
 
-  // --- NEW POLICIES (11-30) ---
-
-  {
-    id: 'kids-online-safety',
-    rank: 11,
-    title: 'Kids Online Safety Act (KOSA)',
-    description: 'Establish a digital "duty of care" requiring platforms to prevent specific harms to minors (suicide promotion, eating disorders) and disable addictive features.',
-    category: 'technology',
-    scope: 'federal',
-    icon: 'ShieldCheck',
-    averageSupport: 83,
-    partySupport: {
-      democrats: 86,
-      republicans: 80,
-      independents: 82,
-    },
-    sources: [
-      {
-        organization: 'Navigator Research',
-        title: 'Privacy & Online Safety Poll',
-        url: 'https://navigatorresearch.org',
-        year: 2025,
-        supportPercentage: 83,
-      },
-    ],
-    notes: [
-      'Over 80% of voters rank privacy legislation as a "top" priority. Passed Senate 91-3',
-    ],
-    details: [
-      {
-        title: 'Duty of Care',
-        description: 'Platforms must take reasonable measures to mitigate specific harms like suicide promotion and sexual exploitation',
-      },
-      {
-        title: 'Default Protections',
-        description: 'Mandates strongest privacy settings by default for users under 17',
-      },
-    ],
-    resourceFlow: {
-      from: 'Social Media Ad Revenue',
-      to: 'Child Mental Health',
-      channel: 'FTC Regulatory Enforcement',
-    },
-    ifThen: [
-      'If you are under 17, your account defaults to high privacy settings',
-      'If a platform\'s algorithm promotes self-harm content, they can be sued',
-      'If you are a parent, you have tools to limit addictive features like infinite scroll',
-    ],
-    causalChain: {
-      immediate: 'Establish duty of care for minors online',
-      outcome: 'Reduces algorithmic amplification of harmful content and improves teen mental health outcomes',
-    },
-    commonQuestions: [
-      {
-        question: 'Is this censorship?',
-        answer: 'Critics fear it could be used to suppress content, but proponents argue it regulates platform design (algorithms), not specific speech',
-      },
-      {
-        question: 'Does it require ID?',
-        answer: 'Age verification is a major friction point; critics argue it compromises privacy for all users',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-05-15',
-  },
-  {
-    id: 'universal-background-checks',
-    rank: 12,
-    title: 'Universal Background Checks',
-    description: 'Require background checks for all gun sales, closing loopholes for private transfers and gun shows.',
-    category: 'justice',
-    scope: 'federal',
-    icon: 'FileSearch',
-    averageSupport: 93,
-    partySupport: {
-      democrats: 97,
-      republicans: 89,
-      independents: 93,
-    },
-    sources: [
-      {
-        organization: 'Quinnipiac / Giffords Law Center',
-        title: 'Gun Safety Consensus Poll',
-        url: 'https://giffords.org',
-        year: 2024,
-        supportPercentage: 93,
-      },
-    ],
-    notes: [
-      'Consistently the most popular unimplemented policy in the US, with 85-93% support.',
-    ],
-    details: [
-      {
-        title: 'Closing Loopholes',
-        description: 'Extends checks to gun shows and private sales, which currently bypass the NICS system',
-      },
-      {
-        title: 'Broad Consensus',
-        description: 'Support extends to gun owners and NRA members.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Unregulated Private Sales',
-      to: 'Public Safety',
-      channel: 'NICS Database Expansion',
-    },
-    ifThen: [
-      'If you buy a gun at a show, you must pass a background check',
-      'If you sell a gun to a neighbor, you must process the transfer through a dealer',
-      'If you are a felon, you cannot exploit private sale loopholes',
-    ],
-    causalChain: {
-      immediate: 'Mandate checks for all transfers',
-      outcome: 'Prevents prohibited persons from acquiring firearms without infringing on lawful ownership',
-    },
-    commonQuestions: [
-      {
-        question: 'Does this create a registry?',
-        answer: 'No. The background check system verifies eligibility but does not create a federal registry of gun owners.',
-      },
-      {
-        question: 'Why hasn\'t it passed?',
-        answer: 'Legislative inertia and pressure from gun rights groups who fear it is a slippery slope to registration.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-08-01',
-  },
   {
     id: 'free-easy-voter-id',
     rank: 13,
     title: 'Free and Easy Voter ID',
-    description: 'Mandate that any state requiring Voter ID must provide the ID and necessary documents for free, with streamlined access.',
+    description: 'Here\'s a compromise both parties should embrace: require ID to vote, but make getting that ID completely free and easy. Republicans get election security. Democrats get guaranteed access. No American should have to pay to exercise their right to vote, because that\'s a poll tax. This simple solution ends the partisan fighting and protects everyone\'s voice.',
     category: 'governance',
     scope: 'federal',
     icon: 'IdCard',
@@ -829,75 +395,14 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-04-20',
-  },
-  {
-    id: 'junk-fee-prevention',
-    rank: 14,
-    title: 'Junk Fee Prevention Act',
-    description: 'Ban hidden mandatory fees for hotels, tickets, and airlines, requiring "all-in pricing" where the advertised price is the final price.',
-    category: 'economy',
-    scope: 'federal',
-    icon: 'Tag',
-    averageSupport: 87,
-    partySupport: {
-      democrats: 90,
-      republicans: 81,
-      independents: 85,
-    },
-    sources: [
-      {
-        organization: 'Navigator Research',
-        title: 'Consumer Protection Survey',
-        url: 'https://navigatorresearch.org',
-        year: 2025,
-        supportPercentage: 87,
-      },
-    ],
-    notes: [
-      'One of the few issues with identical intensity of support across parties',
-    ],
-    details: [
-      {
-        title: 'All-In Pricing',
-        description: 'Merchants must display the total price, including all mandatory fees, upfront',
-      },
-      {
-        title: 'Bipartisan Grievance',
-        description: 'Unites consumers against deceptive corporate practices',
-      },
-    ],
-    resourceFlow: {
-      from: 'Deceptive Corporate Revenue',
-      to: 'Consumer Wallets',
-      channel: 'FTC Enforcement / Legislation',
-    },
-    ifThen: [
-      'If you book a hotel, the price you see on the map is the price you pay',
-      'If you buy concert tickets, there are no surprise "service fees" at checkout',
-      'If companies hide fees, they face federal penalties',
-    ],
-    causalChain: {
-      immediate: 'Mandate transparency in pricing',
-      outcome: 'Increases market competition and saves consumers billions in hidden costs',
-    },
-    commonQuestions: [
-      {
-        question: 'Does this lower prices?',
-        answer: 'It may not lower the *base* price, but it allows consumers to comparison shop accurately, which drives competition.',
-      },
-      {
-        question: 'Who opposes this?',
-        answer: 'Hospitality and airline lobbies, who profit from "drip pricing"',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-06-10',
+    problemAreaId: 'democratic-reform',
+    approachId: 'expand-voting-access',
   },
   {
     id: 'childcare-tax-credit',
     rank: 15,
     title: 'Expand Child Tax Credit',
-    description: 'Significantly increase the Child Tax Credit (e.g., to $4,000) to make childcare affordable and reduce child poverty.',
+    description: 'Childcare now costs more than college tuition in most states. Parents are being forced to choose between their careers and their kids. When we expanded the Child Tax Credit in 2021, child poverty dropped nearly in half. Then Congress let it expire and child poverty spiked back up. Investing in families works. Every child deserves a fair start.',
     category: 'economy',
     scope: 'federal',
     icon: 'Baby',
@@ -955,12 +460,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-03-20',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-tax-credits',
   },
   {
     id: 'scotus-term-limits',
     rank: 16,
     title: 'Supreme Court Term Limits (18 Years)',
-    description: 'Limit Supreme Court Justices to 18-year non-renewable terms, with a new appointment every two years, to depoliticize the court.',
+    description: 'Supreme Court vacancies have become apocalyptic political battles because the stakes are impossibly high. A single death or retirement can reshape American law for a generation. The current system incentivizes presidents to appoint young ideologues who might serve 40 years. Regular 18-year terms would lower the temperature, ensure the Court evolves with the country, and give every president a fair number of appointments.',
     category: 'governance',
     scope: 'federal',
     icon: 'Scale',
@@ -1018,12 +525,13 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-02-28',
+    problemAreaId: 'democratic-reform',
   },
   {
     id: 'ultra-millionaire-tax',
     rank: 17,
     title: 'Ultra-Millionaire Wealth Tax',
-    description: 'Implement a 2% tax on wealth above $50 million and 3% on wealth above $1 billion to fund social programs and reduce inequality.',
+    description: 'In 1990, there were 66 billionaires in America. Today, there are over 900. Their wealth grew by $2 trillion during the pandemic alone while working families struggled to pay rent. A modest 2% tax on wealth over $50 million affects only the top 0.1% and would fund schools, healthcare, and infrastructure for everyone else. The ultra-wealthy can afford to contribute more to the country that made their fortunes possible.',
     category: 'economy',
     scope: 'federal',
     icon: 'DollarSign',
@@ -1081,12 +589,13 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-03-15',
+    problemAreaId: 'economic-opportunity',
   },
   {
     id: 'end-citizens-united',
     rank: 18,
     title: 'End Corporate Personhood',
-    description: 'Pass a Constitutional Amendment to overturn Citizens United, establishing that corporations are not people and money is not speech.',
+    description: 'The Supreme Court ruled that corporations have the same rights as people and that unlimited political spending is "free speech." The result? Billionaires and corporations now drown out the voices of ordinary Americans. Our democracy wasn\'t designed to be for sale to the highest bidder. A constitutional amendment can restore the basic principle that government should serve people, not corporations.',
     category: 'governance',
     scope: 'federal',
     icon: 'Building',
@@ -1144,201 +653,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-05-01',
-  },
-  {
-    id: 'national-service',
-    rank: 19,
-    title: 'Voluntary National Service',
-    description: 'Expand voluntary national service programs (like AmeriCorps) with robust incentives, aiming for 1 year of service by age 25.',
-    category: 'society',
-    scope: 'federal',
-    icon: 'Hand', // Helping hand
-    averageSupport: 80,
-    partySupport: {
-      democrats: 83,
-      republicans: 77,
-      independents: 80,
-    },
-    sources: [
-      {
-        organization: 'Civic Enterprises / Brookings',
-        title: 'National Service Poll',
-        url: 'https://www.brookings.edu',
-        year: 2025,
-        supportPercentage: 80,
-      },
-    ],
-    notes: [
-      'Support is for *voluntary* service (~80%); mandatory service has much lower support (around 50% or below).',
-    ],
-    details: [
-      {
-        title: 'Civic Glue',
-        description: 'Programs like AmeriCorps increase long-term voter turnout and bridge cultural divides',
-      },
-      {
-        title: 'Incentives',
-        description: 'Offers tuition assistance and debt relief in exchange for service.',
-      },
-    ],
-    resourceFlow: {
-      from: 'Federal Funding',
-      to: 'Community Projects & Youth Development',
-      channel: 'AmeriCorps / Peace Corps',
-    },
-    ifThen: [
-      'If you serve a year, you get college tuition assistance',
-      'If you join, you work on community projects in different parts of the country',
-      'If expanded, civic engagement increases among young people',
-    ],
-    causalChain: {
-      immediate: 'Fund and expand voluntary service opportunities',
-      outcome: 'Strengthens social cohesion and provides workforce training',
-    },
-    commonQuestions: [
-      {
-        question: 'Is this a draft?',
-        answer: 'No. It is strictly voluntary. Mandatory service is divisive and faces legal hurdles',
-      },
-      {
-        question: 'What do they do?',
-        answer: 'Disaster relief, education (tutoring), conservation, and elderly care.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-06-20',
-  },
-  {
-    id: 'irs-direct-file',
-    rank: 20,
-    title: 'Simplified Tax Filing (Direct File)',
-    description: 'Make the IRS "Direct File" program permanent and expanded, allowing taxpayers to file for free directly with the IRS.',
-    category: 'governance',
-    scope: 'federal',
-    icon: 'FileText',
-    averageSupport: 73,
-    partySupport: {
-      democrats: 85,
-      republicans: 60,
-      independents: 73,
-    },
-    sources: [
-      {
-        organization: 'Navigator Research / Tax Policy Center',
-        title: 'Direct File Survey',
-        url: 'https://taxpolicycenter.org',
-        year: 2025,
-        supportPercentage: 73,
-      },
-    ],
-    notes: [
-      'About 73% of filers say they would be interested in using Direct File. IRS user survey found 94% satisfaction among pilot participants.',
-    ],
-    details: [
-      {
-        title: 'Pre-filled Returns',
-        description: 'The IRS uses existing data (W-2s) to pre-populate returns, saving time and money',
-      },
-      {
-        title: 'Success Story',
-        description: 'Expanded to 25 states in 2025 due to overwhelming demand',
-      },
-    ],
-    resourceFlow: {
-      from: 'Tax Prep Industry Profits',
-      to: 'Taxpayer Savings',
-      channel: 'IRS Direct Software',
-    },
-    ifThen: [
-      'If you have a simple return, you can file for free in minutes on the IRS website',
-      'If enacted, you avoid paying fees to private tax prep companies',
-      'If pre-filling is added, you just verify the data the IRS already has',
-    ],
-    causalChain: {
-      immediate: 'Expand IRS Direct File nationwide',
-      outcome: 'Reduces compliance burden and saves taxpayers billions',
-    },
-    commonQuestions: [
-      {
-        question: 'Why do we pay to file now?',
-        answer: 'The tax prep lobby historically blocked the IRS from offering a free alternative',
-      },
-      {
-        question: 'Is it mandatory?',
-        answer: 'No. You can still use an accountant or private software if you choose.',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-04-15',
-  },
-  {
-    id: 'foreign-farmland-ban',
-    rank: 21,
-    title: 'Ban Foreign Ownership of Farmland',
-    description: 'Prohibit "foreign adversaries" (e.g., China, Russia) from purchasing U.S. agricultural land to protect food security.',
-    category: 'security',
-    scope: 'federal',
-    icon: 'Shield',
-    averageSupport: 82,
-    partySupport: {
-      democrats: 75,
-      republicans: 90,
-      independents: 80,
-    },
-    sources: [
-      {
-        organization: 'Program for Public Consultation',
-        title: 'National Security Survey',
-        url: 'https://publicconsultation.org',
-        year: 2025,
-        supportPercentage: 82,
-      },
-    ],
-    notes: [
-      'Driven by food security concerns and geopolitical tensions; 29 states have already acted',
-    ],
-    details: [
-      {
-        title: 'National Security',
-        description: 'Prevents adversaries from controlling critical food supply chains or spying near bases',
-      },
-      {
-        title: 'Bipartisan Push',
-        description: 'Strong support from rural Republicans and security-conscious Democrats',
-      },
-    ],
-    resourceFlow: {
-      from: 'Foreign Investment',
-      to: 'Domestic Control',
-      channel: 'CFIUS / State Laws',
-    },
-    ifThen: [
-      'If a Chinese state-owned company tries to buy farmland, the sale is blocked',
-      'If enacted, U.S. food supply chains remain under domestic control',
-      'If implemented poorly, it faces legal challenges over discrimination ',
-    ],
-    causalChain: {
-      immediate: 'Ban land sales to adversary nations',
-      outcome: 'Protects national security but requires care to avoid civil rights violations',
-    },
-    commonQuestions: [
-      {
-        question: 'Is this discriminatory?',
-        answer: 'Civil rights groups argue it echoes past "Alien Land Laws." DOJ has raised concerns about housing discrimination',
-      },
-      {
-        question: 'How much land do they own?',
-        answer: 'Currently a small percentage, but the *rate* of purchase has sparked alarm.',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-08-10',
+    problemAreaId: 'democratic-reform',
+    approachId: 'campaign-finance-reform',
   },
   {
     id: 'minimum-wage-17',
     rank: 22,
     title: 'Raise Minimum Wage ($17)',
-    description: 'Raise the federal minimum wage to $17/hour by 2030 and index it to inflation to ensure a living wage.',
+    description: 'If you work full-time in America, you shouldn\'t live in poverty. But the federal minimum wage has been $7.25 since 2009, and its purchasing power is at a 66-year low. Meanwhile, CEO pay has skyrocketed. A $17 minimum wage indexed to inflation isn\'t radical; it\'s restoring the basic promise that hard work should pay off. No one working 40 hours a week should need food stamps to survive.',
     category: 'economy',
     scope: 'federal',
     icon: 'TrendingUp',
@@ -1396,12 +718,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-02-10',
+    problemAreaId: 'economic-opportunity',
+    approachId: 'economy-raise-minimum-wage',
   },
   {
     id: 'public-option-healthcare',
     rank: 23,
     title: 'Healthcare Public Option',
-    description: 'Create a government-run health insurance plan available to all, competing with private insurers to lower costs.',
+    description: 'Healthcare in America is rationed by wealth. Millions skip care because they can\'t afford it. Insurance companies deny claims to boost profits. A public option gives everyone a choice: keep your private insurance if you like it, or buy into a nonprofit alternative. Competition lowers costs. Nobody gets kicked off their plan. And no American has to choose between bankruptcy and treatment.',
     category: 'healthcare',
     scope: 'federal',
     icon: 'HeartPulse',
@@ -1459,138 +783,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-09-05',
-  },
-  {
-    id: 'nuclear-energy-expansion',
-    rank: 24,
-    title: 'Expand Nuclear Energy (ADVANCE Act)',
-    description: 'Accelerate the deployment of advanced nuclear reactors to ensure reliable, carbon-free baseload power.',
-    category: 'infrastructure',
-    scope: 'federal',
-    icon: 'Zap',
-    averageSupport: 61,
-    partySupport: {
-      democrats: 58,
-      republicans: 67,
-      independents: 60,
-    },
-    sources: [
-      {
-        organization: 'Pew Research Center',
-        title: 'Energy Attitudes Survey',
-        url: 'https://pewresearch.org',
-        year: 2025,
-        supportPercentage: 61,
-      },
-    ],
-    notes: [
-      'Support has surged 16+ points since 2020, driven by energy security and AI power needs',
-    ],
-    details: [
-      {
-        title: 'Regulatory Streamlining',
-        description: 'The ADVANCE Act cuts red tape for licensing new small modular reactors (SMRs)',
-      },
-      {
-        title: 'Brownfield Reuse',
-        description: 'Incentivizes building nuclear plants at retired coal sites to use existing transmission lines',
-      },
-    ],
-    resourceFlow: {
-      from: 'Regulatory Hurdles',
-      to: 'Clean Power Generation',
-      channel: 'NRC Reform / ADVANCE Act',
-    },
-    ifThen: [
-      'If a coal plant closes, it can be converted to a nuclear site',
-      'If AI data centers need power, nuclear provides 24/7 carbon-free energy',
-      'If successful, the US regains leadership in nuclear technology',
-    ],
-    causalChain: {
-      immediate: 'Streamline nuclear licensing',
-      outcome: 'Increases clean baseload power and energy independence',
-    },
-    commonQuestions: [
-      {
-        question: 'Is it safe?',
-        answer: 'Modern "advanced" reactors have passive safety systems that physically prevent meltdowns.',
-      },
-      {
-        question: 'What about waste?',
-        answer: 'Advanced reactors produce less waste, but long-term storage remains a political challenge.',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-10-01',
-  },
-  {
-    id: 'police-accountability',
-    rank: 25,
-    title: 'Police Accountability Standards',
-    description: 'Mandate de-escalation training, ban chokeholds, and create a national misconduct registry to prevent abusive officers from switching agencies.',
-    category: 'justice',
-    scope: 'federal',
-    icon: 'BadgeAlert',
-    averageSupport: 84,
-    partySupport: {
-      democrats: 92,
-      republicans: 82,
-      independents: 84,
-    },
-    sources: [
-      {
-        organization: 'Voice of the People',
-        title: 'Police Reform Survey',
-        url: 'https://vop.org',
-        year: 2025,
-        supportPercentage: 84,
-      },
-    ],
-    notes: [
-      'Specific reforms (registry, training) have 90%+ support; "Qualified Immunity" reform is the sticking point',
-    ],
-    details: [
-      {
-        title: 'Misconduct Registry',
-        description: 'Prevents "wandering officers" by tracking those fired for misconduct in a national database',
-      },
-      {
-        title: 'Duty to Intervene',
-        description: '95% support requiring officers to intervene if a colleague uses excessive force',
-      },
-    ],
-    resourceFlow: {
-      from: 'Unchecked Misconduct',
-      to: 'Professional Standards',
-      channel: 'Federal Funding Conditions',
-    },
-    ifThen: [
-      'If an officer is fired for abuse, they cannot get hired by the next town over',
-      'If an officer sees a colleague using excessive force, they are legally required to stop it',
-      'If chokeholds are used, federal funding is withheld',
-    ],
-    causalChain: {
-      immediate: 'Standardize use-of-force rules and tracking',
-      outcome: 'Reduces police violence and restores community trust',
-    },
-    commonQuestions: [
-      {
-        question: 'Does this defund the police?',
-        answer: 'No. It conditions funding on standards. Republicans support the accountability measures (82%)',
-      },
-      {
-        question: 'What about lawsuits?',
-        answer: 'The popular consensus excludes ending Qualified Immunity, which is divisive.',
-      },
-    ],
-    trending: 'stable',
-    lastUpdated: '2025-09-10',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-public-option',
   },
   {
     id: 'affordable-housing-supply',
     rank: 26,
     title: 'Affordable Housing Supply (NHIA)',
-    description: 'Create tax credits for building and renovating homes in distressed areas to close the "appraisal gap" and increase supply.',
+    description: 'Housing costs are crushing American families. Young people can\'t afford to buy homes. Renters face impossible choices. The core problem is simple: we\'re not building enough. The solution isn\'t just subsidies for renters; it\'s incentivizing construction in neighborhoods that need revitalization. More starter homes means more families can build wealth and more communities can thrive.',
     category: 'economy',
     scope: 'federal',
     icon: 'Home',
@@ -1648,12 +848,14 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-07-15',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-zoning-reform',
   },
   {
     id: 'mental-health-988',
     rank: 27,
     title: '988 Mental Health Lifeline',
-    description: 'Ensure long-term funding and specialized access (e.g., LGBTQ+ youth) for the 988 Suicide & Crisis Lifeline.',
+    description: 'Mental health is healthcare. When someone is in crisis, they need immediate help, not a busy signal or a transfer to police. The 988 Lifeline saves lives, but it needs sustainable funding and specialized support for vulnerable populations. We send mobile crisis teams instead of armed officers. We connect people to care instead of jail cells. This is how we treat mental health like the emergency it is.',
     category: 'healthcare',
     scope: 'federal',
     icon: 'Phone',
@@ -1711,75 +913,13 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-06-30',
-  },
-  {
-    id: 'cannabis-banking-safer',
-    rank: 28,
-    title: 'Cannabis Banking (SAFER Act)',
-    description: 'Allow banks to serve state-legal cannabis businesses to reduce cash-related crimes and improve transparency.',
-    category: 'economy',
-    scope: 'federal',
-    icon: 'Landmark', // Bank
-    averageSupport: 64,
-    partySupport: {
-      democrats: 75,
-      republicans: 55,
-      independents: 64,
-    },
-    sources: [
-      {
-        organization: 'ICBA / Data for Progress',
-        title: 'Banking Access Survey',
-        url: 'https://icba.org',
-        year: 2025,
-        supportPercentage: 64,
-      },
-    ],
-    notes: [
-      'Framed as a public safety issue (reducing robbery risk) rather than legalization',
-    ],
-    details: [
-      {
-        title: 'Public Safety',
-        description: 'Taking cash off the streets prevents violent robberies of dispensaries',
-      },
-      {
-        title: 'Operation Choke Point',
-        description: 'Includes protections preventing regulators from targeting politically disfavored industries (guns/oil) to win GOP votes',
-      },
-    ],
-    resourceFlow: {
-      from: 'Cash Economy',
-      to: 'Regulated Banking System',
-      channel: 'SAFER Banking Act',
-    },
-    ifThen: [
-      'If a dispensary can use a bank, they stop holding millions in cash',
-      'If banks are protected, they can offer loans to small cannabis businesses',
-      'If enacted, tax collection becomes more efficient',
-    ],
-    causalChain: {
-      immediate: 'Safe harbor for banks serving cannabis',
-      outcome: 'Improves public safety and brings a grey market into the financial system',
-    },
-    commonQuestions: [
-      {
-        question: 'Does this legalize weed?',
-        answer: 'No. It only addresses banking for businesses legal under *state* law.',
-      },
-      {
-        question: 'Who supports it?',
-        answer: 'A "coalition of necessity": Banks, police, and the cannabis industry',
-      },
-    ],
-    trending: 'up',
-    lastUpdated: '2025-08-05',
+    problemAreaId: 'healthcare-costs',
   },
   {
     id: 'universal-pre-k',
     rank: 29,
     title: 'Universal Pre-K',
-    description: 'Provide free, high-quality pre-kindergarten education for all 3- and 4-year-olds.',
+    description: 'By the time kids from poor families start kindergarten, they\'re already behind. Early education closes that gap and lets parents work. Oklahoma, one of the reddest states, has had universal pre-K for over 20 years with remarkable results. This isn\'t daycare; it\'s giving every child the foundation they need to succeed. The research is clear: investing early pays off for a lifetime.',
     category: 'education',
     scope: 'federal',
     icon: 'BookOpen',
@@ -1837,12 +977,14 @@ export const policies: Policy[] = [
     ],
     trending: 'stable',
     lastUpdated: '2025-05-25',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-universal-pre-k',
   },
   {
     id: 'buy-american',
     rank: 30,
     title: '"Buy American" Mandates',
-    description: 'Require federally funded infrastructure projects to use U.S.-made materials (steel, iron, manufactured goods).',
+    description: 'When taxpayers fund a bridge, the steel should be American. We shipped our manufacturing overseas for decades, hollowing out communities and leaving us dependent on foreign supply chains. The pandemic showed us the cost of that mistake. Rebuilding American industry means good jobs, stronger communities, and a more secure nation. Your tax dollars should build American prosperity.',
     category: 'economy',
     scope: 'federal',
     icon: 'Factory',
@@ -1900,6 +1042,7 @@ export const policies: Policy[] = [
     ],
     trending: 'up',
     lastUpdated: '2025-06-01',
+    problemAreaId: 'economic-opportunity',
   },
 
   // ===========================================
@@ -1911,7 +1054,7 @@ export const policies: Policy[] = [
     id: 'universal-basic-income',
     rank: 31,
     title: 'Universal Basic Income (UBI)',
-    description: 'A universal, unconditional cash payment to all individuals, intended to provide a minimum floor of income regardless of employment status.',
+    description: 'Work is changing. Automation is accelerating. And our safety net was built for a different era. A Universal Basic Income gives everyone a floor to stand on: the freedom to leave a bad job, start a business, care for family, or weather hard times. It\'s not about replacing work; it\'s about giving people the security to take risks and live with dignity. Alaska has done it for decades. It\'s time to think bigger.',
     category: 'economy',
     scope: 'federal',
     icon: 'Wallet',
@@ -1970,12 +1113,14 @@ export const policies: Policy[] = [
     trending: 'stable',
     lastUpdated: '2025-12-01',
     hasV2Methodology: true,
+    problemAreaId: 'economic-opportunity',
+    approachId: 'economy-universal-basic-income',
   },
   {
     id: 'federal-job-guarantee',
     rank: 32,
     title: 'Federal Job Guarantee',
-    description: 'A program assuring a public job at a liveable wage to all who want work, making the government an employer of last resort to achieve full employment.',
+    description: 'If you want to work, you should be able to work. A Federal Job Guarantee ensures that anyone willing to contribute can find meaningful employment at a living wage, whether that\'s caring for the elderly, rebuilding infrastructure, or restoring the environment. When the private sector fails to hire, communities shouldn\'t suffer. This isn\'t make-work; it\'s putting Americans to work on the problems we\'ve neglected for too long.',
     category: 'economy',
     scope: 'federal',
     icon: 'Briefcase',
@@ -2034,12 +1179,13 @@ export const policies: Policy[] = [
     trending: 'up',
     lastUpdated: '2025-12-01',
     hasV2Methodology: true,
+    problemAreaId: 'economic-opportunity',
   },
   {
     id: 'medicare-for-all',
     rank: 33,
     title: 'Medicare for All (Single-Payer)',
-    description: 'A universal, national health insurance program covering all residents for medically necessary care, with the government as the single payer.',
+    description: 'Healthcare is a human right, not a privilege for those who can afford it. In the richest country on Earth, no one should die because they can\'t afford treatment. No one should go bankrupt from a medical bill. No one should stay in a job they hate just to keep their insurance. Medicare for All means one card, one system, and care based on need, not wealth. Every other developed nation has figured this out. So can we.',
     category: 'healthcare',
     scope: 'federal',
     icon: 'Hospital',
@@ -2098,6 +1244,1718 @@ export const policies: Policy[] = [
     trending: 'stable',
     lastUpdated: '2025-12-01',
     hasV2Methodology: true,
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-single-payer',
+  },
+
+  // --- NEW POLICIES FOR MISSING APPROACHES ---
+
+  {
+    id: 'ranked-choice-voting',
+    rank: 34,
+    title: 'Ranked Choice Voting',
+    description: 'Our current voting system forces you to pick one candidate, even when you like several. The result? "Spoiler" candidates, negative campaigning, and winners who most voters didn\'t support. Ranked Choice Voting lets you rank candidates in order of preference. If your first choice loses, your vote transfers to your second choice. It rewards coalition-building, punishes attack ads, and ensures winners have broad support.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'ListOrdered',
+    averageSupport: 62,
+    partySupport: {
+      democrats: 72,
+      republicans: 48,
+      independents: 68,
+    },
+    sources: [
+      {
+        organization: 'FairVote / Pew Research',
+        title: 'Voting Reform Survey',
+        url: 'https://fairvote.org',
+        year: 2025,
+        supportPercentage: 62,
+      },
+    ],
+    notes: [
+      'Already used in Alaska, Maine, and dozens of cities. Support grows as familiarity increases.',
+    ],
+    details: [
+      {
+        title: 'End Spoiler Effect',
+        description: 'Vote your conscience without "wasting" your vote or helping your least favorite candidate win.',
+      },
+      {
+        title: 'Better Campaigns',
+        description: 'Candidates seek second-choice votes, leading to more positive, coalition-building campaigns.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Winner-Take-All System',
+      to: 'Majority Winners',
+      channel: 'Election Reform Legislation',
+    },
+    ifThen: [
+      'If you rank your candidates, your vote counts even if your first choice loses',
+      'If no candidate gets 50%, instant runoffs determine the winner',
+      'If implemented, third parties become viable without being spoilers',
+    ],
+    causalChain: {
+      immediate: 'Adopt ranked choice voting for federal elections',
+      outcome: 'Reduces polarization, increases voter satisfaction, and elects candidates with broader support',
+    },
+    commonQuestions: [
+      {
+        question: 'Is it confusing?',
+        answer: 'Voters in RCV jurisdictions report high satisfaction. It\'s as simple as ranking your preferences.',
+      },
+      {
+        question: 'Does it help third parties?',
+        answer: 'Yes. You can support a third party without fear of "wasting" your vote.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'democratic-reform',
+    approachId: 'ranked-choice-voting',
+  },
+  {
+    id: 'independent-redistricting',
+    rank: 35,
+    title: 'Independent Redistricting Commissions',
+    description: 'Politicians shouldn\'t choose their voters; voters should choose their politicians. But in most states, legislators draw their own district lines, creating "safe seats" where elections are decided before a single vote is cast. Independent commissions take redistricting out of partisan hands, creating competitive districts where your vote actually matters.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'Map',
+    averageSupport: 71,
+    partySupport: {
+      democrats: 78,
+      republicans: 62,
+      independents: 74,
+    },
+    sources: [
+      {
+        organization: 'Campaign Legal Center / Gallup',
+        title: 'Redistricting Reform Poll',
+        url: 'https://campaignlegal.org',
+        year: 2025,
+        supportPercentage: 71,
+      },
+    ],
+    notes: [
+      'States with independent commissions show higher voter turnout and satisfaction.',
+    ],
+    details: [
+      {
+        title: 'Nonpartisan Process',
+        description: 'Commissioners are selected through a merit-based process, not appointed by politicians.',
+      },
+      {
+        title: 'Transparency',
+        description: 'Public hearings and clear criteria replace backroom deals.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Partisan Gerrymandering',
+      to: 'Fair Districts',
+      channel: 'State Constitutional Amendments / Federal Law',
+    },
+    ifThen: [
+      'If your state has a commission, district lines are drawn fairly',
+      'If implemented, more elections become competitive',
+      'If adopted nationally, Congress better reflects the actual vote',
+    ],
+    causalChain: {
+      immediate: 'Mandate independent redistricting commissions',
+      outcome: 'Ends gerrymandering and restores competitive elections',
+    },
+    commonQuestions: [
+      {
+        question: 'How do you pick commissioners?',
+        answer: 'Typically through a randomized selection from applicants screened for partisan ties.',
+      },
+      {
+        question: 'Does it work?',
+        answer: 'States like California and Arizona show more competitive races after adopting commissions.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'democratic-reform',
+    approachId: 'independent-redistricting',
+  },
+  {
+    id: 'election-security',
+    rank: 36,
+    title: 'Election Security & Paper Ballots',
+    description: 'Every American should be confident their vote counts. That means paper ballots you can verify, rigorous audits after every election, and protection against foreign interference. This isn\'t partisan; it\'s patriotic. Secure elections are the foundation of democracy, and we should invest in making them bulletproof.',
+    category: 'governance',
+    scope: 'federal',
+    icon: 'ShieldCheck',
+    averageSupport: 82,
+    partySupport: {
+      democrats: 85,
+      republicans: 80,
+      independents: 82,
+    },
+    sources: [
+      {
+        organization: 'Verified Voting / Pew Research',
+        title: 'Election Security Survey',
+        url: 'https://verifiedvoting.org',
+        year: 2025,
+        supportPercentage: 82,
+      },
+    ],
+    notes: [
+      'Paper ballots and risk-limiting audits enjoy near-universal support.',
+    ],
+    details: [
+      {
+        title: 'Paper Trail',
+        description: 'All votes must have a voter-verified paper record that can be audited.',
+      },
+      {
+        title: 'Risk-Limiting Audits',
+        description: 'Statistical audits after every election confirm results are accurate.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Vulnerable Systems',
+      to: 'Verified Results',
+      channel: 'Federal Funding & Standards',
+    },
+    ifThen: [
+      'If you vote, you can verify your ballot before it\'s cast',
+      'If results are close, audits can confirm accuracy',
+      'If foreign actors try to interfere, paper ballots provide a backup',
+    ],
+    causalChain: {
+      immediate: 'Mandate paper ballots and post-election audits',
+      outcome: 'Ensures election integrity and voter confidence',
+    },
+    commonQuestions: [
+      {
+        question: 'Are electronic machines bad?',
+        answer: 'Not inherently, but they must produce a paper trail. Paperless machines are the concern.',
+      },
+      {
+        question: 'Who pays for this?',
+        answer: 'Federal grants help states upgrade equipment and train election workers.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'democratic-reform',
+    approachId: 'election-integrity-security',
+  },
+  {
+    id: 'rent-stabilization',
+    rank: 37,
+    title: 'Rent Stabilization Protections',
+    description: 'Families are being priced out of their homes overnight. Landlords can raise rent by 30%, 50%, even 100% with no warning. This forces families to move, disrupts children\'s schooling, and destroys communities. Rent stabilization doesn\'t freeze rents; it limits how fast they can rise, giving families stability and time to plan.',
+    category: 'housing',
+    scope: 'federal',
+    icon: 'Home',
+    averageSupport: 63,
+    partySupport: {
+      democrats: 78,
+      republicans: 45,
+      independents: 65,
+    },
+    sources: [
+      {
+        organization: 'Data for Progress / Pew Research',
+        title: 'Housing Policy Survey',
+        url: 'https://dataforprogress.org',
+        year: 2025,
+        supportPercentage: 63,
+      },
+    ],
+    notes: [
+      'Support varies by framing; "rent caps" poll lower than "protections against extreme rent hikes."',
+    ],
+    details: [
+      {
+        title: 'Anti-Gouging',
+        description: 'Limits annual rent increases to a reasonable percentage, often tied to inflation.',
+      },
+      {
+        title: 'Just Cause Eviction',
+        description: 'Landlords must have a legitimate reason to evict, preventing displacement for profit.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Landlord Windfalls',
+      to: 'Tenant Stability',
+      channel: 'State/Local Rent Laws',
+    },
+    ifThen: [
+      'If your landlord raises rent, it must be within a reasonable annual limit',
+      'If you\'re a long-term tenant, you have stability to plan your future',
+      'If implemented, communities remain intact instead of being displaced',
+    ],
+    causalChain: {
+      immediate: 'Limit excessive rent increases',
+      outcome: 'Provides housing stability and preserves community cohesion',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this reduce housing supply?',
+        answer: 'Critics argue yes; proponents say well-designed policies exempt new construction.',
+      },
+      {
+        question: 'Is this rent control?',
+        answer: 'Modern "rent stabilization" is more flexible than traditional rent control, allowing reasonable increases.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-rent-stabilization',
+  },
+  {
+    id: 'housing-vouchers',
+    rank: 38,
+    title: 'Expand Housing Choice Vouchers',
+    description: 'For millions of families, the difference between homelessness and stability is a voucher that helps pay rent. But only 1 in 4 eligible families receives help because funding is capped. Expanding Section 8 vouchers lets families choose where to live, opens opportunities in better neighborhoods, and costs less than building new affordable units.',
+    category: 'housing',
+    scope: 'federal',
+    icon: 'Ticket',
+    averageSupport: 68,
+    partySupport: {
+      democrats: 82,
+      republicans: 52,
+      independents: 68,
+    },
+    sources: [
+      {
+        organization: 'Center on Budget and Policy Priorities',
+        title: 'Housing Assistance Survey',
+        url: 'https://cbpp.org',
+        year: 2025,
+        supportPercentage: 68,
+      },
+    ],
+    notes: [
+      'Vouchers let recipients choose their housing, promoting integration and opportunity.',
+    ],
+    details: [
+      {
+        title: 'Universal Eligibility',
+        description: 'Make vouchers available to all income-eligible families, not just the lucky few.',
+      },
+      {
+        title: 'Source of Income Laws',
+        description: 'Prohibit landlords from discriminating against voucher holders.',
+      },
+    ],
+    resourceFlow: {
+      from: 'HUD Budget',
+      to: 'Low-Income Families',
+      channel: 'Section 8 Program',
+    },
+    ifThen: [
+      'If you qualify, you receive a voucher to help pay market rent',
+      'If you want to move to a better school district, your voucher moves with you',
+      'If landlords accept vouchers, they get reliable government-backed rent',
+    ],
+    causalChain: {
+      immediate: 'Fund vouchers for all eligible households',
+      outcome: 'Ends housing waitlists and gives families choice',
+    },
+    commonQuestions: [
+      {
+        question: 'Why don\'t landlords accept vouchers?',
+        answer: 'Paperwork and inspection requirements deter some. Source-of-income laws help address this.',
+      },
+      {
+        question: 'Is this expensive?',
+        answer: 'Less than building new affordable units; it leverages existing housing stock.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-vouchers',
+  },
+  {
+    id: 'first-time-homebuyer',
+    rank: 39,
+    title: 'First-Time Homebuyer Support',
+    description: 'Homeownership built the middle class, but it\'s slipping out of reach. Young families can\'t save for a down payment while paying rent that keeps climbing. First-time buyer programs provide down payment assistance, favorable mortgage rates, and tax credits to help families get on the first rung of the ladder.',
+    category: 'housing',
+    scope: 'federal',
+    icon: 'Key',
+    averageSupport: 74,
+    partySupport: {
+      democrats: 82,
+      republicans: 65,
+      independents: 74,
+    },
+    sources: [
+      {
+        organization: 'NAR / Pew Research',
+        title: 'Homeownership Survey',
+        url: 'https://nar.realtor',
+        year: 2025,
+        supportPercentage: 74,
+      },
+    ],
+    notes: [
+      'Down payment assistance is the most popular intervention; mortgage rate buydowns also poll well.',
+    ],
+    details: [
+      {
+        title: 'Down Payment Help',
+        description: 'Grants or forgivable loans help families clear the biggest hurdle to ownership.',
+      },
+      {
+        title: 'Tax Credits',
+        description: 'First-time buyers receive credits to offset closing costs and early mortgage payments.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Tax Revenue',
+      to: 'First-Time Buyers',
+      channel: 'FHA / State HFAs',
+    },
+    ifThen: [
+      'If you\'ve never owned a home, you qualify for down payment assistance',
+      'If you complete homebuyer education, you get favorable mortgage terms',
+      'If enacted, homeownership rates rise among young families',
+    ],
+    causalChain: {
+      immediate: 'Expand down payment assistance and buyer tax credits',
+      outcome: 'Increases homeownership and wealth-building for working families',
+    },
+    commonQuestions: [
+      {
+        question: 'Does this raise home prices?',
+        answer: 'Critics argue demand-side support can; ideally paired with supply-side reforms.',
+      },
+      {
+        question: 'Who qualifies?',
+        answer: 'Typically first-time buyers below income limits; programs vary by state.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-first-time-buyer',
+  },
+  {
+    id: 'paid-family-leave',
+    rank: 40,
+    title: 'Paid Family & Medical Leave',
+    description: 'America is the only wealthy nation without guaranteed paid family leave. When a baby is born, when a parent gets cancer, when a spouse needs care, workers shouldn\'t have to choose between their families and their paychecks. Paid leave is good for workers, good for businesses, and good for babies. It\'s time to join the rest of the developed world.',
+    category: 'family',
+    scope: 'federal',
+    icon: 'Baby',
+    averageSupport: 84,
+    partySupport: {
+      democrats: 93,
+      republicans: 74,
+      independents: 84,
+    },
+    sources: [
+      {
+        organization: 'Pew Research Center',
+        title: 'Family Leave Survey',
+        url: 'https://pewresearch.org',
+        year: 2025,
+        supportPercentage: 84,
+      },
+    ],
+    notes: [
+      'One of the most popular unimplemented policies; support has grown steadily.',
+    ],
+    details: [
+      {
+        title: 'Wage Replacement',
+        description: 'Workers receive a portion of their salary while on leave, funded by payroll contributions.',
+      },
+      {
+        title: 'Job Protection',
+        description: 'Guarantees you can return to your job after leave.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Payroll Contributions',
+      to: 'Working Families',
+      channel: 'Social Insurance Fund',
+    },
+    ifThen: [
+      'If you have a baby, you get paid leave without losing your job',
+      'If a family member gets seriously ill, you can provide care',
+      'If implemented, infant health improves and workforce participation increases',
+    ],
+    causalChain: {
+      immediate: 'Establish national paid family and medical leave program',
+      outcome: 'Supports families during critical moments without economic devastation',
+    },
+    commonQuestions: [
+      {
+        question: 'How is it funded?',
+        answer: 'Typically a small payroll tax split between employers and employees.',
+      },
+      {
+        question: 'How long is the leave?',
+        answer: 'Proposals range from 4-12 weeks. Most developed nations offer longer.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-paid-leave',
+  },
+  {
+    id: 'childcare-subsidies',
+    rank: 41,
+    title: 'Direct Childcare Subsidies',
+    description: 'Childcare costs more than college in most states. Parents are dropping out of the workforce because they can\'t afford to work. Direct subsidies help families pay for quality care, keeping parents employed and children in nurturing environments. This isn\'t just about convenience; it\'s about economic survival for working families.',
+    category: 'family',
+    scope: 'federal',
+    icon: 'Building',
+    averageSupport: 79,
+    partySupport: {
+      democrats: 89,
+      republicans: 67,
+      independents: 80,
+    },
+    sources: [
+      {
+        organization: 'First Five Years Fund',
+        title: 'Child Care Affordability Poll',
+        url: 'https://ffyf.org',
+        year: 2025,
+        supportPercentage: 79,
+      },
+    ],
+    notes: [
+      'Subsidies that go directly to families poll higher than provider-side funding.',
+    ],
+    details: [
+      {
+        title: 'Income-Based',
+        description: 'Families pay a capped percentage of income; subsidies cover the rest.',
+      },
+      {
+        title: 'Provider Choice',
+        description: 'Parents choose licensed providers; money follows the child.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal/State Funds',
+      to: 'Working Families',
+      channel: 'CCDF / State Programs',
+    },
+    ifThen: [
+      'If you need childcare, you pay only what you can afford',
+      'If you work irregular hours, subsidies still apply',
+      'If implemented, more parents can enter or stay in the workforce',
+    ],
+    causalChain: {
+      immediate: 'Expand childcare subsidies to all working families',
+      outcome: 'Makes childcare affordable and boosts labor force participation',
+    },
+    commonQuestions: [
+      {
+        question: 'Do subsidies drive up prices?',
+        answer: 'Critics say yes; proponents argue supply-side investments can offset this.',
+      },
+      {
+        question: 'Who qualifies?',
+        answer: 'Income thresholds vary; proposals often cover families up to 200-400% of poverty line.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-subsidies',
+  },
+  {
+    id: 'eitc-expansion',
+    rank: 42,
+    title: 'Expand Earned Income Tax Credit',
+    description: 'The EITC is one of the most effective anti-poverty programs in America, rewarding work while lifting families out of poverty. But it largely excludes childless workers and phases out too quickly. Expanding the EITC means more workers keep more of what they earn, making work pay and reducing reliance on other programs.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Receipt',
+    averageSupport: 72,
+    partySupport: {
+      democrats: 85,
+      republicans: 58,
+      independents: 72,
+    },
+    sources: [
+      {
+        organization: 'Tax Policy Center / Pew',
+        title: 'Tax Credit Survey',
+        url: 'https://taxpolicycenter.org',
+        year: 2025,
+        supportPercentage: 72,
+      },
+    ],
+    notes: [
+      'EITC expansion enjoys bipartisan support as it rewards work, not dependence.',
+    ],
+    details: [
+      {
+        title: 'Include Childless Workers',
+        description: 'Expand eligibility and credit amount for workers without children.',
+      },
+      {
+        title: 'Raise Phase-Out',
+        description: 'Increase income limits so more working families benefit.',
+      },
+    ],
+    resourceFlow: {
+      from: 'IRS Tax Code',
+      to: 'Low-Income Workers',
+      channel: 'Refundable Tax Credit',
+    },
+    ifThen: [
+      'If you work at low wages, you get a tax credit that boosts your income',
+      'If you\'re childless, you now qualify for a meaningful credit',
+      'If implemented, poverty rates among workers drop significantly',
+    ],
+    causalChain: {
+      immediate: 'Expand EITC eligibility and amounts',
+      outcome: 'Makes work pay and reduces poverty without creating dependency',
+    },
+    commonQuestions: [
+      {
+        question: 'Why exclude childless workers?',
+        answer: 'Historical policy; expanding to them has bipartisan support as a work incentive.',
+      },
+      {
+        question: 'How much is the credit?',
+        answer: 'Varies by income and family size; can be several thousand dollars.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'economic-opportunity',
+    approachId: 'economy-expand-eitc',
+  },
+  {
+    id: 'strengthen-unions',
+    rank: 43,
+    title: 'Protect Right to Organize (PRO Act)',
+    description: 'When workers have a voice, wages rise for everyone. But companies have spent decades rigging the rules to crush organizing drives. The PRO Act restores balance: it bans captive audience meetings, prevents misclassifying employees as contractors, and ensures workers can form unions without retaliation. A strong labor movement built the middle class; we need to rebuild it.',
+    category: 'economy',
+    scope: 'federal',
+    icon: 'Users',
+    averageSupport: 65,
+    partySupport: {
+      democrats: 82,
+      republicans: 45,
+      independents: 67,
+    },
+    sources: [
+      {
+        organization: 'Gallup / Data for Progress',
+        title: 'Labor Union Survey',
+        url: 'https://news.gallup.com',
+        year: 2025,
+        supportPercentage: 65,
+      },
+    ],
+    notes: [
+      'Union approval is at 70%+; specific reforms poll slightly lower due to business opposition framing.',
+    ],
+    details: [
+      {
+        title: 'Ban Captive Audiences',
+        description: 'Employers can\'t force workers to attend anti-union meetings.',
+      },
+      {
+        title: 'Strengthen Penalties',
+        description: 'Real consequences for companies that illegally retaliate against organizers.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Corporate Power',
+      to: 'Worker Voice',
+      channel: 'PRO Act / NLRB Enforcement',
+    },
+    ifThen: [
+      'If you want to organize, you can do so without employer intimidation',
+      'If your employer breaks the law, they face meaningful penalties',
+      'If more workers unionize, wages rise across industries',
+    ],
+    causalChain: {
+      immediate: 'Pass the PRO Act and strengthen NLRB',
+      outcome: 'Increases worker power, raises wages, and reduces inequality',
+    },
+    commonQuestions: [
+      {
+        question: 'Why is union membership declining?',
+        answer: 'Decades of legal changes and aggressive employer tactics have tilted the playing field.',
+      },
+      {
+        question: 'Does this force union membership?',
+        answer: 'No. It protects the right to organize; workers still vote on union representation.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'economic-opportunity',
+    approachId: 'economy-strengthen-unions',
+  },
+  {
+    id: 'education-funding',
+    rank: 44,
+    title: 'Increase Public School Funding',
+    description: 'A child\'s education shouldn\'t depend on their zip code. But property-tax-based funding means rich districts thrive while poor districts struggle. Federal investment in public schools can close resource gaps, hire more teachers, and ensure every child has access to a quality education regardless of where they live.',
+    category: 'education',
+    scope: 'federal',
+    icon: 'GraduationCap',
+    averageSupport: 77,
+    partySupport: {
+      democrats: 90,
+      republicans: 62,
+      independents: 78,
+    },
+    sources: [
+      {
+        organization: 'PDK Poll / Gallup',
+        title: 'Education Priorities Survey',
+        url: 'https://pdkpoll.org',
+        year: 2025,
+        supportPercentage: 77,
+      },
+    ],
+    notes: [
+      'Funding increases poll well when tied to specific improvements like smaller class sizes.',
+    ],
+    details: [
+      {
+        title: 'Title I Expansion',
+        description: 'Increase funding for high-poverty schools to close resource gaps.',
+      },
+      {
+        title: 'Equity Formula',
+        description: 'Direct more federal dollars to districts with the greatest need.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Education Budget',
+      to: 'High-Need Schools',
+      channel: 'Title I / State Grants',
+    },
+    ifThen: [
+      'If you attend a high-poverty school, you get more resources, not fewer',
+      'If federal funding increases, districts can hire more teachers',
+      'If implemented, achievement gaps begin to close',
+    ],
+    causalChain: {
+      immediate: 'Increase federal education funding for high-need districts',
+      outcome: 'Reduces inequality and improves outcomes in underfunded schools',
+    },
+    commonQuestions: [
+      {
+        question: 'Does more money improve outcomes?',
+        answer: 'Research shows it does, especially in underfunded districts. Money enables smaller classes and better materials.',
+      },
+      {
+        question: 'Who controls the spending?',
+        answer: 'Local districts decide how to use funds within federal guidelines.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-increase-funding',
+  },
+  {
+    id: 'school-mental-health-services',
+    rank: 45,
+    title: 'Expand School Mental Health Services',
+    description: 'One in three teens reports persistent feelings of sadness or hopelessness. Yet most schools lack adequate counselors—the national average is one counselor for every 385 students, far above the recommended 250:1 ratio. Expanding school-based mental health services means students get help where they already are, before crises escalate.',
+    category: 'education',
+    scope: 'federal',
+    icon: 'Heart',
+    averageSupport: 86,
+    partySupport: {
+      democrats: 92,
+      republicans: 82,
+      independents: 84,
+    },
+    sources: [
+      {
+        organization: 'Data for Progress',
+        title: 'Student Mental Health Survey',
+        url: 'https://dataforprogress.org',
+        year: 2024,
+        supportPercentage: 86,
+      },
+    ],
+    notes: [
+      'Support remains strong across all demographics and regions.',
+    ],
+    details: [
+      {
+        title: 'Staff Training Requirements',
+        description: 'Require school staff training in recognizing mental health warning signs and making appropriate referrals.',
+      },
+      {
+        title: 'Community Partnerships',
+        description: 'Fund partnerships between K-12 schools and local mental health providers.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal/State Education & Health Budgets',
+      to: 'School Districts & Mental Health Providers',
+      channel: 'Grants for counselors and training programs',
+    },
+    ifThen: [
+      'If your child struggles, trained staff can connect them to help',
+      'If schools partner with providers, students access care without leaving campus',
+      'If implemented, crisis interventions decrease as early support increases',
+    ],
+    causalChain: {
+      immediate: 'Increase mental health counselors and staff training in schools',
+      outcome: 'Students get early intervention before problems become crises',
+    },
+    commonQuestions: [
+      {
+        question: 'Should schools handle mental health?',
+        answer: 'Schools are where kids spend most of their time. Embedding services there removes barriers like transportation and stigma.',
+      },
+      {
+        question: 'What about parent involvement?',
+        answer: 'Parents are notified and involved. School counselors connect families to resources, not replace parental authority.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-invest-teachers',
+  },
+  {
+    id: 'universal-pre-k',
+    rank: 46,
+    title: 'Universal Pre-K for All 4-Year-Olds',
+    description: 'The brain develops more in the first five years than any other time. Yet access to quality pre-school depends on your zip code and income. Universal pre-K gives every child the same strong start, closing achievement gaps before they begin and freeing parents to work.',
+    category: 'education',
+    scope: 'federal',
+    icon: 'Baby',
+    averageSupport: 71,
+    partySupport: {
+      democrats: 85,
+      republicans: 55,
+      independents: 72,
+    },
+    sources: [
+      {
+        organization: 'Gallup',
+        title: 'Pre-K Education Survey',
+        url: 'https://news.gallup.com/poll/175646/favor-federal-funds-expand-pre-education.aspx',
+        year: 2024,
+        supportPercentage: 71,
+      },
+    ],
+    notes: [
+      'Support has increased from 54% in 2014 to 71% today.',
+      'Conservative states like Florida, Texas, and Arkansas have expanded state pre-K programs.',
+    ],
+    details: [
+      {
+        title: 'State-Federal Partnership',
+        description: 'Federal grants match state investments to expand quality pre-K slots.',
+      },
+      {
+        title: 'Quality Standards',
+        description: 'Require qualified teachers, small class sizes, and developmentally appropriate curriculum.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Education Budget + State Matching Funds',
+      to: 'Public Schools & Licensed Pre-K Providers',
+      channel: 'Grants for pre-K expansion',
+    },
+    ifThen: [
+      'If you have a 4-year-old, free quality pre-school is available',
+      'If both parents work, you have childcare during work hours',
+      'If implemented, kindergarten readiness improves across income levels',
+    ],
+    causalChain: {
+      immediate: 'Provide free pre-K to all 4-year-olds regardless of income',
+      outcome: 'Children enter kindergarten ready to learn; achievement gaps narrow',
+    },
+    commonQuestions: [
+      {
+        question: 'Is pre-K actually effective?',
+        answer: 'Research shows quality pre-K improves school readiness, graduation rates, and adult earnings—especially for low-income children.',
+      },
+      {
+        question: 'Why universal, not just for low-income families?',
+        answer: 'Universal programs avoid stigma, are politically durable, and benefit middle-class families who often don\'t qualify for targeted aid.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-increase-funding',
+  },
+  {
+    id: 'career-technical-education',
+    rank: 47,
+    title: 'Expand Career & Technical Education',
+    description: 'Not every student wants or needs a four-year degree. Millions of good-paying jobs in healthcare, manufacturing, IT, and trades go unfilled while students graduate with debt and no clear path. Expanding CTE and apprenticeships gives students real skills and debt-free careers.',
+    category: 'education',
+    scope: 'federal',
+    icon: 'Wrench',
+    averageSupport: 84,
+    partySupport: {
+      democrats: 84,
+      republicans: 86,
+      independents: 81,
+    },
+    sources: [
+      {
+        organization: 'PDK Poll / Gallup',
+        title: 'Education Priorities Survey',
+        url: 'https://pdkpoll.org',
+        year: 2025,
+        supportPercentage: 84,
+      },
+    ],
+    notes: [
+      'One of the most bipartisan education issues—supported equally across parties.',
+      'Community and technical colleges viewed favorably by 84%+ of all voters.',
+    ],
+    details: [
+      {
+        title: 'High School CTE Expansion',
+        description: 'Fund career pathways in high schools: healthcare, IT, manufacturing, construction.',
+      },
+      {
+        title: 'Apprenticeship Programs',
+        description: 'Expand registered apprenticeships that combine paid work with classroom training.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Perkins Act Funding + State/Employer Match',
+      to: 'High Schools, Community Colleges, Employers',
+      channel: 'Grants for equipment, instructors, and apprentice wages',
+    },
+    ifThen: [
+      'If you prefer hands-on learning, you can train for a career in high school',
+      'If you complete an apprenticeship, you earn while you learn—no debt',
+      'If employers participate, they get trained workers; students get jobs',
+    ],
+    causalChain: {
+      immediate: 'Expand career and technical education and apprenticeship pathways',
+      outcome: 'More students enter middle-class careers without college debt',
+    },
+    commonQuestions: [
+      {
+        question: 'Does CTE limit college options?',
+        answer: 'No. Modern CTE programs often include dual enrollment credits. Students can pursue both career credentials and college preparation.',
+      },
+      {
+        question: 'Are these real careers?',
+        answer: 'Median wages for skilled trades often exceed those of many college graduates. Electricians, nurses, and IT technicians are in high demand.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-standards-accountability',
+  },
+  {
+    id: 'teacher-pay-increase',
+    rank: 48,
+    title: 'Raise Teacher Salaries to Competitive Levels',
+    description: 'Teachers earn 20% less than comparably educated professionals. The result: shortages in math, science, and special education; talented people choosing other careers; and 300,000 teachers leaving the profession annually. Competitive salaries attract and retain the teachers our kids need.',
+    category: 'education',
+    scope: 'state',
+    icon: 'GraduationCap',
+    averageSupport: 64,
+    partySupport: {
+      democrats: 73,
+      republicans: 55,
+      independents: 62,
+    },
+    sources: [
+      {
+        organization: 'PDK Poll / Gallup',
+        title: 'Teacher Pay Assessment',
+        url: 'https://pdkpoll.org/2025-poll-results/',
+        year: 2025,
+        supportPercentage: 64,
+      },
+    ],
+    notes: [
+      '64% of Americans believe teacher pay is too low.',
+      'Adjusted for inflation, teachers earn 5% less than a decade ago.',
+    ],
+    details: [
+      {
+        title: 'Minimum Salary Floor',
+        description: 'Establish a $60,000 minimum starting salary for teachers, as proposed in the Pay Teachers Act.',
+      },
+      {
+        title: 'High-Need Bonuses',
+        description: 'Additional pay for teachers in shortage subjects (math, science, special ed) and underserved schools.',
+      },
+    ],
+    resourceFlow: {
+      from: 'State Education Budgets + Federal Grants',
+      to: 'Teacher Compensation',
+      channel: 'Direct salary increases and bonuses',
+    },
+    ifThen: [
+      'If teaching pays competitively, more talented people enter the profession',
+      'If experienced teachers stay, students benefit from expertise',
+      'If shortage subjects pay more, hard-to-fill positions get filled',
+    ],
+    causalChain: {
+      immediate: 'Raise teacher salaries to be competitive with other professions',
+      outcome: 'Teacher shortages decrease; quality improves; students benefit',
+    },
+    commonQuestions: [
+      {
+        question: 'Aren\'t teachers already well-paid?',
+        answer: 'Average salary is $72K but varies wildly by state. More importantly, teachers earn 20% less than similarly educated workers in other fields.',
+      },
+      {
+        question: 'Does higher pay mean better teaching?',
+        answer: 'Higher pay attracts more applicants, allowing schools to be selective. Countries with the best schools pay teachers like other professionals.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-invest-teachers',
+  },
+  {
+    id: 'school-phone-restrictions',
+    rank: 49,
+    title: 'Restrict Cell Phones in Schools',
+    description: 'Students check their phones 100+ times per day. Teachers compete with TikTok and Snapchat for attention. Research links phone use to declining test scores, rising anxiety, and social disconnection. Restricting phones during school hours lets kids focus on learning and each other.',
+    category: 'education',
+    scope: 'state',
+    icon: 'PhoneOff',
+    averageSupport: 86,
+    partySupport: {
+      democrats: 84,
+      republicans: 90,
+      independents: 83,
+    },
+    sources: [
+      {
+        organization: 'PDK Poll / Gallup',
+        title: 'Cell Phone Restrictions Survey',
+        url: 'https://pdkpoll.org/2025-poll-results/',
+        year: 2025,
+        supportPercentage: 86,
+      },
+    ],
+    notes: [
+      '40% support complete bans; 46% support restrictions except at lunch/breaks.',
+      'Only 11% believe there should be no restrictions at all.',
+    ],
+    details: [
+      {
+        title: 'Phone-Free Classrooms',
+        description: 'Require phones to be stored in lockers, pouches, or collected during instructional time.',
+      },
+      {
+        title: 'Emergency Access',
+        description: 'Maintain parent-school communication channels for emergencies without student phone access.',
+      },
+    ],
+    resourceFlow: {
+      from: 'School District Policies',
+      to: 'Students & Teachers',
+      channel: 'Policy implementation with enforcement tools (pouches, lockers)',
+    },
+    ifThen: [
+      'If phones are away, students engage with lessons and peers',
+      'If teachers don\'t compete with devices, instruction improves',
+      'If implemented, anxiety and distraction decrease during school hours',
+    ],
+    causalChain: {
+      immediate: 'Restrict student cell phone use during instructional time',
+      outcome: 'Improved focus, learning, and social interaction; reduced anxiety',
+    },
+    commonQuestions: [
+      {
+        question: 'What about emergencies?',
+        answer: 'School offices remain reachable. Lockdown procedures don\'t require student phones—they often complicate response.',
+      },
+      {
+        question: 'Isn\'t this overreach?',
+        answer: 'Schools already regulate dress, behavior, and harmful items. Phones are a documented learning barrier with bipartisan support for limits.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'education-quality',
+    approachId: 'education-standards-accountability',
+  },
+  // Healthcare policies
+  {
+    id: 'hospital-price-transparency',
+    rank: 50,
+    title: 'Require Hospital Price Transparency',
+    description: 'You can comparison shop for a car, a TV, even a pizza—but not a medical procedure. Hospitals charge wildly different prices for the same service, often billing 10x more to uninsured patients. Requiring hospitals to post actual prices upfront lets patients shop, forces competition, and ends surprise bills.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'FileSearch',
+    averageSupport: 92,
+    partySupport: {
+      democrats: 94,
+      republicans: 91,
+      independents: 92,
+    },
+    sources: [
+      {
+        organization: 'PatientRightsAdvocate.org / Echelon Insights',
+        title: 'Healthcare Price Transparency Survey',
+        url: 'https://www.patientrightsadvocate.org',
+        year: 2024,
+        supportPercentage: 92,
+      },
+    ],
+    notes: [
+      'One of the most bipartisan healthcare policies—92% support across all parties.',
+      'Only 21% of hospitals fully comply with existing transparency rules.',
+    ],
+    details: [
+      {
+        title: 'Upfront Pricing',
+        description: 'Hospitals must post actual negotiated prices for all services before treatment.',
+      },
+      {
+        title: 'Enforcement',
+        description: 'Meaningful penalties for non-compliance, beyond current minimal fines.',
+      },
+    ],
+    resourceFlow: {
+      from: 'CMS Enforcement Budget',
+      to: 'Hospital Compliance & Consumer Access',
+      channel: 'Regulatory requirements with penalties',
+    },
+    ifThen: [
+      'If you need a procedure, you can compare prices across hospitals',
+      'If hospitals compete on price, costs come down',
+      'If implemented, surprise billing decreases as patients know costs upfront',
+    ],
+    causalChain: {
+      immediate: 'Require hospitals to publicly post actual prices for all services',
+      outcome: 'Patients can comparison shop; competition lowers prices',
+    },
+    commonQuestions: [
+      {
+        question: 'Don\'t hospitals already have to post prices?',
+        answer: 'Since 2021, yes—but compliance is poor and penalties are weak. Only 21% fully comply. Stronger enforcement is needed.',
+      },
+      {
+        question: 'Will this actually lower costs?',
+        answer: 'Early evidence shows price transparency leads to negotiating power and competition. Employers using transparency tools save 15-30%.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-market-reforms',
+  },
+  {
+    id: 'medicare-drug-negotiation',
+    rank: 51,
+    title: 'Let Medicare Negotiate Drug Prices',
+    description: 'Americans pay 2-3x more for prescription drugs than people in other countries. For decades, Medicare was barred from negotiating prices—the only major buyer in the world with its hands tied. Allowing negotiation has already begun saving billions, and expanding it can lower costs for everyone.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'Pill',
+    averageSupport: 85,
+    partySupport: {
+      democrats: 92,
+      republicans: 77,
+      independents: 89,
+    },
+    sources: [
+      {
+        organization: 'KFF',
+        title: 'Health Tracking Poll - Drug Pricing',
+        url: 'https://www.kff.org/medicare/kff-health-tracking-poll-september-2024-support-for-reducing-prescription-drug-prices-remains-high/',
+        year: 2024,
+        supportPercentage: 85,
+      },
+    ],
+    notes: [
+      'The Inflation Reduction Act enabled limited negotiation; this expands it.',
+      'First 10 negotiated drugs will save Medicare $6 billion in 2026 alone.',
+    ],
+    details: [
+      {
+        title: 'Expand Negotiation',
+        description: 'Allow Medicare to negotiate prices on more drugs, faster—beyond the initial 10.',
+      },
+      {
+        title: 'Reference Pricing',
+        description: 'Use international prices as a benchmark for fair pricing.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Medicare Budget',
+      to: 'Lower Drug Costs for Seniors',
+      channel: 'Direct negotiation with pharmaceutical companies',
+    },
+    ifThen: [
+      'If Medicare negotiates, seniors pay less at the pharmacy',
+      'If drug prices drop for Medicare, private insurers often follow',
+      'If implemented, savings fund other healthcare improvements',
+    ],
+    causalChain: {
+      immediate: 'Enable and expand Medicare drug price negotiations',
+      outcome: 'Prescription drug costs decrease for seniors and ripple to all Americans',
+    },
+    commonQuestions: [
+      {
+        question: 'Will this hurt drug innovation?',
+        answer: 'Pharma companies remain highly profitable even where negotiation exists. Most new drugs are developed with public research funding anyway.',
+      },
+      {
+        question: 'Is this already happening?',
+        answer: 'Yes, limited negotiation started in 2024 under the IRA. This expands and accelerates the program.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-market-reforms',
+  },
+  {
+    id: 'medicare-dental-coverage',
+    rank: 52,
+    title: 'Add Dental Coverage to Medicare',
+    description: 'Medicare covers hospital stays, doctor visits, and prescription drugs—but not teeth. Seniors face a choice: pay thousands out of pocket or go without dental care. Poor oral health leads to heart disease, diabetes complications, and worse. Adding dental to Medicare is common sense.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'Smile',
+    averageSupport: 92,
+    partySupport: {
+      democrats: 99,
+      republicans: 85,
+      independents: 90,
+    },
+    sources: [
+      {
+        organization: 'CareQuest Institute',
+        title: 'Medicare Dental Coverage Poll',
+        url: 'https://www.carequest.org',
+        year: 2024,
+        supportPercentage: 92,
+      },
+    ],
+    notes: [
+      '92% of voters support adding dental to Medicare.',
+      'Nearly half of Medicare beneficiaries haven\'t seen a dentist in over a year.',
+    ],
+    details: [
+      {
+        title: 'Comprehensive Coverage',
+        description: 'Cover preventive, basic, and major dental services under Medicare Part B.',
+      },
+      {
+        title: 'No Age-Out',
+        description: 'Seniors keep their teeth healthy without choosing between food and dental care.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Medicare Budget Expansion',
+      to: 'Dental Care for 65+ Americans',
+      channel: 'Medicare Part B coverage of dental services',
+    },
+    ifThen: [
+      'If you\'re on Medicare, dental visits are covered',
+      'If seniors get preventive care, costly emergency dental procedures decrease',
+      'If implemented, overall health outcomes improve for seniors',
+    ],
+    causalChain: {
+      immediate: 'Add dental benefits to Medicare coverage',
+      outcome: 'Seniors access dental care; oral and overall health improve',
+    },
+    commonQuestions: [
+      {
+        question: 'Why wasn\'t dental always covered?',
+        answer: 'When Medicare was created in 1965, dental was seen as separate from "medical" care. We know better now—oral health is health.',
+      },
+      {
+        question: 'How much would this cost?',
+        answer: 'Estimates vary, but preventive dental care reduces costly emergency visits. Many plans would cover routine care with modest out-of-pocket costs.',
+      },
+    ],
+    trending: 'stable',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-coverage-expansion',
+  },
+  {
+    id: 'insulin-cap-35',
+    rank: 53,
+    title: 'Cap Insulin at $35/Month for Everyone',
+    description: '8 million Americans rely on insulin to survive. For decades, prices soared while the drug itself barely changed—insulin costs $2-4 to produce but can cost $300+ per vial. Medicare already capped insulin at $35/month. Extending this to all Americans would save lives and prevent rationing.',
+    category: 'healthcare',
+    scope: 'federal',
+    icon: 'Syringe',
+    averageSupport: 77,
+    partySupport: {
+      democrats: 84,
+      republicans: 70,
+      independents: 79,
+    },
+    sources: [
+      {
+        organization: 'KFF',
+        title: 'Insulin Pricing Survey',
+        url: 'https://www.kff.org',
+        year: 2024,
+        supportPercentage: 77,
+      },
+    ],
+    notes: [
+      'Medicare already caps insulin at $35; this extends to private insurance.',
+      'One in four diabetics has rationed insulin due to cost.',
+    ],
+    details: [
+      {
+        title: 'Universal Cap',
+        description: 'Limit insulin copays to $35/month for all Americans, regardless of insurance.',
+      },
+      {
+        title: 'No Loopholes',
+        description: 'Apply to all insulin products, including pumps and pens.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Insurance Premiums / Manufacturer Rebates',
+      to: 'Diabetic Patients',
+      channel: 'Copay cap regulation',
+    },
+    ifThen: [
+      'If you need insulin, you pay no more than $35/month',
+      'If rationing stops, diabetic complications decrease',
+      'If implemented, fewer ER visits and hospitalizations from uncontrolled diabetes',
+    ],
+    causalChain: {
+      immediate: 'Cap insulin costs at $35/month for all Americans',
+      outcome: 'Diabetics afford their medication; health outcomes improve',
+    },
+    commonQuestions: [
+      {
+        question: 'Doesn\'t Medicare already do this?',
+        answer: 'Yes, since 2023. But private insurance can still charge $300+. This extends the cap to everyone.',
+      },
+      {
+        question: 'Will insulin manufacturers still make insulin?',
+        answer: 'Yes. Production costs are minimal. Companies remain profitable even at $35.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'healthcare-costs',
+    approachId: 'healthcare-market-reforms',
+  },
+  // Housing policies
+  {
+    id: 'first-time-homebuyer-credit',
+    rank: 54,
+    title: 'First-Time Homebuyer Tax Credit',
+    description: 'The median home now costs 5x the median income—up from 3x a generation ago. First-time buyers compete with investors and cash offers, often losing. A tax credit of $10,000-25,000 helps bridge the down payment gap, making homeownership possible for working families.',
+    category: 'housing',
+    scope: 'federal',
+    icon: 'Key',
+    averageSupport: 78,
+    partySupport: {
+      democrats: 87,
+      republicans: 68,
+      independents: 77,
+    },
+    sources: [
+      {
+        organization: 'Morning Consult / Bipartisan Policy Center',
+        title: 'Housing Affordability Poll',
+        url: 'https://bipartisanpolicy.org',
+        year: 2024,
+        supportPercentage: 78,
+      },
+    ],
+    notes: [
+      'Both Harris and Trump proposed first-time buyer credits in 2024.',
+      'The Downpayment Toward Equity Act proposes $20,000+ for first-generation buyers.',
+    ],
+    details: [
+      {
+        title: 'Tax Credit',
+        description: 'Provide $10,000-25,000 tax credit for first-time homebuyers.',
+      },
+      {
+        title: 'Income Limits',
+        description: 'Target middle and working-class families who need help most.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Tax Revenue',
+      to: 'First-Time Homebuyers',
+      channel: 'Refundable tax credit at closing',
+    },
+    ifThen: [
+      'If you\'re buying your first home, you get help with the down payment',
+      'If more families can afford down payments, homeownership increases',
+      'If implemented, generational wealth building expands to more families',
+    ],
+    causalChain: {
+      immediate: 'Provide tax credit assistance for first-time homebuyers',
+      outcome: 'More families achieve homeownership and build wealth',
+    },
+    commonQuestions: [
+      {
+        question: 'Won\'t this just raise home prices?',
+        answer: 'Without supply increases, yes—some price effect is possible. That\'s why this works best paired with policies that build more housing.',
+      },
+      {
+        question: 'Who qualifies as first-time?',
+        answer: 'Typically anyone who hasn\'t owned a home in the past 3 years. Some proposals target first-generation buyers (whose parents didn\'t own either).',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-ownership-paths',
+  },
+  {
+    id: 'zoning-reform-housing-supply',
+    rank: 55,
+    title: 'Reform Zoning to Allow More Housing',
+    description: 'In many cities, it\'s illegal to build anything but single-family homes on 75% of residential land. This artificial scarcity drives up prices. Allowing duplexes, triplexes, and small apartments near transit and jobs means more housing where people want to live.',
+    category: 'housing',
+    scope: 'state',
+    icon: 'Building2',
+    averageSupport: 72,
+    partySupport: {
+      democrats: 76,
+      republicans: 68,
+      independents: 73,
+    },
+    sources: [
+      {
+        organization: 'FT-University of Michigan Poll',
+        title: 'Housing Policy Survey',
+        url: 'https://news.umich.edu',
+        year: 2024,
+        supportPercentage: 72,
+      },
+    ],
+    notes: [
+      'Bipartisan: California (D) and Montana (R) passed similar zoning reforms.',
+      'One of the few areas of housing policy agreement across party lines.',
+    ],
+    details: [
+      {
+        title: 'End Exclusionary Zoning',
+        description: 'Allow 2-4 unit buildings in single-family zones, especially near transit.',
+      },
+      {
+        title: 'Streamline Permits',
+        description: 'Reduce approval timelines that add years and millions to housing projects.',
+      },
+    ],
+    resourceFlow: {
+      from: 'State/Local Zoning Authority',
+      to: 'Housing Developers & Residents',
+      channel: 'Zoning law changes at state level',
+    },
+    ifThen: [
+      'If more housing types are allowed, builders build more units',
+      'If supply increases, price growth slows',
+      'If implemented, more people can afford to live near jobs and transit',
+    ],
+    causalChain: {
+      immediate: 'Reform zoning to allow more housing types in residential areas',
+      outcome: 'Housing supply increases; prices stabilize; more options for renters and buyers',
+    },
+    commonQuestions: [
+      {
+        question: 'Will this change my neighborhood?',
+        answer: 'Gradually. This allows duplexes and small buildings, not skyscrapers. Many "missing middle" buildings blend into existing neighborhoods.',
+      },
+      {
+        question: 'Why is this a state issue?',
+        answer: 'Zoning is traditionally local, but NIMBY resistance often blocks housing. State-level reform can override local restrictions that harm regional affordability.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-market-supply',
+  },
+  {
+    id: 'housing-supply-incentives',
+    rank: 56,
+    title: 'Federal Incentives for Building More Housing',
+    description: 'America is short 4-7 million homes. Local opposition blocks new construction even when demand is clear. Federal incentives can reward communities that allow housing, fund infrastructure for new development, and help builders overcome financing barriers.',
+    category: 'housing',
+    scope: 'federal',
+    icon: 'Hammer',
+    averageSupport: 78,
+    partySupport: {
+      democrats: 83,
+      republicans: 71,
+      independents: 77,
+    },
+    sources: [
+      {
+        organization: 'Bipartisan Policy Center / NHC',
+        title: 'Housing Priorities Survey',
+        url: 'https://bipartisanpolicy.org',
+        year: 2024,
+        supportPercentage: 78,
+      },
+    ],
+    notes: [
+      '87% of Democrats and 77% of Republicans see bipartisan housing legislation as a priority.',
+      'The American Housing Act of 2025 represents bipartisan Congressional action.',
+    ],
+    details: [
+      {
+        title: 'Infrastructure Grants',
+        description: 'Fund roads, water, and utilities for new housing developments.',
+      },
+      {
+        title: 'Pro-Housing Rewards',
+        description: 'Prioritize federal funding for communities that allow more housing construction.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Housing & Infrastructure Budgets',
+      to: 'State/Local Governments & Builders',
+      channel: 'Competitive grants tied to housing production',
+    },
+    ifThen: [
+      'If communities allow housing, they receive federal funding',
+      'If infrastructure is funded, housing becomes feasible in more areas',
+      'If implemented, housing supply increases where demand is highest',
+    ],
+    causalChain: {
+      immediate: 'Provide federal incentives for communities that allow housing construction',
+      outcome: 'More housing gets built; supply catches up with demand',
+    },
+    commonQuestions: [
+      {
+        question: 'Isn\'t housing a local issue?',
+        answer: 'Shortages are national. When one city doesn\'t build, people move to others, raising prices everywhere. Federal incentives align local interests with national needs.',
+      },
+      {
+        question: 'What if communities still refuse?',
+        answer: 'They simply don\'t receive the incentive funding. No mandates—just rewards for good policy.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'housing-affordability',
+    approachId: 'housing-market-supply',
+  },
+  // Childcare & Family policies
+  {
+    id: 'child-care-tax-credit-expansion',
+    rank: 57,
+    title: 'Expand Child Care Tax Credits',
+    description: 'Child care costs $10,000-20,000 per year—more than rent in most states. Current tax credits cover a fraction of actual costs. Expanding credits puts real money in parents\' pockets, making work affordable and keeping kids in quality care.',
+    category: 'family',
+    scope: 'federal',
+    icon: 'Baby',
+    averageSupport: 86,
+    partySupport: {
+      democrats: 91,
+      republicans: 83,
+      independents: 83,
+    },
+    sources: [
+      {
+        organization: 'First Five Years Fund',
+        title: 'Child Care Tax Policy Poll',
+        url: 'https://www.ffyf.org',
+        year: 2025,
+        supportPercentage: 86,
+      },
+    ],
+    notes: [
+      '86% support expanding the Child and Dependent Care Tax Credit.',
+      'The 2025 tax reconciliation package permanently improved child care tax credits.',
+    ],
+    details: [
+      {
+        title: 'Higher Credit',
+        description: 'Increase the maximum credit from $3,000 to cover more of actual child care costs.',
+      },
+      {
+        title: 'Refundable',
+        description: 'Make the credit fully refundable so low-income families benefit equally.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Tax Revenue',
+      to: 'Working Parents',
+      channel: 'Refundable tax credit on annual returns',
+    },
+    ifThen: [
+      'If you pay for child care, you get more money back',
+      'If credits cover real costs, work becomes financially worthwhile',
+      'If implemented, more parents can afford to work and use quality care',
+    ],
+    causalChain: {
+      immediate: 'Expand child care tax credits to cover more of actual costs',
+      outcome: 'Working parents keep more income; child care becomes affordable',
+    },
+    commonQuestions: [
+      {
+        question: 'Why a tax credit instead of direct subsidies?',
+        answer: 'Credits give parents choice. Subsidies can help too—both approaches work. Credits reach parents through the existing tax system.',
+      },
+      {
+        question: 'Does this help stay-at-home parents?',
+        answer: 'Tax credits specifically offset child care costs for working parents. Other policies like the Child Tax Credit help all families.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-tax-credits',
+  },
+  {
+    id: 'child-care-federal-funding',
+    rank: 58,
+    title: 'Increase Federal Child Care Funding (CCDBG)',
+    description: 'Only 1 in 6 eligible children receives federal child care assistance—not because parents don\'t need it, but because funding runs out. Increasing federal child care block grants means more families get help, and more providers can offer affordable slots.',
+    category: 'family',
+    scope: 'federal',
+    icon: 'Building',
+    averageSupport: 85,
+    partySupport: {
+      democrats: 96,
+      republicans: 74,
+      independents: 86,
+    },
+    sources: [
+      {
+        organization: 'First Five Years Fund',
+        title: 'Child Care Funding Poll',
+        url: 'https://www.ffyf.org',
+        year: 2024,
+        supportPercentage: 85,
+      },
+    ],
+    notes: [
+      '85% support increasing CCDBG funding, including 74% of Republicans.',
+      'Current funding serves only a fraction of eligible families.',
+    ],
+    details: [
+      {
+        title: 'Expand Slots',
+        description: 'Fund enough child care assistance to serve all eligible families.',
+      },
+      {
+        title: 'Provider Support',
+        description: 'Help child care centers stay open with adequate reimbursement rates.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Child Care Budget',
+      to: 'States → Child Care Providers → Families',
+      channel: 'Child Care Development Block Grants',
+    },
+    ifThen: [
+      'If funding increases, waitlists shrink',
+      'If providers are paid fairly, quality improves and they stay open',
+      'If implemented, more parents can work knowing their children are cared for',
+    ],
+    causalChain: {
+      immediate: 'Increase federal child care block grant funding',
+      outcome: 'More families access affordable care; parents can work; children thrive',
+    },
+    commonQuestions: [
+      {
+        question: 'Why does federal funding matter?',
+        answer: 'Child care is too expensive for most families without help. Federal funds let states subsidize care for working families who otherwise couldn\'t afford it.',
+      },
+      {
+        question: 'Doesn\'t this grow government?',
+        answer: 'It enables work. When parents can afford child care, they earn income, pay taxes, and grow the economy. The investment pays for itself.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-direct-provision',
+  },
+  {
+    id: 'expanded-child-tax-credit',
+    rank: 59,
+    title: 'Expand the Child Tax Credit',
+    description: 'In 2021, the expanded Child Tax Credit cut child poverty nearly in half. When it expired, 3 million children fell back into poverty. Restoring and expanding the CTC puts money directly in families\' hands—letting them decide what their children need most.',
+    category: 'family',
+    scope: 'federal',
+    icon: 'Wallet',
+    averageSupport: 72,
+    partySupport: {
+      democrats: 80,
+      republicans: 66,
+      independents: 67,
+    },
+    sources: [
+      {
+        organization: 'Data for Progress',
+        title: 'Child Tax Credit Survey',
+        url: 'https://dataforprogress.org',
+        year: 2024,
+        supportPercentage: 72,
+      },
+    ],
+    notes: [
+      '72% support expanding the CTC, including majorities of all parties.',
+      'The 2021 expansion reduced child poverty by 46% before expiring.',
+    ],
+    details: [
+      {
+        title: 'Restore Full Refundability',
+        description: 'Ensure the poorest families—who need it most—receive the full credit.',
+      },
+      {
+        title: 'Increase Amount',
+        description: 'Raise the credit above $2,000 per child to reflect actual child-rearing costs.',
+      },
+    ],
+    resourceFlow: {
+      from: 'Federal Tax Revenue',
+      to: 'Families with Children',
+      channel: 'Monthly payments or annual tax refund',
+    },
+    ifThen: [
+      'If you have children, you receive more support',
+      'If credits are refundable, the poorest families benefit',
+      'If implemented, child poverty drops and families have more stability',
+    ],
+    causalChain: {
+      immediate: 'Expand and make the Child Tax Credit fully refundable',
+      outcome: 'Child poverty decreases; families have resources to raise healthy children',
+    },
+    commonQuestions: [
+      {
+        question: 'Doesn\'t this discourage work?',
+        answer: 'Research from the 2021 expansion found no negative effect on employment. Most recipients are already working.',
+      },
+      {
+        question: 'Why give cash instead of services?',
+        answer: 'Parents know what their children need—food, clothes, medicine, utilities. Cash gives them flexibility services can\'t match.',
+      },
+    ],
+    trending: 'up',
+    lastUpdated: '2025-12-01',
+    problemAreaId: 'childcare-family',
+    approachId: 'childcare-tax-credits',
   },
 ];
 

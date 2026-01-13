@@ -2,10 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ArrowLeft, ArrowUpDown, List, Table } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowUpDown, List, Table, Layers, LayoutList } from 'lucide-react';
 import PolicyListItem from '@/components/PolicyListItem';
 import PolicyTable from '@/components/PolicyTable';
 import { getAllPoliciesSorted } from '@/data/policies';
+import type { ProblemAreaId } from '@/types/problem-areas';
 
 type SortOption = 'support' | 'democrat' | 'republican' | 'independent';
 
@@ -39,12 +40,23 @@ const getSortLabel = (sortBy: SortOption): string => {
   return 'Bipartisan Average';
 };
 
+const PROBLEM_AREA_LABELS: Record<ProblemAreaId | 'uncategorized', string> = {
+  'healthcare-costs': 'Healthcare Costs',
+  'housing-affordability': 'Housing Affordability',
+  'childcare-family': 'Childcare & Family',
+  'democratic-reform': 'Democratic Reform',
+  'economic-opportunity': 'Economic Opportunity',
+  'education-quality': 'Education Quality',
+  'uncategorized': 'Other Policies',
+};
+
 type ViewMode = 'list' | 'table';
 
 export default function Top20Page() {
   const allPolicies = getAllPoliciesSorted();
   const [sortBy, setSortBy] = useState<SortOption>('support');
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [groupByCategory, setGroupByCategory] = useState(true);
   const [expandedPolicyId, setExpandedPolicyId] = useState<string | null>(null);
 
   const handleToggleExpand = (policyId: string) => {
@@ -78,6 +90,31 @@ export default function Top20Page() {
 
     return policies;
   }, [allPolicies, sortBy]);
+
+  // Group policies by problem area
+  type GroupKey = ProblemAreaId | 'uncategorized';
+  const groupedPolicies = useMemo(() => {
+    if (!groupByCategory) return null;
+
+    const groups: Record<GroupKey, typeof sortedPolicies> = {} as Record<GroupKey, typeof sortedPolicies>;
+
+    for (const policy of sortedPolicies) {
+      const groupKey: GroupKey = policy.problemAreaId || 'uncategorized';
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(policy);
+    }
+
+    // Sort problem areas by number of policies (most first), with uncategorized last
+    const sortedCategories = (Object.keys(groups) as GroupKey[]).sort((a, b) => {
+      if (a === 'uncategorized') return 1;
+      if (b === 'uncategorized') return -1;
+      return groups[b].length - groups[a].length;
+    });
+
+    return { groups, sortedCategories };
+  }, [sortedPolicies, groupByCategory]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -181,6 +218,45 @@ export default function Top20Page() {
               </div>
             </div>
 
+            {/* Group Toggle */}
+            <div className="flex">
+              <div className="sm:hidden flex border-2 border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+                <button
+                  onClick={() => setGroupByCategory(false)}
+                  className={`p-2 ${!groupByCategory ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white'}`}
+                  aria-label="Flat list"
+                >
+                  <LayoutList className="w-4 h-4" strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={() => setGroupByCategory(true)}
+                  className={`p-2 ${groupByCategory ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white'}`}
+                  aria-label="Group by category"
+                >
+                  <Layers className="w-4 h-4" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              <div className="hidden sm:flex border-4 border-black dark:border-gray-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(75,85,99,1)]">
+                <button
+                  onClick={() => setGroupByCategory(false)}
+                  className={`p-2 ${!groupByCategory ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'} transition-colors`}
+                  aria-label="Flat list"
+                  title="Flat list"
+                >
+                  <LayoutList className="w-5 h-5" strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={() => setGroupByCategory(true)}
+                  className={`p-2 border-l-4 border-black dark:border-gray-600 ${groupByCategory ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'} transition-colors`}
+                  aria-label="Group by category"
+                  title="Group by category"
+                >
+                  <Layers className="w-5 h-5" strokeWidth={2.5} />
+                </button>
+              </div>
+            </div>
+
             {/* View Toggle */}
             <div className="flex">
               <div className="sm:hidden flex border-2 border-gray-300 dark:border-gray-600 rounded overflow-hidden">
@@ -221,17 +297,45 @@ export default function Top20Page() {
         </div>
 
         {viewMode === 'list' ? (
-          <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
-            {sortedPolicies.map((policy, index) => (
-              <PolicyListItem
-                key={policy.id}
-                policy={policy}
-                displayRank={index + 1}
-                isExpanded={expandedPolicyId === policy.id}
-                onToggleExpand={() => handleToggleExpand(policy.id)}
-              />
-            ))}
-          </div>
+          groupByCategory && groupedPolicies ? (
+            // Grouped view
+            <div className="space-y-8">
+              {groupedPolicies.sortedCategories.map((problemArea) => (
+                <div key={problemArea}>
+                  <h3 className="font-display text-2xl font-black text-black dark:text-white mb-4 flex items-center gap-3">
+                    {PROBLEM_AREA_LABELS[problemArea]}
+                    <span className="text-sm font-bold text-neutral bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                      {groupedPolicies.groups[problemArea].length}
+                    </span>
+                  </h3>
+                  <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+                    {groupedPolicies.groups[problemArea].map((policy, index) => (
+                      <PolicyListItem
+                        key={policy.id}
+                        policy={policy}
+                        displayRank={index + 1}
+                        isExpanded={expandedPolicyId === policy.id}
+                        onToggleExpand={() => handleToggleExpand(policy.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Flat list view
+            <div className="border-4 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(75,85,99,1)]">
+              {sortedPolicies.map((policy, index) => (
+                <PolicyListItem
+                  key={policy.id}
+                  policy={policy}
+                  displayRank={index + 1}
+                  isExpanded={expandedPolicyId === policy.id}
+                  onToggleExpand={() => handleToggleExpand(policy.id)}
+                />
+              ))}
+            </div>
+          )
         ) : (
           <PolicyTable policies={sortedPolicies} />
         )}

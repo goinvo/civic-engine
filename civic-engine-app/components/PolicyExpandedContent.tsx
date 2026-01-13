@@ -1,15 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { ArrowUpRight, Compass } from 'lucide-react';
-import { Policy, PolicyCategory } from '@/types/policy';
+import { Policy } from '@/types/policy';
+import { ProblemAreaId } from '@/types/problem-areas';
 
-// Map policy categories to problem area IDs
-const categoryToProblemArea: Partial<Record<PolicyCategory, { id: string; title: string }>> = {
-  healthcare: { id: 'healthcare-costs', title: 'Healthcare Costs' },
-  economy: { id: 'economic-opportunity', title: 'Economic Opportunity & Wages' },
-  governance: { id: 'democratic-reform', title: 'Democratic Reform' },
-  education: { id: 'education-quality', title: 'Education Quality' },
+// Map problem area IDs to display titles
+const problemAreaTitles: Record<ProblemAreaId, string> = {
+  'healthcare-costs': 'Healthcare Costs',
+  'housing-affordability': 'Housing Affordability',
+  'childcare-family': 'Childcare & Family',
+  'democratic-reform': 'Democratic Reform',
+  'economic-opportunity': 'Economic Opportunity & Wages',
+  'education-quality': 'Education Quality',
 };
 
 interface PolicyExpandedContentProps {
@@ -17,7 +21,8 @@ interface PolicyExpandedContentProps {
 }
 
 export default function PolicyExpandedContent({ policy }: PolicyExpandedContentProps) {
-  const problemArea = categoryToProblemArea[policy.category];
+  // Use direct problemAreaId if available, otherwise no link
+  const problemAreaTitle = policy.problemAreaId ? problemAreaTitles[policy.problemAreaId] : null;
 
   return (
     <div className="space-y-6">
@@ -26,86 +31,76 @@ export default function PolicyExpandedContent({ policy }: PolicyExpandedContentP
         {policy.description}
       </p>
 
-      {/* Link to Problem Area */}
-      {problemArea && (
-        <Link
-          href={`/explore/${problemArea.id}?from=home`}
-          className="flex items-center gap-3 p-3 bg-gradient-to-r from-[#2F3BBD]/10 to-[#C91A2B]/10 dark:from-[#2F3BBD]/20 dark:to-[#C91A2B]/20 border-2 border-black dark:border-gray-600 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all group"
-        >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] border-2 border-black flex items-center justify-center flex-shrink-0">
-            <Compass className="w-5 h-5 text-white" />
+      {/* Party Support Bars - horizontal on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Average Support - Gradient */}
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-display font-bold text-xs text-gray-700 dark:text-gray-300">Average</span>
+            <span className="font-display font-black text-sm text-black dark:text-white">{policy.averageSupport}%</span>
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="font-bold text-sm text-black dark:text-white">Explore Implementation Approaches</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
-              See how this relates to {problemArea.title}
-            </div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600 relative overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${policy.averageSupport}%` }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="h-full bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B]"
+            />
           </div>
-          <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors flex-shrink-0" />
-        </Link>
-      )}
-
-      {/* Party Support Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-yellow-100 dark:bg-yellow-900/30 border-2 border-black dark:border-gray-600 p-3">
-          <div className="text-3xl font-display font-black text-black dark:text-white">{policy.averageSupport}%</div>
-          <div className="text-xs font-body text-neutral dark:text-gray-400 font-bold uppercase">Avg Support</div>
         </div>
+
         {policy.partySupport && (
           <>
-            <div className="bg-blue-100 dark:bg-blue-900/30 border-2 border-black dark:border-gray-600 p-3">
-              <div className="text-2xl font-display font-black text-black dark:text-white">{policy.partySupport.democrats}%</div>
-              <div className="text-xs font-body text-neutral dark:text-gray-400 font-bold uppercase">Democrats</div>
+            {/* Democrats - Blue */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-display font-bold text-xs text-[#2F3BBD]">Democrats</span>
+                <span className="font-display font-black text-sm text-black dark:text-white">{policy.partySupport.democrats}%</span>
+              </div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600 relative overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${policy.partySupport.democrats}%` }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="h-full bg-[#2F3BBD]"
+                />
+              </div>
             </div>
-            <div className="bg-red-100 dark:bg-red-900/30 border-2 border-black dark:border-gray-600 p-3">
-              <div className="text-2xl font-display font-black text-black dark:text-white">{policy.partySupport.republicans}%</div>
-              <div className="text-xs font-body text-neutral dark:text-gray-400 font-bold uppercase">Republicans</div>
+
+            {/* Republicans - Red */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-display font-bold text-xs text-[#C91A2B]">Republicans</span>
+                <span className="font-display font-black text-sm text-black dark:text-white">{policy.partySupport.republicans}%</span>
+              </div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600 relative overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${policy.partySupport.republicans}%` }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="h-full bg-[#C91A2B]"
+                />
+              </div>
             </div>
-            <div className="bg-green-100 dark:bg-green-900/30 border-2 border-black dark:border-gray-600 p-3">
-              <div className="text-2xl font-display font-black text-black dark:text-white">{policy.partySupport.independents}%</div>
-              <div className="text-xs font-body text-neutral dark:text-gray-400 font-bold uppercase">Independents</div>
+
+            {/* Independents - Purple */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-display font-bold text-xs text-[#80467E]">Independents</span>
+                <span className="font-display font-black text-sm text-black dark:text-white">{policy.partySupport.independents}%</span>
+              </div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 border border-black dark:border-gray-600 relative overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${policy.partySupport.independents}%` }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="h-full bg-[#80467E]"
+                />
+              </div>
             </div>
           </>
         )}
       </div>
-
-      {/* Key Details */}
-      {policy.details && policy.details.length > 0 && (
-        <section className="pt-4 border-t-2 border-gray-200 dark:border-gray-700">
-          <h3 className="font-display text-lg font-black text-black dark:text-white mb-3">Key Details</h3>
-          <ul className="space-y-3">
-            {policy.details.map((detail, index) => (
-              <li key={index}>
-                <h4 className="font-display font-bold text-black dark:text-white text-sm">{detail.title}</h4>
-                <p className="font-body text-gray-600 dark:text-gray-400 text-sm">{detail.description}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* How It Works */}
-      {policy.resourceFlow && (
-        <section className="pt-4 border-t-2 border-gray-200 dark:border-gray-700">
-          <h3 className="font-display text-lg font-black text-black dark:text-white mb-3">How It Works</h3>
-          <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-black dark:border-gray-600 p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <div className="text-xs font-display font-black text-neutral dark:text-gray-400 uppercase mb-1">From</div>
-                <div className="font-body font-bold text-black dark:text-white text-sm">{policy.resourceFlow.from}</div>
-              </div>
-              <div>
-                <div className="text-xs font-display font-black text-neutral dark:text-gray-400 uppercase mb-1">To</div>
-                <div className="font-body font-bold text-black dark:text-white text-sm">{policy.resourceFlow.to}</div>
-              </div>
-              <div>
-                <div className="text-xs font-display font-black text-neutral dark:text-gray-400 uppercase mb-1">How</div>
-                <div className="font-body font-bold text-black dark:text-white text-sm">{policy.resourceFlow.channel}</div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* In Practice */}
       {policy.ifThen && policy.ifThen.length > 0 && (
@@ -119,25 +114,6 @@ export default function PolicyExpandedContent({ policy }: PolicyExpandedContentP
               </li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {/* Policy Goal */}
-      {policy.causalChain && (
-        <section className="pt-4 border-t-2 border-gray-200 dark:border-gray-700">
-          <h3 className="font-display text-lg font-black text-black dark:text-white mb-3">Policy Goal</h3>
-          <div className="bg-green-50 dark:bg-green-900/20 border-2 border-black dark:border-gray-600 p-4">
-            <div className="space-y-3">
-              <div>
-                <div className="text-xs font-display font-black text-neutral dark:text-gray-400 uppercase mb-1">Immediate Action</div>
-                <p className="font-body font-bold text-black dark:text-white text-sm">{policy.causalChain.immediate}</p>
-              </div>
-              <div>
-                <div className="text-xs font-display font-black text-neutral dark:text-gray-400 uppercase mb-1">Intended Outcome</div>
-                <p className="font-body font-bold text-black dark:text-white text-sm">{policy.causalChain.outcome}</p>
-              </div>
-            </div>
-          </div>
         </section>
       )}
 
@@ -187,6 +163,27 @@ export default function PolicyExpandedContent({ policy }: PolicyExpandedContentP
           day: 'numeric',
         })}
       </div>
+
+      {/* Link to Problem Area - at the bottom */}
+      {policy.problemAreaId && problemAreaTitle && (
+        <Link
+          href={policy.approachId
+            ? `/explore/${policy.problemAreaId}?approach=${policy.approachId}`
+            : `/explore/${policy.problemAreaId}`}
+          className="flex items-center gap-3 p-3 bg-gradient-to-r from-[#2F3BBD]/10 to-[#C91A2B]/10 dark:from-[#2F3BBD]/20 dark:to-[#C91A2B]/20 border-2 border-black dark:border-gray-600 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all group"
+        >
+          <div className="w-10 h-10 bg-gradient-to-br from-[#2F3BBD] to-[#C91A2B] border-2 border-black flex items-center justify-center flex-shrink-0">
+            <Compass className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-sm text-black dark:text-white">Explore Implementation Approaches</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
+              See how this relates to {problemAreaTitle}
+            </div>
+          </div>
+          <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors flex-shrink-0" />
+        </Link>
+      )}
     </div>
   );
 }
