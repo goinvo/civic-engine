@@ -14,6 +14,8 @@ import {
   Info,
   ChevronDown,
   BarChart3,
+  ExternalLink,
+  FileText,
 } from 'lucide-react';
 import { Card, Button, Badge } from '@/components/education/ui';
 import { PreferenceRadar } from '@/components/problem-areas/PreferenceRadar';
@@ -25,6 +27,8 @@ import {
   type PreferenceDimensionId,
   type UserPreferenceProfile,
 } from '@/types/problem-areas';
+import { statSources } from '@/data/statSources';
+import { policies } from '@/data/policies';
 
 // Icon mapping
 const DIMENSION_ICONS: Record<string, React.ReactNode> = {
@@ -251,6 +255,76 @@ export default function MethodologyPage() {
             </div>
           </div>
         </Card>
+
+        {/* Data Sources Section */}
+        <div className="mt-12">
+          <h2 className="font-display text-2xl font-black text-neutral-dark dark:text-white mb-4 flex items-center gap-2">
+            <FileText className="w-6 h-6" />
+            Data Sources
+          </h2>
+          <p className="text-sm text-neutral dark:text-gray-400 mb-6">
+            The statistics displayed on the landing page are sourced from reputable research organizations,
+            government agencies, and nonpartisan polling institutions.
+          </p>
+
+          <div className="space-y-4">
+            {statSources.map((policyStats, index) => {
+              const policy = policies.find(p => p.id === policyStats.policyId);
+              if (!policy) return null;
+
+              return (
+                <motion.div
+                  key={policyStats.policyId}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Card variant="outlined" padding="md">
+                    <h3 className="font-bold text-neutral-dark dark:text-white mb-3">
+                      {policy.title}
+                    </h3>
+                    <div className="space-y-3">
+                      {policyStats.stats.map((stat, i) => (
+                        <div key={i} className="flex items-start gap-3 text-sm">
+                          <Badge variant="secondary" className="shrink-0">
+                            {stat.label}: {stat.value}
+                          </Badge>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-neutral-dark dark:text-white font-medium">
+                                {stat.source}
+                              </span>
+                              {stat.year && (
+                                <span className="text-xs text-neutral dark:text-gray-500">
+                                  ({stat.year})
+                                </span>
+                              )}
+                              {stat.url && (
+                                <a
+                                  href={stat.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[#2F3BBD] hover:underline"
+                                >
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                            {stat.notes && (
+                              <p className="text-xs text-neutral dark:text-gray-500 mt-1">
+                                {stat.notes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Sticky footer */}
