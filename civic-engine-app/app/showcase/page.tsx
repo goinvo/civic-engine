@@ -71,6 +71,14 @@ import { cn } from '@/lib/utils';
 // Visualizations
 import { ArchetypeRadarChart } from '@/components/v2/ArchetypeRadarChart';
 import { V2FactorScores, V2WeightProfile } from '@/types/consensus';
+import {
+  MiniBarChart,
+  MiniComparisonChart,
+  MiniTrendChart,
+  MiniDonutChart,
+  MiniChart,
+  type ChartData,
+} from '@/components/charts';
 
 // Problem Areas Components
 import {
@@ -650,6 +658,41 @@ function ProblemAreasSection() {
 // ============================================
 
 function VisualizationsSection() {
+  // Sample data for mini charts
+  const barChartData: ChartData = {
+    type: 'bar',
+    data: [
+      { name: 'Dem', value: 69, color: '#2F3BBD' },
+      { name: 'GOP', value: 95, color: '#C91A2B' },
+      { name: 'Ind', value: 80, color: '#888' },
+    ],
+  };
+
+  const comparisonChartData: ChartData = {
+    type: 'comparison',
+    data: [
+      { name: 'US', value: 278 },
+      { name: 'Other', value: 100 },
+    ],
+  };
+
+  const trendChartData: ChartData = {
+    type: 'trend',
+    data: [
+      { name: "'16", value: 180 },
+      { name: "'20", value: 1000 },
+      { name: "'24", value: 1900 },
+    ],
+  };
+
+  const donutChartData: ChartData = {
+    type: 'donut',
+    data: [
+      { name: 'Without', value: 47, color: '#C91A2B' },
+      { name: 'With', value: 53, color: '#22C55E' },
+    ],
+  };
+
   // Sample policy factor scores (simulating a policy like Medicare Drug Negotiation)
   const mockPolicyScores: V2FactorScores = {
     hayek: 0.35,      // Moderate central coordination
@@ -690,6 +733,77 @@ function VisualizationsSection() {
         title="Visualizations"
         description="Data visualizations for policy analysis and user profiles"
       />
+
+      {/* Mini Charts */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">Mini Charts (Neobrutalist)</h3>
+        <p className="text-neutral dark:text-gray-400 mb-4">
+          Compact charts for stat windows and dashboards. SVG-based with neobrutalist styling.
+        </p>
+        <div className="grid md:grid-cols-4 gap-6">
+          {/* Bar Chart */}
+          <Card variant="default" padding="md">
+            <h4 className="font-bold text-sm mb-2">Bar Chart</h4>
+            <p className="text-xs text-neutral mb-3">Party support breakdown</p>
+            <div className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-4">
+              <MiniBarChart data={barChartData.data} />
+            </div>
+            <p className="text-xs text-neutral mt-2">Use: Party splits, category comparisons</p>
+          </Card>
+
+          {/* Comparison Chart */}
+          <Card variant="default" padding="md">
+            <h4 className="font-bold text-sm mb-2">Comparison Chart</h4>
+            <p className="text-xs text-neutral mb-3">US vs world prices</p>
+            <div className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-4">
+              <MiniComparisonChart data={comparisonChartData.data} />
+            </div>
+            <p className="text-xs text-neutral mt-2">Use: Before/after, A vs B comparisons</p>
+          </Card>
+
+          {/* Trend Chart */}
+          <Card variant="default" padding="md">
+            <h4 className="font-bold text-sm mb-2">Trend Chart</h4>
+            <p className="text-xs text-neutral mb-3">Dark money over time</p>
+            <div className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-4">
+              <MiniTrendChart data={trendChartData.data} />
+            </div>
+            <p className="text-xs text-neutral mt-2">Use: Time series, growth trends</p>
+          </Card>
+
+          {/* Donut Chart */}
+          <Card variant="default" padding="md">
+            <h4 className="font-bold text-sm mb-2">Donut Chart</h4>
+            <p className="text-xs text-neutral mb-3">Coverage breakdown</p>
+            <div className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-4 flex justify-center">
+              <MiniDonutChart data={donutChartData.data} />
+            </div>
+            <p className="text-xs text-neutral mt-2">Use: Proportions, percentages</p>
+          </Card>
+        </div>
+
+        {/* Universal MiniChart component */}
+        <div className="mt-6">
+          <h4 className="font-medium mb-2">Universal MiniChart Component</h4>
+          <p className="text-sm text-neutral dark:text-gray-400 mb-4">
+            Pass any <code className="bg-gray-100 px-1 py-0.5 text-xs">ChartData</code> object and it renders the appropriate chart type.
+          </p>
+          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded font-mono text-sm overflow-x-auto">
+            <pre>{`import { MiniChart, ChartData } from '@/components/charts';
+
+const data: ChartData = {
+  type: 'trend', // 'bar' | 'comparison' | 'trend' | 'donut'
+  data: [
+    { name: "'22", value: 290 },
+    { name: "'23", value: 450 },
+    { name: "'24", value: 706 },
+  ],
+};
+
+<MiniChart chart={data} />`}</pre>
+          </div>
+        </div>
+      </div>
 
       {/* Radar Chart */}
       <div>

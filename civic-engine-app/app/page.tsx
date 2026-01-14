@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ThumbsUp, ThumbsDown, Minus, Zap } from 'lucide-react';
@@ -8,6 +8,7 @@ import ParticleWave from '@/components/ParticleWave';
 import { getNationalConsensus } from '@/lib/problem-areas';
 import { getTopPolicies } from '@/data/policies';
 import { getStatSourcesForPolicy } from '@/data/statSources';
+import { MiniChart } from '@/components/charts';
 
 type Screen = 'intro' | 'issues' | 'done';
 
@@ -46,26 +47,26 @@ function AnimatedNumber({ value, duration = 0.8 }: { value: number; duration?: n
   return <>{displayValue}%</>;
 }
 
-// Floating stat window that pops in
+// Floating stat window - uses CSS for natural sizing
 function StatWindow({
   children,
   position,
-  delay = 0
+  delay = 0,
 }: {
   children: React.ReactNode;
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   delay?: number;
 }) {
   const positionClasses = {
-    'top-left': '-left-8 -top-4 md:-left-24',
-    'top-right': '-right-8 -top-4 md:-right-24',
-    'bottom-left': '-left-8 -bottom-4 md:-left-24',
-    'bottom-right': '-right-8 -bottom-4 md:-right-24',
+    'top-left': '-left-2 -top-12 md:-left-40 md:-top-6',
+    'top-right': '-right-2 -top-12 md:-right-40 md:-top-6',
+    'bottom-left': '-left-2 -bottom-12 md:-left-40 md:-bottom-6',
+    'bottom-right': '-right-2 -bottom-12 md:-right-40 md:-bottom-6',
   };
 
   return (
     <motion.div
-      className={`absolute ${positionClasses[position]} bg-white border-2 border-black px-3 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-left max-w-[140px] z-20`}
+      className={`absolute ${positionClasses[position]} bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-left z-20 p-4 overflow-visible`}
       initial={{ opacity: 0, scale: 0.8, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -134,21 +135,65 @@ export default function Home() {
 
     const sourcedStats = getStatSourcesForPolicy(policy.id);
     if (sourcedStats) {
-      return sourcedStats.stats.map(s => ({ label: s.label, value: s.value }));
+      return sourcedStats.stats.map(s => ({
+        label: s.label,
+        value: s.value,
+        chart: s.chart,
+        source: s.source,
+        url: s.url,
+      }));
     }
 
     // Fallback: show party support breakdown
+    if (!policy.partySupport) return [];
     return [
-      { label: 'Democrats', value: `${policy.partySupport.democrats}%` },
-      { label: 'Republicans', value: `${policy.partySupport.republicans}%` },
+      { label: 'Democrats', value: `${policy.partySupport.democrats}%`, chart: undefined, source: undefined, url: undefined },
+      { label: 'Republicans', value: `${policy.partySupport.republicans}%`, chart: undefined, source: undefined, url: undefined },
     ];
   };
 
+  // Screen labels for progress indicator
+  const screenLabels = {
+    intro: 'Discover',
+    issues: 'Vote',
+    done: 'Results',
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 overflow-hidden relative">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 overflow-x-hidden relative">
       <ParticleWave />
 
-      <div className="max-w-lg w-full text-center px-6 relative z-10 py-12">
+      {/* Header with progress */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
+        <div className="max-w-lg mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="font-black text-lg bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] bg-clip-text text-transparent">
+            Civic Engine
+          </Link>
+
+          {/* Progress dots */}
+          <div className="flex items-center gap-2">
+            {(['intro', 'issues', 'done'] as Screen[]).map((s) => (
+              <div
+                key={s}
+                className={`flex items-center gap-1 transition-all ${screen === s ? 'opacity-100' : 'opacity-40'}`}
+              >
+                <div
+                  className={`w-2 h-2 rounded-full border border-black transition-all ${
+                    screen === s ? 'bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] scale-125' : 'bg-gray-300'
+                  }`}
+                />
+                <span className={`text-xs font-bold hidden sm:block ${screen === s ? 'text-neutral-dark dark:text-white' : 'text-neutral'}`}>
+                  {screenLabels[s]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <div className="flex-1 flex items-center justify-center overflow-visible">
+        <div className="max-w-lg w-full text-center px-6 relative z-10 py-12 overflow-visible">
         <AnimatePresence mode="wait">
           {/* INTRO SCREEN */}
           {screen === 'intro' && (
@@ -255,7 +300,7 @@ export default function Home() {
                     <motion.div
                       key={i}
                       className={`w-8 h-2 border-2 border-black ${
-                        i < currentIssueIndex ? 'bg-green-500' :
+                        i < currentIssueIndex ? 'bg-[#2F3BBD]' :
                         i === currentIssueIndex ? 'bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B]' :
                         'bg-gray-200'
                       }`}
@@ -270,7 +315,7 @@ export default function Home() {
               </div>
 
               {/* Policy card with floating stats */}
-              <div className="relative">
+              <div className="relative overflow-visible">
                 {/* Floating stat windows */}
                 <AnimatePresence>
                   {!showResult && getPolicyStats(currentPolicy).map((stat, i) => (
@@ -279,8 +324,30 @@ export default function Home() {
                       position={i === 0 ? 'top-left' : 'bottom-right'}
                       delay={0.5 + i * 0.2}
                     >
-                      <div className="text-xs text-neutral uppercase tracking-wide">{stat.label}</div>
-                      <div className="text-lg font-black text-neutral-dark">{stat.value}</div>
+                      <div className="text-[10px] text-neutral uppercase tracking-wide font-bold mb-1">{stat.label}</div>
+                      {stat.chart ? (
+                        <div className="mb-1 overflow-visible">
+                          <MiniChart chart={stat.chart} />
+                        </div>
+                      ) : (
+                        <div className="text-xl font-black text-neutral-dark">{stat.value}</div>
+                      )}
+                      {stat.source && (
+                        <div className="mt-1 border-t border-gray-200 pt-1">
+                          {stat.url ? (
+                            <a
+                              href={stat.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[8px] text-neutral hover:text-[#2F3BBD] hover:underline block leading-tight"
+                            >
+                              {stat.source}
+                            </a>
+                          ) : (
+                            <span className="text-[8px] text-neutral block leading-tight">{stat.source}</span>
+                          )}
+                        </div>
+                      )}
                     </StatWindow>
                   ))}
                 </AnimatePresence>
@@ -355,13 +422,13 @@ export default function Home() {
                             transition={{ delay: 0.6 }}
                           >
                             <div className="flex-1 bg-blue-100 border-2 border-black px-2 py-1 text-center">
-                              <div className="text-xs font-bold text-blue-700">D: {currentPolicy.partySupport.democrats}%</div>
+                              <div className="text-xs font-bold text-blue-700">D: {currentPolicy.partySupport?.democrats}%</div>
                             </div>
                             <div className="flex-1 bg-gray-100 border-2 border-black px-2 py-1 text-center">
-                              <div className="text-xs font-bold text-gray-700">I: {currentPolicy.partySupport.independents}%</div>
+                              <div className="text-xs font-bold text-gray-700">I: {currentPolicy.partySupport?.independents}%</div>
                             </div>
                             <div className="flex-1 bg-red-100 border-2 border-black px-2 py-1 text-center">
-                              <div className="text-xs font-bold text-red-700">R: {currentPolicy.partySupport.republicans}%</div>
+                              <div className="text-xs font-bold text-red-700">R: {currentPolicy.partySupport?.republicans}%</div>
                             </div>
                           </motion.div>
                         </div>
@@ -527,7 +594,23 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 z-50 px-4 py-3 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-lg mx-auto flex items-center justify-between text-xs">
+          <span className="text-neutral dark:text-gray-500">
+            Data from nonpartisan sources
+          </span>
+          <Link
+            href="/explore/methodology"
+            className="font-bold text-neutral hover:text-[#2F3BBD] dark:text-gray-400 dark:hover:text-white transition-colors"
+          >
+            Methodology
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }
