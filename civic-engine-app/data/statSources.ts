@@ -353,8 +353,8 @@ export const statSources: StatSource[] = [
     policyId: 'hospital-price-transparency',
     stats: [
       {
-        label: 'Same procedure',
-        value: '3-5×',
+        label: 'Price variance',
+        value: '3× gap',
         source: 'Baker Institute',
         url: 'https://www.bakerinstitute.org/research/revisiting-price-transparency-texas-medical-center-hospitals',
         year: 2024,
@@ -363,13 +363,13 @@ export const statSources: StatSource[] = [
         chart: {
           type: 'comparison',
           data: [
-            { name: 'High', value: 1698 },
-            { name: 'Low', value: 584 },
+            { name: 'Expensive', value: 1698 },
+            { name: 'Cheapest', value: 584 },
           ],
         },
       },
       {
-        label: 'Compliant',
+        label: 'Comply w/ law',
         value: '21%',
         source: 'Patient Rights Advocate',
         url: 'https://www.healthcaredive.com/news/hospital-price-transparency-continues-drop-patient-rights-advocate/733703/',
@@ -391,8 +391,8 @@ export const statSources: StatSource[] = [
     policyId: 'school-mental-health-services',
     stats: [
       {
-        label: 'Counselor ratio',
-        value: '376:1',
+        label: 'Students/counselor',
+        value: '376 → 250',
         source: 'ASCA',
         url: 'https://www.schoolcounselor.org/About-School-Counseling/School-Counselor-Roles-Ratios',
         year: 2024,
@@ -401,19 +401,26 @@ export const statSources: StatSource[] = [
         chart: {
           type: 'comparison',
           data: [
-            { name: 'Actual', value: 376 },
-            { name: 'Goal', value: 250 },
+            { name: 'Now', value: 376 },
+            { name: 'Target', value: 250 },
           ],
         },
       },
       {
-        label: 'Under-resourced',
+        label: 'Underfunded',
         value: '56%',
         source: 'KFF',
         url: 'https://www.kff.org/mental-health/the-landscape-of-school-based-mental-health-services/',
         year: 2024,
         notes:
-          '"56% of schools report inadequate funding for mental health services, up from 47% in 2021-22"',
+          '"56% of schools report inadequate funding for mental health services"',
+        chart: {
+          type: 'donut',
+          data: [
+            { name: 'Underfunded', value: 56, color: '#C91A2B' },
+            { name: 'Adequate', value: 44, color: '#2F3BBD' },
+          ],
+        },
       },
     ],
   },
@@ -421,7 +428,7 @@ export const statSources: StatSource[] = [
     policyId: 'school-phone-restrictions',
     stats: [
       {
-        label: 'Ban effect',
+        label: 'Test score boost',
         value: '+1.4%',
         source: 'NBER',
         url: 'https://www.nber.org/digest/202512/school-cell-phone-bans-and-student-achievement',
@@ -430,7 +437,7 @@ export const statSources: StatSource[] = [
           '"An all-day cell phone ban improved test scores by 1.4 percentiles among male students"',
       },
       {
-        label: 'Daily use',
+        label: 'In-school use',
         value: '43 min',
         source: 'IES / NCES',
         url: 'https://ies.ed.gov/learn/press-release/more-half-public-school-leaders-say-cell-phones-hurt-academic-performance',

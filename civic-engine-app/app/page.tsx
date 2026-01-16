@@ -1,50 +1,96 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ThumbsUp, ThumbsDown, Minus, Zap } from 'lucide-react';
+import { ArrowRight, ThumbsUp, ThumbsDown, Minus, Zap, Landmark, GraduationCap, Heart, Home as HomeIcon, DollarSign, Users, ChevronRight, MessageCircle, ArrowLeft } from 'lucide-react';
 import ParticleWave from '@/components/ParticleWave';
 import { getNationalConsensus } from '@/lib/problem-areas';
-import { getTopPolicies } from '@/data/policies';
+import { getTopPolicies, policies } from '@/data/policies';
 import { getStatSourcesForPolicy } from '@/data/statSources';
 import { MiniChart } from '@/components/charts';
 
+// Category definitions with icons and colors
+const CATEGORIES = [
+  { id: 'governance', label: 'Governance', icon: Landmark, color: '#2F3BBD' },
+  { id: 'healthcare', label: 'Healthcare', icon: Heart, color: '#C91A2B' },
+  { id: 'economy', label: 'Economy', icon: DollarSign, color: '#16A34A' },
+  { id: 'education', label: 'Education', icon: GraduationCap, color: '#9333EA' },
+  { id: 'housing', label: 'Housing', icon: HomeIcon, color: '#EA580C' },
+  { id: 'family', label: 'Family', icon: Users, color: '#0891B2' },
+] as const;
+
 type Screen = 'intro' | 'issues' | 'done';
 
-// Animated number that counts between values
-function AnimatedNumber({ value, duration = 0.8 }: { value: number; duration?: number }) {
-  const [displayValue, setDisplayValue] = useState(value);
-  const [prevValue, setPrevValue] = useState(value);
+// Typewriter-style animated number with cursor
+function AnimatedNumber({ value }: { value: number }) {
+  const [displayText, setDisplayText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+  const prevValueRef = useRef<number | null>(null);
+  const displayTextRef = useRef('');
+  const targetText = `${value}%`;
 
   useEffect(() => {
-    if (value === prevValue) return;
+    // Skip if same value
+    if (prevValueRef.current === value) return;
 
-    const startValue = prevValue;
-    const endValue = value;
-    const startTime = performance.now();
+    setIsActive(true);
+    let cancelled = false;
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / (duration * 1000), 1);
+    const animate = async () => {
+      const currentText = displayTextRef.current;
+      const charDelay = 80;
 
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(startValue + (endValue - startValue) * eased);
-
-      setDisplayValue(current);
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setPrevValue(value);
+      // If there's existing text, erase it character by character
+      if (currentText.length > 0) {
+        for (let i = currentText.length; i >= 0; i--) {
+          if (cancelled) return;
+          displayTextRef.current = currentText.slice(0, i);
+          setDisplayText(displayTextRef.current);
+          await new Promise(r => setTimeout(r, charDelay + Math.random() * 30));
+        }
       }
+
+      // Small pause before typing
+      await new Promise(r => setTimeout(r, 150));
+
+      // Type new value character by character
+      for (let i = 1; i <= targetText.length; i++) {
+        if (cancelled) return;
+        displayTextRef.current = targetText.slice(0, i);
+        setDisplayText(displayTextRef.current);
+        await new Promise(r => setTimeout(r, charDelay + Math.random() * 40));
+      }
+
+      setIsActive(false);
+      prevValueRef.current = value;
     };
 
-    requestAnimationFrame(animate);
-  }, [value, prevValue, duration]);
+    animate();
 
-  return <>{displayValue}%</>;
+    return () => { cancelled = true; };
+  }, [value, targetText]);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  return (
+    <span className="inline-flex items-baseline font-mono">
+      <span>{displayText}</span>
+      <span
+        className={`inline-block w-[4px] h-[1em] ml-0.5 ${
+          isActive || showCursor ? 'bg-current' : 'bg-transparent'
+        }`}
+        style={{ transition: isActive ? 'none' : 'background-color 0.1s' }}
+      />
+    </span>
+  );
 }
 
 // Floating stat window - uses CSS for natural sizing
@@ -82,8 +128,8 @@ export default function Home() {
   const [currentIssueIndex, setCurrentIssueIndex] = useState(0);
   const [votes, setVotes] = useState<Record<string, 'yes' | 'no' | 'skip'>>({});
   const [showResult, setShowResult] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [activeIntroPolicy, setActiveIntroPolicy] = useState(0);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const nationalConsensus = getNationalConsensus();
   const topPolicies = getTopPolicies(6);
@@ -105,22 +151,18 @@ export default function Home() {
   }, [screen, topPolicies.length]);
 
   const handleVote = (vote: 'yes' | 'no' | 'skip') => {
-    if (isTransitioning) return;
-
     const policy = topPolicies[currentIssueIndex];
     setVotes(prev => ({ ...prev, [policy.id]: vote }));
     setShowResult(true);
-    setIsTransitioning(true);
+  };
 
-    setTimeout(() => {
-      setShowResult(false);
-      if (currentIssueIndex < topPolicies.length - 1) {
-        setCurrentIssueIndex(prev => prev + 1);
-      } else {
-        setScreen('done');
-      }
-      setIsTransitioning(false);
-    }, 1800);
+  const handleNext = () => {
+    setShowResult(false);
+    if (currentIssueIndex < topPolicies.length - 1) {
+      setCurrentIssueIndex(prev => prev + 1);
+    } else {
+      setScreen('done');
+    }
   };
 
   const currentPolicy = topPolicies[currentIssueIndex];
@@ -431,12 +473,103 @@ export default function Home() {
                               <div className="text-xs font-bold text-red-700">R: {currentPolicy.partySupport?.republicans}%</div>
                             </div>
                           </motion.div>
+
+                          {/* Action buttons */}
+                          <motion.div
+                            className="flex gap-3 mt-4"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8 }}
+                          >
+                            <motion.button
+                              className="flex-1 py-3 bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 font-bold text-sm hover:bg-gray-50"
+                              whileHover={{ y: -2, boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
+                              whileTap={{ y: 1, boxShadow: '1px 1px 0px 0px rgba(0,0,0,1)' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setChatOpen(true);
+                              }}
+                            >
+                              <MessageCircle className="w-4 h-4" />
+                              Discuss
+                            </motion.button>
+                            <motion.button
+                              className="flex-1 py-3 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 font-bold text-sm"
+                              whileHover={{ y: -2, boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
+                              whileTap={{ y: 1, boxShadow: '1px 1px 0px 0px rgba(0,0,0,1)' }}
+                              onClick={handleNext}
+                            >
+                              {currentIssueIndex < topPolicies.length - 1 ? 'Next' : 'Finish'}
+                              <ArrowRight className="w-4 h-4" />
+                            </motion.button>
+                          </motion.div>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
               </div>
+
+              {/* Chat panel */}
+              <AnimatePresence>
+                {chatOpen && (
+                  <motion.div
+                    className="fixed inset-0 z-50 bg-white dark:bg-gray-900"
+                    initial={{ y: '100%' }}
+                    animate={{ y: 0 }}
+                    exit={{ y: '100%' }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                  >
+                    <div className="h-full flex flex-col">
+                      {/* Chat header with back button */}
+                      <div className="flex items-center gap-3 p-4 border-b-2 border-black">
+                        <motion.button
+                          onClick={() => setChatOpen(false)}
+                          className="p-2 bg-gray-100 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                          whileHover={{ y: -1 }}
+                          whileTap={{ y: 1 }}
+                        >
+                          <ArrowLeft className="w-5 h-5" />
+                        </motion.button>
+                        <div className="flex-1">
+                          <div className="font-bold text-neutral-dark dark:text-white">{currentPolicy?.title}</div>
+                          <div className="text-xs text-neutral">Discussion</div>
+                        </div>
+                      </div>
+
+                      {/* Chat content placeholder */}
+                      <div className="flex-1 p-4 overflow-y-auto">
+                        <div className="bg-gray-100 dark:bg-gray-800 border-2 border-black p-4 mb-4">
+                          <p className="text-sm text-neutral-dark dark:text-white mb-2">
+                            <span className="font-bold">AI Assistant:</span> What would you like to know about {currentPolicy?.title}?
+                          </p>
+                          <p className="text-xs text-neutral">
+                            I can explain the pros and cons, share different perspectives, or answer questions about how this policy would work.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Chat input */}
+                      <div className="p-4 border-t-2 border-black">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Ask a question..."
+                            className="flex-1 px-4 py-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm focus:outline-none focus:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                          />
+                          <motion.button
+                            className="px-4 py-3 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                            whileHover={{ y: -1 }}
+                            whileTap={{ y: 1 }}
+                          >
+                            Send
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Vote buttons */}
               {!showResult && (
@@ -517,65 +650,105 @@ export default function Home() {
                 })}
               </div>
 
-              {/* Score card */}
+              {/* Score summary */}
               <motion.div
-                className="bg-white dark:bg-gray-800 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 mb-6"
+                className="bg-white dark:bg-gray-800 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mb-6"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <motion.div
-                  className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center"
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: 'spring', stiffness: 300, delay: 0.3 }}
-                >
-                  <Zap className="w-12 h-12 text-white" strokeWidth={2.5} />
-                </motion.div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      className="w-12 h-12 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, delay: 0.3 }}
+                    >
+                      <Zap className="w-6 h-6 text-white" strokeWidth={2.5} />
+                    </motion.div>
+                    <div className="text-left">
+                      <div className="font-bold text-neutral-dark dark:text-white">
+                        {agreedCount >= 4 ? "You're with the majority!" :
+                         agreedCount >= 2 ? "Common ground found!" :
+                         "Unique perspective!"}
+                      </div>
+                      <div className="text-sm text-neutral">{agreedCount}/{totalVoted} consensus matches</div>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-black bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] bg-clip-text text-transparent">
+                    {Math.round((agreedCount / totalVoted) * 100)}%
+                  </div>
+                </div>
+              </motion.div>
 
-                <motion.h1
-                  className="text-2xl md:text-3xl font-bold text-neutral-dark dark:text-white mb-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  {agreedCount >= 4 ? "You're with the majority!" :
-                   agreedCount >= 2 ? "Common ground found!" :
-                   "Unique perspective!"}
-                </motion.h1>
+              {/* Category grid */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <h2 className="text-lg font-bold text-neutral-dark dark:text-white mb-3 text-left">Explore by Category</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {CATEGORIES.map((category, i) => {
+                    const Icon = category.icon;
+                    const categoryPolicies = policies.filter(p => p.category === category.id);
+                    const votedInCategory = categoryPolicies.filter(p => votes[p.id]).length;
+                    const totalInCategory = categoryPolicies.length;
+                    const progress = totalInCategory > 0 ? (votedInCategory / totalInCategory) * 100 : 0;
 
-                <motion.div
-                  className="text-5xl font-black bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] bg-clip-text text-transparent mb-4"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', delay: 0.6 }}
-                >
-                  {agreedCount}/{totalVoted}
-                </motion.div>
-
-                <motion.p
-                  className="text-neutral dark:text-gray-400"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7 }}
-                >
-                  You matched the consensus on {agreedCount} of {totalVoted} policies.
-                </motion.p>
+                    return (
+                      <motion.div
+                        key={category.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + i * 0.1 }}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 1 }}
+                      >
+                        <Link
+                          href={`/explore?category=${category.id}`}
+                          className="block bg-white dark:bg-gray-800 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-4 text-left hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div
+                              className="w-10 h-10 flex items-center justify-center border-2 border-black"
+                              style={{ backgroundColor: category.color }}
+                            >
+                              <Icon className="w-5 h-5 text-white" />
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-neutral" />
+                          </div>
+                          <div className="font-bold text-sm text-neutral-dark dark:text-white mb-1">{category.label}</div>
+                          <div className="text-xs text-neutral mb-2">{totalInCategory} issues</div>
+                          {/* Progress bar */}
+                          <div className="h-1.5 bg-gray-200 border border-black">
+                            <div
+                              className="h-full transition-all"
+                              style={{ width: `${progress}%`, backgroundColor: category.color }}
+                            />
+                          </div>
+                          <div className="text-[10px] text-neutral mt-1">{votedInCategory}/{totalInCategory} voted</div>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </motion.div>
 
               {/* Actions */}
               <motion.div
-                className="flex flex-col gap-3"
+                className="flex flex-col gap-3 mt-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
+                transition={{ delay: 1 }}
               >
                 <motion.div whileHover={{ y: -2 }} whileTap={{ y: 1 }}>
                   <Link
                     href="/full"
-                    className="inline-flex items-center justify-center gap-3 w-full px-8 py-4 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white text-lg font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                    className="inline-flex items-center justify-center gap-3 w-full px-6 py-3 bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B] text-white font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   >
-                    Explore All Issues
+                    See All {policies.length} Issues
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </motion.div>
