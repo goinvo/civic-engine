@@ -14,7 +14,9 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Sparkles
+  Sparkles,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 // UI Components
@@ -106,6 +108,22 @@ const SECTIONS = [
 
 export default function ShowcasePage() {
   const [activeSection, setActiveSection] = useState('primitives');
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Initialize dark mode from system preference
+  useEffect(() => {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDarkMode(isDark);
+  }, []);
+
+  // Toggle dark mode class on document
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   return (
     <div className="min-h-screen bg-neutral-light dark:bg-gray-950">
@@ -121,7 +139,23 @@ export default function ShowcasePage() {
                 Component Showcase
               </p>
             </div>
-            <Badge variant="outline">Portfolio Demo</Badge>
+            <div className="flex items-center gap-3">
+              {/* Dark mode toggle */}
+              <motion.button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)]"
+                whileHover={{ y: -1 }}
+                whileTap={{ y: 1 }}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {darkMode ? (
+                  <Sun className="w-5 h-5 text-yellow-500" />
+                ) : (
+                  <Moon className="w-5 h-5 text-gray-700" />
+                )}
+              </motion.button>
+              <Badge variant="outline">Portfolio Demo</Badge>
+            </div>
           </div>
         </div>
       </header>

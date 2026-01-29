@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 interface Particle {
   ix: number; // grid index x
@@ -20,6 +20,17 @@ export default function ParticleWave() {
   const countRef = useRef<number>(0);
   const particleWidthRef = useRef<number>(0.25);
   const gradientWidthRef = useRef<number>(1.0); // Multiplier for gradient width
+  const [isDark, setIsDark] = useState(false);
+
+  // Listen for dark mode changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -174,37 +185,47 @@ export default function ParticleWave() {
         ctx.fill();
       }
 
-      // Draw white gradient overlay from center with soft blurred edges
+      // Draw gradient overlay from center with soft blurred edges
+      // Uses white in light mode, dark gray in dark mode
       // Gradient width adapts to particle width and screen size
       const pw = particleWidthRef.current;
       const gw = gradientWidthRef.current; // Gradient width multiplier
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
 
       // Soft falloff with extra padding - starts fade earlier for blur effect
-      const padding = 0.12; // Extra padding for white area
+      const padding = 0.12; // Extra padding for center area
       const fadeStart = Math.max(0, pw * 0.3); // Start fade earlier
-      const solidStart = Math.max(pw + padding, 0.15); // Where solid white begins (with padding)
+      const solidStart = Math.max(pw + padding, 0.15); // Where solid center begins (with padding)
       const innerEdge = 0.5 - (0.5 - solidStart) * gw;
       const outerEdge = 1 - innerEdge;
 
-      // Very gradual fade from edge to solid white
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      gradient.addColorStop(fadeStart, 'rgba(255, 255, 255, 0)');
-      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.2, 'rgba(255, 255, 255, 0.03)');
-      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.4, 'rgba(255, 255, 255, 0.1)');
-      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.6, 'rgba(255, 255, 255, 0.25)');
-      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.8, 'rgba(255, 255, 255, 0.5)');
-      gradient.addColorStop(solidStart, 'rgba(255, 255, 255, 0.8)');
-      gradient.addColorStop(Math.min(innerEdge, 0.48), 'rgba(255, 255, 255, 0.95)');
-      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
-      gradient.addColorStop(Math.max(outerEdge, 0.52), 'rgba(255, 255, 255, 0.95)');
-      gradient.addColorStop(1 - solidStart, 'rgba(255, 255, 255, 0.8)');
-      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.8, 'rgba(255, 255, 255, 0.5)');
-      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.6, 'rgba(255, 255, 255, 0.25)');
-      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.4, 'rgba(255, 255, 255, 0.1)');
-      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.2, 'rgba(255, 255, 255, 0.03)');
-      gradient.addColorStop(1 - fadeStart, 'rgba(255, 255, 255, 0)');
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      // Check for dark mode via class (manual toggle) or media query (system)
+      const darkMode = document.documentElement.classList.contains('dark') ||
+                       window.matchMedia('(prefers-color-scheme: dark)').matches;
+      // Dark mode: use near-black (matches dark:bg-gray-950 = #030712)
+      // Light mode: use white
+      const r = darkMode ? 3 : 255;
+      const g = darkMode ? 7 : 255;
+      const b = darkMode ? 18 : 255;
+
+      // Very gradual fade from edge to solid center
+      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
+      gradient.addColorStop(fadeStart, `rgba(${r}, ${g}, ${b}, 0)`);
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.2, `rgba(${r}, ${g}, ${b}, 0.03)`);
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.4, `rgba(${r}, ${g}, ${b}, 0.1)`);
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.6, `rgba(${r}, ${g}, ${b}, 0.25)`);
+      gradient.addColorStop(fadeStart + (solidStart - fadeStart) * 0.8, `rgba(${r}, ${g}, ${b}, 0.5)`);
+      gradient.addColorStop(solidStart, `rgba(${r}, ${g}, ${b}, 0.8)`);
+      gradient.addColorStop(Math.min(innerEdge, 0.48), `rgba(${r}, ${g}, ${b}, 0.95)`);
+      gradient.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 1)`);
+      gradient.addColorStop(Math.max(outerEdge, 0.52), `rgba(${r}, ${g}, ${b}, 0.95)`);
+      gradient.addColorStop(1 - solidStart, `rgba(${r}, ${g}, ${b}, 0.8)`);
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.8, `rgba(${r}, ${g}, ${b}, 0.5)`);
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.6, `rgba(${r}, ${g}, ${b}, 0.25)`);
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.4, `rgba(${r}, ${g}, ${b}, 0.1)`);
+      gradient.addColorStop(1 - fadeStart - (solidStart - fadeStart) * 0.2, `rgba(${r}, ${g}, ${b}, 0.03)`);
+      gradient.addColorStop(1 - fadeStart, `rgba(${r}, ${g}, ${b}, 0)`);
+      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 

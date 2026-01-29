@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for manual toggle */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #1f2937;
@@ -47,6 +50,14 @@
     --neutral-light: #1e293b;
     --neutral-dark: #e2e8f0;
   }
+}
+
+/* Class-based dark mode (for manual toggle) */
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --neutral-light: #1e293b;
+  --neutral-dark: #e2e8f0;
 }
 
 body {

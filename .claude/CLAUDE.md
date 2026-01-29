@@ -15,8 +15,56 @@
   - Blue: `#2F3BBD`
   - Red: `#C91A2B`
   - Brand gradient: `bg-gradient-to-r from-[#2F3BBD] to-[#C91A2B]`
-- **Borders**: `border-2 border-black` (neobrutalist style)
-- **Shadows**: `shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`
+- **Borders**: `border-2 border-black dark:border-gray-600` (neobrutalist style)
+- **Shadows**: `shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]`
+
+### Chart Colors
+Always use theme colors in charts—never use arbitrary colors like green/yellow. Avoid implying partisan preference:
+- **Primary**: Brand gradient `linear-gradient(135deg, #2F3BBD 0%, #C91A2B 100%)` (neutral, non-partisan)
+- **Accent**: Purple `#80467E`
+- **Secondary**: Blue `#2F3BBD` or Red `#C91A2B` (use equally, no preference)
+- **Neutral**: Gray `#888`
+- **Example**: Use gradient for highlighted/primary data, purple for accents, gray for baseline
+
+### Dark Mode
+Always add dark mode variants for all visual elements:
+
+| Element | Light Mode | Dark Mode |
+|---------|------------|-----------|
+| **Background** | `bg-white` | `dark:bg-gray-950` or `dark:bg-gray-900` |
+| **Card Background** | `bg-white` | `dark:bg-gray-800` |
+| **Borders** | `border-black` | `dark:border-gray-600` |
+| **Primary Text** | `text-neutral-dark` | `dark:text-white` |
+| **Secondary Text** | `text-neutral` | `dark:text-gray-400` |
+| **Muted Text** | `text-neutral` | `dark:text-gray-500` |
+
+#### Dark Mode Rules
+- **Always pair light and dark**: Every `bg-`, `text-`, `border-` class needs a `dark:` variant
+- **Shadows**: Reduce opacity in dark mode: `shadow-[...rgba(0,0,0,1)]` → `dark:shadow-[...rgba(0,0,0,0.5)]`
+- **Colored backgrounds**: Use `/40` or `/50` opacity in dark mode (e.g., `dark:bg-red-900/40`)
+- **Test both modes**: Use the showcase page toggle to verify components work in both themes
+
+### Responsive Design
+Mobile-first approach with these breakpoints:
+
+| Breakpoint | Width | Usage |
+|------------|-------|-------|
+| Default | < 640px | Mobile phones |
+| `sm:` | ≥ 640px | Large phones, small tablets |
+| `md:` | ≥ 768px | Tablets, small laptops |
+| `lg:` | ≥ 1024px | Desktops |
+
+#### Responsive Rules
+- **Stack on mobile**: Use `flex-col md:flex-row` for side-by-side layouts
+- **Hide on mobile**: Use `hidden md:block` for desktop-only elements
+- **Touch targets**: Minimum 44px height for tappable elements on mobile
+- **Floating elements**: Position centered on mobile, to sides on desktop:
+  ```tsx
+  // Mobile: centered above/below
+  // Desktop: floating to sides
+  className="left-1/2 -translate-x-1/2 -top-44 md:translate-x-0 md:-left-52 md:-top-8"
+  ```
+- **Text scaling**: Use `text-base md:text-lg` sparingly, prefer consistent sizes
 
 ### Typography
 

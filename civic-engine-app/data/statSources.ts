@@ -36,7 +36,7 @@ export const statSources: StatSource[] = [
         url: 'https://www.capitoltrades.com/',
         year: 2024,
         notes:
-          '"113 members of Congress made 9,261 trades in 2024 involving 706 million shares or other assets"',
+          '113 members of Congress made **9,261 trades** in 2024 involving **706 million** shares or other assets',
         chart: {
           type: 'trend',
           data: [
@@ -53,7 +53,7 @@ export const statSources: StatSource[] = [
         url: 'https://unusualwhales.com/congress-trading-report-2024',
         year: 2024,
         notes:
-          '"48 of the 113 members of Congress that traded stocks in 2024 beat the S&P 500, up from 33 in 2023"',
+          '**48 of 113** members of Congress that traded stocks in 2024 **beat the S&P 500**, up from 33 in 2023',
         chart: {
           type: 'comparison',
           data: [
@@ -112,7 +112,7 @@ export const statSources: StatSource[] = [
         url: 'https://www.rand.org/news/press/2024/02/01.html',
         year: 2024,
         notes:
-          '"U.S. prices were 2.78 times those in 33 other high-income countries"',
+          'U.S. prices were **2.78 times** those in 33 other high-income countries',
         chart: {
           type: 'comparison',
           data: [
@@ -150,7 +150,7 @@ export const statSources: StatSource[] = [
         url: 'https://www.brennancenter.org/our-work/research-reports/dark-money-hit-record-high-19-billion-2024-federal-races',
         year: 2024,
         notes:
-          '"Dark money groups plowed more than $1.9 billion into the 2024 election cycle, a dramatic increase from the prior record of $1 billion in 2020"',
+          'Dark money groups plowed **more than $1.9 billion** into the 2024 election, up from prior record of $1 billion in 2020',
         chart: {
           type: 'trend',
           data: [
@@ -181,7 +181,7 @@ export const statSources: StatSource[] = [
         url: 'https://nam.org/2-1-million-manufacturing-jobs-could-go-unfilled-by-2030-13743/',
         year: 2024,
         notes:
-          '"The manufacturing skills gap in the U.S. could result in 2.1 million unfilled jobs by 2030"',
+          'The manufacturing skills gap could result in **2.1 million unfilled jobs** by 2030',
         chart: {
           type: 'donut',
           data: [
@@ -359,7 +359,7 @@ export const statSources: StatSource[] = [
         url: 'https://www.bakerinstitute.org/research/revisiting-price-transparency-texas-medical-center-hospitals',
         year: 2024,
         notes:
-          '"Mean negotiated prices at the highest-priced provider were nearly three times higher ($1,698) than those at the lowest-priced provider ($584)"',
+          'Mean negotiated prices at the highest-priced provider were **nearly 3× higher** ($1,698) than the lowest ($584)',
         chart: {
           type: 'comparison',
           data: [
@@ -370,18 +370,17 @@ export const statSources: StatSource[] = [
       },
       {
         label: 'Comply w/ law',
-        value: '21%',
+        value: '↓21%',
         source: 'Patient Rights Advocate',
         url: 'https://www.healthcaredive.com/news/hospital-price-transparency-continues-drop-patient-rights-advocate/733703/',
         year: 2024,
         notes:
-          '"Hospitals in full compliance with federal price transparency rules fell from 34.5% to 21.1% in 2024"',
+          'Hospitals in full compliance with federal price transparency rules **fell from 34.5% to 21.1%** in 2024',
         chart: {
-          type: 'trend',
+          type: 'bar',
           data: [
-            { name: '\'22', value: 16 },
-            { name: '\'23', value: 35 },
-            { name: '\'24', value: 21 },
+            { name: '\'23', value: 35, color: '#80467E' },
+            { name: '\'24 ↓', value: 21, color: 'gradient' },
           ],
         },
       },

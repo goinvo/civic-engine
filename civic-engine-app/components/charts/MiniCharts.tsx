@@ -12,24 +12,36 @@ export interface ChartData {
   data: { name: string; value: number; color?: string }[];
 }
 
-// Neobrutalist mini bar chart
+// Neobrutalist mini bar chart - fixed height bars for consistency
+// Use color: 'gradient' for brand gradient fill
 export function MiniBarChart({ data }: { data: ChartData['data'] }) {
   const max = Math.max(...data.map(d => d.value));
-  const barHeight = 40;
+  const maxBarHeight = 48;
+
+  const getBarStyle = (item: ChartData['data'][0]): React.CSSProperties => {
+    const height = Math.max(8, (item.value / max) * maxBarHeight);
+    if (item.color === 'gradient') {
+      return {
+        height,
+        background: 'linear-gradient(135deg, #2F3BBD 0%, #C91A2B 100%)',
+      };
+    }
+    return {
+      height,
+      backgroundColor: item.color || '#888',
+    };
+  };
 
   return (
-    <div className="flex items-end justify-center gap-3 pt-5 pb-1">
+    <div className="flex items-end justify-center gap-4 pt-2">
       {data.map((item, i) => (
-        <div key={i} className="flex flex-col items-center" style={{ minWidth: 28 }}>
-          <span className="text-[10px] font-black mb-1 text-neutral-dark">{item.value}</span>
+        <div key={i} className="flex flex-col items-center">
+          <span className="text-[10px] font-black mb-1 text-neutral-dark dark:text-white">{item.value}%</span>
           <div
-            className="w-7 border-2 border-black"
-            style={{
-              height: Math.max(8, (item.value / max) * barHeight),
-              backgroundColor: item.color || '#888',
-            }}
+            className="w-8 border-2 border-black dark:border-gray-600"
+            style={getBarStyle(item)}
           />
-          <span className="text-[9px] font-bold mt-1 text-neutral">{item.name}</span>
+          <span className="text-[9px] font-bold mt-1 text-neutral dark:text-gray-400">{item.name}</span>
         </div>
       ))}
     </div>
@@ -39,36 +51,34 @@ export function MiniBarChart({ data }: { data: ChartData['data'] }) {
 // Neobrutalist comparison chart (two bars side by side with gradient)
 export function MiniComparisonChart({ data }: { data: ChartData['data'] }) {
   const max = Math.max(...data.map(d => d.value));
-  const barHeight = 44;
+  const maxBarHeight = 48;
 
-  const getBarStyle = (i: number, height: number) => {
-    const baseStyle = {
-      height: Math.max(10, height),
-    };
+  const getBarStyle = (i: number, value: number) => {
+    const height = Math.max(8, (value / max) * maxBarHeight);
     if (i === 0) {
       return {
-        ...baseStyle,
+        height,
         background: 'linear-gradient(135deg, #2F3BBD 0%, #C91A2B 100%)',
       };
     }
     return {
-      ...baseStyle,
-      backgroundColor: '#6366f1',
+      height,
+      backgroundColor: '#80467E', // Purple accent
     };
   };
 
   return (
-    <div className="flex items-end justify-center gap-4 pt-5 pb-1">
+    <div className="flex items-end justify-center gap-5 pt-2">
       {data.map((item, i) => (
-        <div key={i} className="flex flex-col items-center" style={{ minWidth: 36 }}>
-          <span className="text-[10px] font-black mb-1 text-neutral-dark">
+        <div key={i} className="flex flex-col items-center">
+          <span className="text-[10px] font-black mb-1 text-neutral-dark dark:text-white">
             {item.value > 100 ? `${(item.value / 100).toFixed(1)}×` : item.value}
           </span>
           <div
-            className="w-9 border-2 border-black"
-            style={getBarStyle(i, (item.value / max) * barHeight)}
+            className="w-10 border-2 border-black dark:border-gray-600"
+            style={getBarStyle(i, item.value)}
           />
-          <span className="text-[9px] font-bold mt-1 text-neutral">{item.name}</span>
+          <span className="text-[9px] font-bold mt-1 text-neutral dark:text-gray-400">{item.name}</span>
         </div>
       ))}
     </div>
@@ -80,14 +90,14 @@ export function MiniTrendChart({ data }: { data: ChartData['data'] }) {
   const max = Math.max(...data.map(d => d.value));
   const min = Math.min(...data.map(d => d.value));
   const range = max - min || 1;
-  const width = 100;
-  const height = 56;
-  const padding = { top: 8, right: 8, bottom: 16, left: 8 };
+  const width = 140;
+  const height = 72;
+  const padding = { top: 10, right: 10, bottom: 20, left: 10 };
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
   return (
-    <div style={{ width, height }}>
+    <div className="w-full h-full min-h-[72px]" style={{ maxWidth: width }}>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full">
         {/* Area fill */}
         <path
@@ -108,16 +118,18 @@ export function MiniTrendChart({ data }: { data: ChartData['data'] }) {
             <circle
               cx={(i / (data.length - 1)) * chartWidth + padding.left}
               cy={padding.top + chartHeight - ((d.value - min) / range) * chartHeight}
-              r="5"
+              r="6"
               fill="white"
               stroke="black"
               strokeWidth="1.5"
+              className="dark:fill-gray-800"
             />
             <text
               x={(i / (data.length - 1)) * chartWidth + padding.left}
-              y={height - 2}
+              y={height - 4}
               textAnchor="middle"
-              style={{ fontSize: 8, fontWeight: 'bold', fill: '#666' }}
+              className="fill-neutral dark:fill-gray-400"
+              style={{ fontSize: 10, fontWeight: 'bold' }}
             >
               {d.name}
             </text>
@@ -133,14 +145,14 @@ export function MiniDonutChart({ data }: { data: ChartData['data'] }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
   let currentAngle = -90;
   const mainValue = data[0]?.value || 0;
-  const size = 64;
+  const size = 80;
   const center = size / 2;
-  const outerRadius = 26;
-  const innerRadius = 12;
+  const outerRadius = 34;
+  const innerRadius = 16;
 
   return (
-    <div style={{ width: size, height: size }}>
-      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full">
+    <div className="w-full h-full flex items-center justify-center" style={{ minHeight: size }}>
+      <svg viewBox={`0 0 ${size} ${size}`} style={{ width: size, height: size }}>
         {data.map((item, i) => {
           const angle = (item.value / total) * 360;
           const largeArc = angle > 180 ? 1 : 0;
@@ -161,11 +173,12 @@ export function MiniDonutChart({ data }: { data: ChartData['data'] }) {
               fill={item.color || '#888'}
               stroke="black"
               strokeWidth="1.5"
+              className="dark:stroke-gray-600"
             />
           );
         })}
-        <circle cx={center} cy={center} r={innerRadius} fill="white" stroke="black" strokeWidth="1.5" />
-        <text x={center} y={center + 4} textAnchor="middle" style={{ fontSize: 12, fontWeight: 900 }}>
+        <circle cx={center} cy={center} r={innerRadius} fill="white" stroke="black" strokeWidth="1.5" className="dark:fill-gray-800 dark:stroke-gray-600" />
+        <text x={center} y={center + 5} textAnchor="middle" className="fill-neutral-dark dark:fill-white" style={{ fontSize: 14, fontWeight: 900 }}>
           {mainValue}%
         </text>
       </svg>

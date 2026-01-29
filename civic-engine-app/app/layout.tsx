@@ -21,9 +21,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Most of Us - Policies Americans Agree On",
-  description: "Discover the policies that most Americans agree on, based on bipartisan polling data. A platform for consensus-driven civic engagement.",
-  keywords: ["politics", "consensus", "bipartisan", "policy", "civic engagement"],
+  title: "Most of Us - Valence Issues & Policies Americans Agree On",
+  description: "Explore valence issues—policies with broad bipartisan support that most Americans agree on. Discover consensus-driven civic engagement based on real polling data.",
+  keywords: ["valence issues", "bipartisan policies", "consensus politics", "policies Americans agree on", "civic engagement", "bipartisan support"],
 };
 
 export default function RootLayout({
